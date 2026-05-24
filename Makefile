@@ -1,7 +1,7 @@
 # Makefile
 
 # Variables
-BACKEND_DIR=fastapi_backend
+BACKEND_DIR=backend
 FRONTEND_DIR=nextjs-frontend
 DOCKER_COMPOSE=docker compose
 
@@ -15,7 +15,7 @@ help:
 .PHONY: start-backend test-backend
 
 start-backend: ## Start the backend server with FastAPI and hot reload
-	cd $(BACKEND_DIR) && ./start.sh
+	cd $(BACKEND_DIR) && bash ./start.sh
 
 test-backend: ## Run backend tests using pytest
 	cd $(BACKEND_DIR) && uv run pytest
@@ -25,7 +25,7 @@ test-backend: ## Run backend tests using pytest
 .PHONY: start-frontend test-frontend
 
 start-frontend: ## Start the frontend server with pnpm and hot reload
-	cd $(FRONTEND_DIR) && ./start.sh
+	cd $(FRONTEND_DIR) && bash ./start.sh
 
 test-frontend: ## Run frontend tests using npm
 	cd $(FRONTEND_DIR) && pnpm run test

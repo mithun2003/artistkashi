@@ -2,16 +2,13 @@ name: Vercel Production Backend Deployment
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_BACKEND }}
-on:
-  push:
-    branches:
-      - main
+on: []  # Disabled — Vercel manages backend deployments
 jobs:
   Deploy-Production-Backend:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: fastapi_backend
+        working-directory: backend
     steps:
       - uses: actions/checkout@v2
 

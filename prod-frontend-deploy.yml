@@ -2,10 +2,7 @@ name: Vercel Production Frontend Deployment
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_FRONTEND }}
-on:
-  push:
-    branches:
-      - main
+on: []  # Disabled — Vercel manages deployments directly
 jobs:
   Deploy-Production-Frontend:
     runs-on: ubuntu-latest

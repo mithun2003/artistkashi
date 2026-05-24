@@ -1,6 +1,8 @@
 #!/bin/bash
 
-pnpm run dev &
+set -e
+
+pnpm run dev --webpack &
 
 node watcher.js
 

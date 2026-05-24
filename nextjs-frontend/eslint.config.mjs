@@ -12,7 +12,7 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
-      "app/openapi-client/**",
+      "src/app/openapi-client/**",
     ],
   },
   js.configs.recommended,

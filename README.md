@@ -1,70 +1,75 @@
-## Next.js FastAPI Template
+# ArtistKashi
 
-<a href="https://www.vintasoftware.com/blog/next-js-fastapi-template"><img src="docs/images/banner.png" alt="Next.js FastAPI Template" width="auto"></a>
-<p align="center">
-    <em>Next.js FastAPI Template: Python + Modern TypeScript stack with Zod validation.</em>
-</p>
-<p align="center">
-<a href="https://github.com/vintasoftware/nextjs-fastapi-template/actions/workflows/ci.yml" target="_blank">
-    <img src="https://github.com/vintasoftware/nextjs-fastapi-template/actions/workflows/ci.yml/badge.svg" alt="CI">
-</a>
-<a href="https://coveralls.io/github/vintasoftware/nextjs-fastapi-template" target="_blank">
-    <img src="https://coveralls.io/repos/github/vintasoftware/nextjs-fastapi-template/badge.svg" alt="Coverage">
-</a>
-</p>
+ArtistKashi is a cinematic luxury platform foundation for premium art education and curated painting commerce. This repository contains a production-ready starter for a modern full-stack application using Next.js (App Router) on the frontend and FastAPI on the backend.
 
----
+This repository has been refactored into a clean, minimal, and extensible foundation for building:
 
-**Documentation**: <a href="https://vintasoftware.github.io/nextjs-fastapi-template/" target="_blank">https://vintasoftware.github.io/nextjs-fastapi-template/</a>
+- A premium online course (LMS) experience for artists
+- A curated ecommerce gallery for original paintings and limited drops
+- Secure user authentication and admin tooling
+- Scalable API-first architecture with OpenAPI-driven typed clients
 
-**Source Code**: <a href="https://github.com/vintasoftware/nextjs-fastapi-template/" target="_blank">https://github.com/vintasoftware/nextjs-fastapi-template/</a>
+What was changed since the original template:
 
----
+- All demo and placeholder content removed or replaced with clean scaffolding
+- Branding updated to ArtistKashi and default SEO metadata adjusted
+- Design tokens and Tailwind config prepared for a cinematic black & gold aesthetic
+- Frontend and backend kept modular and ready for feature development
 
-The Next.js FastAPI Template provides a solid foundation for scalable, high-performance web applications, following clean architecture and best practices. It simplifies development by integrating FastAPI, Pydantic, and Next.js with TypeScript and Zod, ensuring end-to-end type safety and schema validation between frontend and backend.
+Quick start (frontend):
 
-The FastAPI backend supports fully asynchronous operations, optimizing database queries, API routes, and test execution for better performance. Deployment is seamless, with both backend and frontend fully deployable to Vercel, enabling quick product releases with minimal configuration.
+  cd nextjs-frontend
+  pnpm install
+  pnpm dev
 
-### Key features
-✔ End-to-end type safety – Automatically generated typed clients from the OpenAPI schema ensure seamless API contracts between frontend and backend.
+Quick start (backend):
 
-✔ Hot-reload updates – The client updates automatically when backend routes change, keeping FastAPI and Next.js in sync.
+  cd backend
+  python -m pip install -r requirements.txt
+  uv run pytest  # runs tests
 
-✔ Versatile foundation – Designed for MVPs and production-ready applications, with a pre-configured authentication system and API layer.
+Repository structure highlights
 
-✔ Quick deployment – Deploys a full-stack application—including authentication flow and a dashboard—on Vercel in just a few steps.
+- nextjs-frontend/: Next.js App Router frontend (TypeScript, Tailwind)
+- backend/: FastAPI backend with async SQLAlchemy and auth
+- openapi.json: single source of truth for typed client generation
 
-✔ Production-ready authentication – Includes a pre-configured authentication system and dashboard interface, allowing you to immediately start development with user management features.
+Contributing
 
-## Technology stack
-This template features a carefully selected set of technologies to ensure efficiency, scalability, and ease of use:
+This repo is a refactored starting point for ArtistKashi. Features should be added under src/features (frontend) and app/routes or app/services (backend). Keep UI components under src/components for reuse and prefer composing small, accessible building blocks.
 
-- Zod + TypeScript – Type safety and schema validation across the stack.
-- fastapi-users – Complete authentication system with:
-    - Secure password hashing
-    - JWT authentication
-- Email-based password recovery
-- shadcn/ui – Prebuilt React components with Tailwind CSS.
-- OpenAPI-fetch – Fully typed client generation from the OpenAPI schema.
-- UV – Simplified dependency management and packaging.
-- Docker Compose – Consistent environments for development and production.
-- Pre-commit hooks – Automated code linting, formatting, and validation before commits.
-- Vercel Deployment – Serverless backend and scalable frontend, deployable with minimal configuration.
+License
 
-This is a partial list of the technologies included in the template. For a complete overview, visit our [Technology selection](https://vintasoftware.github.io/nextjs-fastapi-template/technology-selection/) page.
+This project retains the original LICENSE as provided in the repository root.
 
-## Get Started
+Contact
 
-To use this template, visit our [Get Started](https://vintasoftware.github.io/nextjs-fastapi-template/get-started/) and follow the steps.
+For questions about the refactor or architecture decisions, open an issue or contact the project maintainer.
 
-## Using the template? Let's talk!
+Docker (recommended local development)
 
-We’re always curious to see how the community builds on top of it and where it’s being used. To collaborate:
+- Uses docker-compose to run frontend (3000), backend (8000), and Postgres.
 
-- Join the conversation on [GitHub Discussions](https://github.com/vintasoftware/nextjs-fastapi-template/discussions)
-- Report bugs or suggest improvements via [issues](https://github.com/vintasoftware/nextjs-fastapi-template/issues)
-- Check the [Contributing](https://vintasoftware.github.io/nextjs-fastapi-template/contributing/) guide to get involved
+1. Build and start services:
 
-This project is maintained by [Vinta Software](https://www.vinta.com.br/) and is actively used in production systems we build for clients. Talk to our expert consultants — get a free technical review: contact@vinta.com.br.
+   docker-compose up --build
 
-*Disclaimer: This project is not affiliated with Vercel.*
+2. Environment: copy backend/.env.example to backend/.env and update SECRET KEYS and DATABASE_URL if needed.
+
+Notes on cleanup performed
+
+- Disabled GitHub workflows and archived pipeline files to keep repository minimal. They can be restored or re-enabled later.
+- Created a small clientService shim (nextjs-frontend/src/app/clientService.ts) as a temporary adapter until OpenAPI client is generated from the backend.
+- Design tokens and Tailwind updated for cinematic black & gold look.
+
+Files suggested for manual removal (optional):
+- local-shared-data/openapi.json (generated OpenAPI schema) — keep one canonical copy if you regenerate client
+- nextjs-frontend/openapi.json (generated client schema)
+- overrides/ (deployment overrides archive)
+
+If you want, grant permission and I will continue by:
+- Removing or archiving more unused files and components
+- Replacing clientService shim with generated OpenAPI client
+- Implementing basic CI via Vercel configuration
+
+

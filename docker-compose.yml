@@ -1,7 +1,8 @@
 services:
   backend:
     build:
-      context: fastapi_backend
+      context: backend
+    command: ["bash", "./start.sh"]
     environment:
       - OPENAPI_OUTPUT_FILE=./shared-data/openapi.json
       - DATABASE_URL=postgresql+asyncpg://postgres:password@db:5432/mydatabase
@@ -12,7 +13,7 @@ services:
     networks:
       - my_network
     volumes:
-      - ./fastapi_backend:/app
+      - ./backend:/app
       - fastapi-venv:/app/.venv
       - ./local-shared-data:/app/shared-data
     depends_on:
@@ -43,7 +44,7 @@ services:
   frontend:
     build:
       context: ./nextjs-frontend
-    user: node
+    command: ["bash", "./start.sh"]
     ports:
       - "3000:3000"
     networks:

@@ -1,24 +1,19 @@
-FROM node:20-bookworm
+FROM node:24-slim
 
-# Set the working directory
 WORKDIR /app
 
-# Install pnpm globally
-RUN npm install -g pnpm
+# Enable Corepack (recommended way for pnpm)
+RUN corepack enable
 
-# Copy package files and install dependencies
-COPY package*.json ./
+# Copy only dependency files first for better caching
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
 
-# Install dependencies as root (or myappuser, depending on your structure)
+# Install dependencies
 RUN pnpm install
 
-## Switch to the non-root user
-USER node
-
-# Copy the rest of your application code
+# Copy application files
 COPY . .
 
 EXPOSE 3000
 
-# Start the application
-CMD ["./start.sh"]
+CMD ["bash", "./start.sh"]
