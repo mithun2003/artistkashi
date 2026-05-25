@@ -1,58 +1,23 @@
-from fastapi import FastAPI
-from .schemas.user import UserCreate, UserRead, UserUpdate
-from .auth.users import auth_backend, fastapi_users, AUTH_URL_PATH
-from fastapi.middleware.cors import CORSMiddleware
-from .utils.routing import simple_generate_unique_route_id
+import logging
+
+from app.api import router as api_router
 from app.config import settings
-from app.routes.addresses import router as addresses_router
+from app.core.logger import configure_logging
+from app.core.setup import create_application
+from app.utils.routing import simple_generate_unique_route_id
 
-app = FastAPI(
+# Configure logging
+configure_logging()
+logger = logging.getLogger(__name__)
+
+app = create_application(
+    router=api_router,
+    settings=settings,
     generate_unique_id_function=simple_generate_unique_route_id,
-    openapi_url=settings.OPENAPI_URL,
+    enable_redis=True,
+    enable_queue=True,
 )
 
-# Middleware for CORS configuration
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+logger.info("🚀 ArtistKashi FastAPI Backend initialized")
 
-# Include authentication and user management routes
-app.include_router(
-    fastapi_users.get_auth_router(auth_backend),
-    prefix=f"/{AUTH_URL_PATH}/jwt",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),
-    prefix=f"/{AUTH_URL_PATH}",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_reset_password_router(),
-    prefix=f"/{AUTH_URL_PATH}",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_verify_router(UserRead),
-    prefix=f"/{AUTH_URL_PATH}",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_users_router(UserRead, UserUpdate),
-    prefix="/users",
-    tags=["users"],
-)
 
-# Core utility routes
-app.include_router(health_router)
-app.include_router(test_router)
-app.include_router(items_router)
-app.include_router(users_router)
-app.include_router(courses_router)
-app.include_router(products_router)
-app.include_router(admin_router)
-add_pagination(app)

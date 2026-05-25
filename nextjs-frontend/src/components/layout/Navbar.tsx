@@ -1,0 +1,147 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "motion/react";
+import { Search, Menu, X, User } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth-store";
+import { getSafeReturnTo } from "@/lib/auth-api";
+
+export function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", handler);
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
+
+  const links = [
+    { label: "Shop", href: "/shop" },
+    { label: "Courses", href: "/courses" },
+    ...(user?.role === "admin" ? [{ label: "Instructor", href: "/admin" }] : []),
+  ];
+
+  const loginHref = `/login?returnTo=${encodeURIComponent(getSafeReturnTo(pathname) ?? "/")}`;
+
+  return (
+    <>
+      <nav
+        className={cn(
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+          scrolled ? "bg-[#0A0A0A]/70 backdrop-blur-xl border-b border-[#2A2A2A]" : "bg-transparent"
+        )}
+      >
+        <div className="max-w-360 mx-auto px-8 lg:px-16 flex items-center justify-between h-20">
+          <Link
+            href="/"
+            className="flex flex-col leading-none"
+          >
+            <span className="text-[#F5F5F5] text-xl font-extrabold tracking-[0.12em] uppercase" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+              Artist
+            </span>
+            <span className="text-[#B89D5C] text-[10px] font-mono tracking-[0.25em] uppercase -mt-0.5">
+              Kashi
+            </span>
+          </Link>
+
+          <div className="hidden lg:flex items-center gap-10">
+            {links.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                className={cn(
+                  "text-[13px] tracking-widest uppercase font-medium transition-colors duration-200",
+                  pathname === l.href ? "text-[#B89D5C]" : "text-[#8B8B8B] hover:text-[#F5F5F5]"
+                )}
+              >
+                {l.label}
+              </Link>
+            ))}
+          </div>
+
+          <div className="hidden lg:flex items-center gap-4">
+            <Link href="/search" className="text-[#8B8B8B] hover:text-[#F5F5F5] transition-colors">
+              <Search size={20} />
+            </Link>
+
+            {user ? (
+              <Link href="/dashboard" className="text-[#B89D5C] hover:text-[#F5F5F5] transition-colors">
+                <User size={24} />
+              </Link>
+            ) : (
+              <>
+                <Link href={loginHref} className="text-[#8B8B8B] hover:text-[#F5F5F5] transition-colors text-[13px] tracking-[0.1em] uppercase font-medium mr-2">
+                  Login
+                </Link>
+              </>
+            )}
+          </div>
+
+          <div className="lg:hidden flex items-center gap-4">
+            {user ? (
+              <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="text-[#B89D5C] hover:text-[#F5F5F5] transition-colors">
+                <User size={24} />
+              </Link>
+            ) : null}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="text-[#F5F5F5]"
+            >
+              {menuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-40 bg-[#0A0A0A] flex flex-col justify-center px-10 lg:hidden"
+          >
+            <div className="flex flex-col gap-8">
+              {links.map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="text-4xl font-extrabold tracking-tight text-[#F5F5F5] text-left hover:text-[#B89D5C] transition-colors"
+                  style={{ fontFamily: "'Inter Tight', sans-serif" }}
+                >
+                  {l.label}
+                </Link>
+              ))}
+              <Link
+                href="/search"
+                onClick={() => setMenuOpen(false)}
+                className="text-4xl font-extrabold tracking-tight text-[#F5F5F5] text-left hover:text-[#B89D5C] transition-colors"
+                style={{ fontFamily: "'Inter Tight', sans-serif" }}
+              >
+                Search
+              </Link>
+              {!user && (
+                <Link
+                  href={loginHref}
+                  onClick={() => setMenuOpen(false)}
+                  className="text-4xl font-extrabold tracking-tight text-[#B89D5C] text-left hover:text-[#F5F5F5] transition-colors"
+                  style={{ fontFamily: "'Inter Tight', sans-serif" }}
+                >
+                  Login
+                </Link>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}

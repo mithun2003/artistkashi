@@ -1,2 +1,0 @@
-// Features folder - dashboard
-export {};

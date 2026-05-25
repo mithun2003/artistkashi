@@ -19,4 +19,4 @@ class Address(Base):
     phone = Column(String(length=32), nullable=True)
     is_default = Column(Boolean, default=False)
 
-    user = relationship("User", backref="addresses")
+    user = relationship("User", back_populates="addresses")

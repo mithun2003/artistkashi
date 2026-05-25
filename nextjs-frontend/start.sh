@@ -2,7 +2,7 @@
 
 set -e
 
-pnpm run dev --webpack &
+pnpm run dev &
 
 node watcher.js
 

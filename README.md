@@ -36,7 +36,7 @@ Repository structure highlights
 
 Contributing
 
-This repo is a refactored starting point for ArtistKashi. Features should be added under src/features (frontend) and app/routes or app/services (backend). Keep UI components under src/components for reuse and prefer composing small, accessible building blocks.
+This repo is a refactored starting point for ArtistKashi. Features should be added under src/features (frontend) and app/api/v1 or app/services (backend). Keep UI components under src/components for reuse and prefer composing small, accessible building blocks.
 
 License
 

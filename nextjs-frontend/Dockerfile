@@ -2,17 +2,18 @@ FROM node:24-slim
 
 WORKDIR /app
 
-# Enable Corepack (recommended way for pnpm)
 RUN corepack enable
 
-# Copy only dependency files first for better caching
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
 
-# Install dependencies
-RUN pnpm install
+RUN pnpm install --no-frozen-lockfile
 
-# Copy application files
 COPY . .
+
+# Switch to non-root AFTER everything is copied and installed
+RUN chown -R node:node /app
+
+USER node
 
 EXPOSE 3000
 

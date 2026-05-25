@@ -1,21 +1,63 @@
-// Minimal clientService shim to satisfy imports while keeping architecture OpenAPI-driven.
-// Replace this with generated openapi client adapters when ready.
+/**
+ * API Client Service
+ * 
+ * This service acts as an adapter for the generated OpenAPI client,
+ * ensuring all responses follow the standardized structure.
+ */
 
-export type AuthJwtLoginError = any;
-export type RegisterRegisterError = any;
+import { 
+  ApiResponse, 
+  UserData, 
+  LoginResponseData 
+} from "@/types";
+import * as sdk from "./openapi-client/sdk.gen";
+import { AuthJwtLoginData, RegisterRegisterData } from "./openapi-client/types.gen";
 
-export async function usersCurrentUser(_options?: any) {
-  return { data: null, error: null };
+// Re-export SDK types if needed
+export * from "./openapi-client/types.gen";
+
+/**
+ * Standardized Response Wrapper for SDK calls
+ */
+async function wrapSdkCall<T>(call: Promise<any>): Promise<ApiResponse<T>> {
+  try {
+    const response = await call;
+    
+    // If response already has the standardized structure (from our middleware)
+    if (response && typeof response === 'object' && 'success' in response) {
+      return response as ApiResponse<T>;
+    }
+
+    // Fallback/Safety wrap
+    return {
+      success: true,
+      message: "Operation successful",
+      data: response as T,
+      meta: { timestamp: new Date().toISOString() }
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An unexpected error occurred",
+      errors: error.errors,
+      meta: { 
+        timestamp: new Date().toISOString(),
+        error_code: error.error_code || "CLIENT_ERROR"
+      }
+    };
+  }
 }
 
-export async function authJwtLogout(_options?: any) {
-  return { data: null, error: null };
-}
+export const usersCurrentUser = () => 
+  wrapSdkCall<UserData>(sdk.usersCurrentUser());
 
-export async function authJwtLogin(_payload: any, _options?: any) {
-  return { data: null, error: null };
-}
+export const authJwtLogout = () => 
+  wrapSdkCall<void>(sdk.authJwtLogout());
 
-export async function registerRegister(_payload: any, _options?: any) {
-  return { data: null, error: null };
-}
+export const authJwtLogin = (payload: AuthJwtLoginData) => 
+  wrapSdkCall<LoginResponseData>(sdk.authJwtLogin(payload));
+
+export const registerRegister = (payload: RegisterRegisterData) => 
+  wrapSdkCall<UserData>(sdk.registerRegister(payload));
+
+// Add other services as needed...

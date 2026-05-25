@@ -1,74 +1,84 @@
 services:
   backend:
-    build:
-      context: backend
-    command: ["bash", "./start.sh"]
-    environment:
-      - OPENAPI_OUTPUT_FILE=./shared-data/openapi.json
-      - DATABASE_URL=postgresql+asyncpg://postgres:password@db:5432/mydatabase
-      - TEST_DATABASE_URL=postgresql+asyncpg://postgres:password@db:5433/testdatabase
-      - MAIL_SERVER=mailhog
-    ports:
-      - "8000:8000"
-    networks:
-      - my_network
-    volumes:
-      - ./backend:/app
-      - fastapi-venv:/app/.venv
-      - ./local-shared-data:/app/shared-data
+    env_file:
+      - ./backend/.env.development
+
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+
+      redis:
+        condition: service_started
+
   db:
     image: postgres:17
+
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: mydatabase
+
     ports:
       - "5432:5432"
+
     networks:
       - my_network
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d mydatabase" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
   db_test:
     image: postgres:17
+
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: testdatabase
+
     ports:
       - "5433:5432"
+
     networks:
       - my_network
-    restart: always
-  frontend:
-    build:
-      context: ./nextjs-frontend
-    command: ["bash", "./start.sh"]
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d testdatabase" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # frontend:
+  #   build:
+  #     context: ./nextjs-frontend
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - my_network
+  #   environment:
+  #     - ./nextjs-frontend/.env.development
+  #   volumes:
+  #     - ./local-shared-data:/app/shared-data
+  #   depends_on:
+  #     - backend
+
+  mailpit:
+    image: axllent/mailpit:latest
     ports:
-      - "3000:3000"
-    networks:
-      - my_network
-    environment:
-      NODE_ENV: development
-      API_BASE_URL: http://backend:8000
-      OPENAPI_OUTPUT_FILE: ./shared-data/openapi.json
-    volumes:
-      - ./nextjs-frontend:/app
-      - nextjs-node-modules:/app/node_modules
-      - ./local-shared-data:/app/shared-data
-  mailhog:
-    image: mailhog/mailhog
-    ports:
-      - "1025:1025" # SMTP server
-      - "8025:8025" # Web UI
+      - "1025:1025"
+      - "8025:8025"
     networks:
       - my_network
 
 volumes:
   postgres_data:
-  nextjs-node-modules:
-  fastapi-venv:
 
 networks:
   my_network:

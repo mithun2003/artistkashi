@@ -1,5 +1,6 @@
 import uuid
 import re
+import logging
 
 from typing import Optional
 
@@ -24,6 +25,8 @@ from app.services.email import send_reset_password_email
 from app.models.user import User
 from app.schemas.user import UserCreate
 
+logger = logging.getLogger(__name__)
+
 AUTH_URL_PATH = "auth"
 
 
@@ -32,17 +35,18 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     verification_token_secret = settings.VERIFICATION_SECRET_KEY
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
-        print(f"User {user.id} has registered.")
+        logger.info(f"✅ User registered: {user.email} (ID: {user.id})")
 
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ):
+        logger.info(f"🔐 Password reset requested for: {user.email}")
         await send_reset_password_email(user, token)
 
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
     ):
-        print(f"Verification requested for user {user.id}. Verification token: {token}")
+        logger.info(f"📧 Email verification requested for: {user.email}")
 
     async def validate_password(
         self,
@@ -61,6 +65,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
             errors.append("Password should contain at least one special character.")
 
         if errors:
+            logger.warning(f"❌ Password validation failed for {user.email}: {errors}")
             raise InvalidPasswordException(reason=errors)
 
 
@@ -87,3 +92,6 @@ auth_backend = AuthenticationBackend(
 fastapi_users = FastAPIUsers[User, uuid.UUID](get_user_manager, [auth_backend])
 
 current_active_user = fastapi_users.current_user(active=True)
+
+logger.info("✅ Authentication system initialized")
+

@@ -1,5 +1,5 @@
 node_modules
 .next
-.git
+.env.development
 .env*.local
-*.log
+pnpm-lock.yaml

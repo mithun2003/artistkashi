@@ -1,11 +1,508 @@
-import { CinematicHero } from "@/components/sections/CinematicHero";
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  Play, ArrowRight, ArrowUpRight, Minus, Plus,
+  Star, BookOpen, Clock,
+} from "lucide-react";
+import { PrimaryBtn, GhostBtn } from "@/components/ui/buttons";
+import { RevealBlock, GoldDivider } from "@/components/ui/misc";
+import { GalaxyBackground } from "@/components/shared/GalaxyBackground";
+import { PAINTINGS, COURSES, TESTIMONIALS, FAQ_ITEMS } from "@/data/constants";
+import { cn } from "@/lib/utils";
+
+export default function HomePage() {
+  const [faqOpen, setFaqOpen] = useState<number | null>(null);
+
   return (
-    <main className="min-h-screen bg-background px-6 py-16">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-16">
-        <CinematicHero />
-      </div>
+    <main>
+      {/* ── Hero ── */}
+      <section className="relative h-screen min-h-[800px] flex flex-col justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-[#0A0A0A]">
+          <img
+            src="https://images.unsplash.com/photo-1774126512715-5a8858c579c9?w=1800&h=1100&fit=crop&auto=format"
+            alt="Dimly lit gallery at night"
+            className="absolute inset-0 w-full h-full object-cover opacity-35 grayscale"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/50 to-transparent" />
+        </div>
+
+        {/* Edition label */}
+        <div className="relative z-10 max-w-[1440px] mx-auto w-full px-8 lg:px-16 pt-20">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.2, delay: 0.3 }}
+            className="flex items-center gap-4 mb-8"
+          >
+            <div className="w-8 h-px bg-[#B89D5C]" />
+            <span className="text-[#B89D5C] text-[11px] font-mono tracking-[0.25em] uppercase">Artist Kashi | Fine Art & Academy</span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 60 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="text-[clamp(48px,8vw,100px)] font-extrabold leading-[0.9] tracking-[-0.03em] text-[#F5F5F5] max-w-[900px]"
+            style={{ fontFamily: "'Inter Tight', sans-serif" }}
+          >
+            Paint.<br />
+            <span className="text-[#B89D5C]">Collect.</span><br />
+            Master.
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-8 text-[#8B8B8B] text-lg max-w-md leading-relaxed"
+          >
+            A singular platform for those who take the painted world seriously — original works, masterclass curriculum, and an uncompromising aesthetic.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1.1 }}
+            className="flex flex-col sm:flex-row gap-4 mt-10"
+          >
+            <Link href="/courses">
+              <PrimaryBtn>
+                Begin Learning <ArrowRight size={16} />
+              </PrimaryBtn>
+            </Link>
+            <Link href="/shop">
+              <GhostBtn>
+                View Paintings
+              </GhostBtn>
+            </Link>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 1.6 }}
+            className="flex flex-wrap items-center gap-6 mt-12 sm:mt-16 pt-8 border-t border-[#2A2A2A]"
+          >
+            {[
+              { value: "340+", label: "Original Works" },
+              { value: "12K+", label: "Enrolled Students" },
+              { value: "94", label: "Lesson Hours" },
+              { value: "4.9", label: "Avg. Rating" },
+            ].map((s) => (
+              <div key={s.label} className="flex flex-col">
+                <span className="text-2xl font-bold text-[#F5F5F5]" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{s.value}</span>
+                <span className="text-[11px] font-mono text-[#8B8B8B] tracking-[0.15em] uppercase mt-1">{s.label}</span>
+              </div>
+            ))}
+          </motion.div>
+
+        </div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2 }}
+          className="absolute bottom-20 right-4 lg:bottom-24 lg:right-16 flex flex-col items-center gap-2 scale-75 lg:scale-100 origin-bottom-right"
+        >
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+            className="w-px h-12 bg-linear-to-b from-[#B89D5C] to-transparent"
+          />
+          <span className="text-[10px] font-mono text-[#8B8B8B] tracking-[0.2em] uppercase rotate-90 origin-center mt-4">Scroll</span>
+        </motion.div>
+      </section>
+
+      {/* ── Featured Paintings ── */}
+      <section className="max-w-[1440px] mx-auto px-8 lg:px-16 pt-32">
+        <RevealBlock>
+          <div className="flex items-end justify-between mb-16 border-b border-[#2A2A2A] pb-10">
+            <div>
+              <div className="text-[11px] font-mono text-[#B89D5C] tracking-[0.2em] uppercase mb-4">Original Works</div>
+              <h2 className="text-[clamp(36px,5vw,64px)] font-extrabold leading-tight tracking-[-0.02em] text-[#F5F5F5]" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+                Paintings<br />Available Now
+              </h2>
+            </div>
+            <Link href="/shop" className="hidden md:flex items-center gap-2 text-[#8B8B8B] hover:text-[#B89D5C] transition-colors text-sm font-mono tracking-widest uppercase">
+              View All <ArrowUpRight size={16} />
+            </Link>
+          </div>
+        </RevealBlock>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-[#2A2A2A]">
+          {PAINTINGS.map((p, i) => (
+            <RevealBlock key={p.id} delay={i * 0.1}>
+              <Link
+                href={`/shop/${p.id}`}
+                className="group relative bg-[#0A0A0A] overflow-hidden block w-full text-left"
+              >
+                <div className="relative overflow-hidden aspect-[3/4]">
+                  <img
+                    src={p.image}
+                    alt={p.title}
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent opacity-80" />
+                  {p.sold && (
+                    <div className="absolute top-4 left-4 bg-[#8B8B8B]/20 backdrop-blur-sm text-[#8B8B8B] text-[10px] font-mono tracking-[0.2em] uppercase px-3 py-1.5 border border-[#8B8B8B]/30">
+                      Sold
+                    </div>
+                  )}
+                  <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                    <div className="text-[10px] font-mono text-[#B89D5C] tracking-[0.15em] uppercase mb-1">{p.medium}</div>
+                    <div className="text-[#F5F5F5] font-bold text-base leading-tight">{p.title}</div>
+                    <div className="text-[#8B8B8B] text-sm mt-1">€{p.price.toLocaleString()}</div>
+                  </div>
+                </div>
+              </Link>
+            </RevealBlock>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Featured Courses ── */}
+      <section className="max-w-[1440px] mx-auto px-8 lg:px-16 pt-32">
+        <RevealBlock>
+          <div className="flex items-end justify-between mb-16 border-b border-[#2A2A2A] pb-10">
+            <div>
+              <div className="text-[11px] font-mono text-[#B89D5C] tracking-[0.2em] uppercase mb-4">Masterclass Series</div>
+              <h2 className="text-[clamp(36px,5vw,64px)] font-extrabold leading-tight tracking-[-0.02em] text-[#F5F5F5]" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+                Learn from<br />Master Painters
+              </h2>
+            </div>
+            <Link href="/courses" className="hidden md:flex items-center gap-2 text-[#8B8B8B] hover:text-[#B89D5C] transition-colors text-sm font-mono tracking-widest uppercase">
+              All Courses <ArrowUpRight size={16} />
+            </Link>
+          </div>
+        </RevealBlock>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#2A2A2A]">
+          {COURSES.map((c, i) => (
+            <RevealBlock key={c.id} delay={i * 0.12}>
+              <Link
+                href={`/courses/${c.id}`}
+                className="group bg-[#0A0A0A] block w-full text-left hover:bg-[#111111] transition-colors"
+              >
+                <div className="relative overflow-hidden aspect-video">
+                  <img
+                    src={c.image}
+                    alt={c.title}
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
+                  <div className="absolute top-4 left-4">
+                    <span className="bg-[#0A0A0A]/80 backdrop-blur-sm text-[#B89D5C] text-[10px] font-mono tracking-widest uppercase px-2.5 py-1 border border-[#B89D5C]/30">
+                      {c.level}
+                    </span>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div className="w-14 h-14 bg-[#F5F5F5]/10 backdrop-blur-md border border-[#F5F5F5]/20 flex items-center justify-center">
+                      <Play size={20} fill="#F5F5F5" className="text-[#F5F5F5] ml-1" />
+                    </div>
+                  </div>
+                </div>
+                <div className="p-6 border-t border-[#2A2A2A]">
+                  <div className="text-[11px] font-mono text-[#8B8B8B] tracking-[0.15em] mb-3">{c.instructor}</div>
+                  <h3 className="text-[#F5F5F5] font-bold text-xl leading-tight mb-2" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{c.title}</h3>
+                  <p className="text-[#8B8B8B] text-sm mb-5">{c.subtitle}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4 text-[12px] font-mono text-[#8B8B8B]">
+                      <span className="flex items-center gap-1.5"><BookOpen size={12} />{c.lessons} lessons</span>
+                      <span className="flex items-center gap-1.5"><Clock size={12} />{c.hours}</span>
+                    </div>
+                    <span className="text-[#F5F5F5] font-bold text-lg">€{c.price}</span>
+                  </div>
+                </div>
+              </Link>
+            </RevealBlock>
+          ))}
+        </div>
+      </section>
+
+      {/* ── About Instructor ── */}
+      <section className="max-w-[1440px] mx-auto px-8 lg:px-16 pt-32">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <RevealBlock>
+            <div className="relative aspect-[4/5] overflow-hidden bg-[#111111] border border-[#2A2A2A]">
+              <img 
+                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=1000&fit=crop&auto=format" 
+                alt="Artist Kashi - Professional Painter and Instructor" 
+                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-[#0A0A0A] to-transparent">
+                <div className="text-[#B89D5C] font-mono text-xs tracking-widest uppercase mb-2">Lead Instructor</div>
+                <div className="text-[#F5F5F5] text-2xl font-bold" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Kashi</div>
+              </div>
+            </div>
+          </RevealBlock>
+          <RevealBlock delay={0.2}>
+            <div>
+              <div className="text-[11px] font-mono text-[#B89D5C] tracking-[0.2em] uppercase mb-6">The Artist Behind the Vision</div>
+              <h2 className="text-[clamp(32px,4vw,56px)] font-extrabold tracking-[-0.02em] text-[#F5F5F5] leading-tight mb-8" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+                Mastering the Art of <span className="text-[#B89D5C]">Visual Storytelling</span>
+              </h2>
+              <div className="space-y-6 text-[#8B8B8B] leading-relaxed">
+                <p>
+                  With over two decades of professional experience in contemporary oil painting and classical Artist techniques, <strong>Kashi</strong> has dedicated his life to the pursuit of artistic excellence and the preservation of master-level craftsmanship.
+                </p>
+                <p>
+                  His work is characterized by a profound understanding of light, shadow, and the emotional resonance of color. As the founder of <strong>Artist Kashi Academy</strong>, he bridges the gap between traditional methods and modern expression, empowering thousands of students globally to find their unique voice.
+                </p>
+                <p>
+                  Kashi's philosophy centers on the belief that technical mastery is the foundation of true creative freedom. Through his uncompromising curriculum, he provides the tools necessary for serious artists to transcend mere representation and create works of lasting impact.
+                </p>
+              </div>
+              <div className="mt-10 flex flex-wrap gap-8">
+                {[
+                  { label: "Experience", value: "20+ Yrs" },
+                  { label: "Students", value: "12K+" },
+                  { label: "Exhibitions", value: "45+" },
+                ].map((stat) => (
+                  <div key={stat.label}>
+                    <div className="text-[#F5F5F5] text-xl font-bold">{stat.value}</div>
+                    <div className="text-[#8B8B8B] text-[10px] font-mono tracking-widest uppercase mt-1">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-12">
+                <Link href="/courses">
+                  <GhostBtn className="px-0 hover:pl-4 transition-all">
+                    View Masterclass Curriculum <ArrowRight size={16} className="ml-2" />
+                  </GhostBtn>
+                </Link>
+              </div>
+            </div>
+          </RevealBlock>
+        </div>
+      </section>
+
+      {/* ── Gallery Mosaic ── */}
+      <section className="max-w-[1440px] mx-auto px-8 lg:px-16 pt-32">
+        <RevealBlock>
+          <div className="text-center mb-16">
+            <div className="text-[11px] font-mono text-[#B89D5C] tracking-[0.2em] uppercase mb-4">The Gallery</div>
+            <h2 className="text-[clamp(36px,5vw,64px)] font-extrabold tracking-[-0.02em] text-[#F5F5F5]" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+              Works in the Collection
+            </h2>
+          </div>
+        </RevealBlock>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-px bg-[#2A2A2A]">
+          {[
+            { src: "https://images.unsplash.com/photo-1582721691120-d1db3852893e?w=600&h=700&fit=crop&auto=format", span: "md:row-span-2", aspect: "aspect-[4/5] md:aspect-auto md:h-full" },
+            { src: "https://images.unsplash.com/photo-1612733399020-e2194e3dbfda?w=600&h=350&fit=crop&auto=format", span: "", aspect: "aspect-[4/3]" },
+            { src: "https://images.unsplash.com/photo-1570475754561-4effe71c5084?w=600&h=350&fit=crop&auto=format", span: "", aspect: "aspect-[4/3]" },
+            { src: "https://images.unsplash.com/photo-1556139930-c23fa4a4f934?w=600&h=400&fit=crop&auto=format", span: "", aspect: "aspect-[4/3]" },
+            { src: "https://images.unsplash.com/photo-1541512416146-3cf58d6b27cc?w=600&h=400&fit=crop&auto=format", span: "", aspect: "aspect-[4/3]" },
+          ].map((item, i) => (
+            <RevealBlock key={i} delay={i * 0.08} className={item.span}>
+              <Link
+                href="/shop"
+                className={cn("group relative overflow-hidden block w-full bg-[#111111]", item.aspect)}
+              >
+                <img
+                  src={item.src}
+                  alt={`Gallery work ${i + 1}`}
+                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                />
+                <div className="absolute inset-0 bg-[#0A0A0A]/0 group-hover:bg-[#0A0A0A]/30 transition-colors duration-500 flex items-center justify-center">
+                  <div className="text-[#F5F5F5] text-sm font-mono tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center gap-2">
+                    View <ArrowUpRight size={14} />
+                  </div>
+                </div>
+              </Link>
+            </RevealBlock>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Video CTA ── */}
+      <section className="max-w-[1440px] mx-auto px-8 lg:px-16 pt-32">
+        <RevealBlock>
+          <div className="relative overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1775346098886-72ab6697b331?w=1400&h=600&fit=crop&auto=format"
+              alt="Ornate gallery with paintings"
+              className="w-full aspect-[21/9] object-cover grayscale opacity-40"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A] via-[#0A0A0A]/60 to-[#0A0A0A]/40 flex flex-col items-start justify-center px-12 lg:px-20">
+              <div className="text-[11px] font-mono text-[#B89D5C] tracking-[0.2em] uppercase mb-6">Inside the Studio</div>
+              <h2 className="text-[clamp(28px,4vw,56px)] font-extrabold tracking-[-0.02em] text-[#F5F5F5] max-w-lg leading-tight mb-8" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+                Watch How a Painting Comes to Life
+              </h2>
+              <Link
+                href="/lesson-player"
+                className="group flex items-center gap-4"
+              >
+                <div className="w-16 h-16 bg-[#F5F5F5]/10 backdrop-blur-md border border-[#F5F5F5]/20 flex items-center justify-center group-hover:bg-[#B89D5C]/20 group-hover:border-[#B89D5C]/40 transition-all duration-300">
+                  <Play size={22} fill="#F5F5F5" className="text-[#F5F5F5] ml-1" />
+                </div>
+                <div>
+                  <div className="text-[#F5F5F5] font-semibold">Watch Demo Lesson</div>
+                  <div className="text-[#8B8B8B] text-sm font-mono">12 min preview</div>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </RevealBlock>
+      </section>
+
+      {/* ── Best Sellers ── */}
+      <section className="max-w-[1440px] mx-auto px-8 lg:px-16 pt-32">
+        <RevealBlock>
+          <div className="mb-16 border-b border-[#2A2A2A] pb-10">
+            <div className="text-[11px] font-mono text-[#B89D5C] tracking-[0.2em] uppercase mb-4">Most Collected</div>
+            <h2 className="text-[clamp(36px,5vw,64px)] font-extrabold tracking-[-0.02em] text-[#F5F5F5]" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+              Best Sellers
+            </h2>
+          </div>
+        </RevealBlock>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-[#2A2A2A]">
+          {PAINTINGS.slice(0, 2).map((p, i) => (
+            <RevealBlock key={p.id} delay={i * 0.1}>
+              <Link
+                href={`/shop/${p.id}`}
+                className="group bg-[#0A0A0A] flex gap-6 p-6 w-full text-left hover:bg-[#111111] transition-colors"
+              >
+                <div className="w-24 h-32 shrink-0 overflow-hidden bg-[#171717]">
+                  <img src={p.image} alt={p.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                </div>
+                <div className="flex flex-col justify-between py-1">
+                  <div>
+                    <div className="text-[10px] font-mono text-[#8B8B8B] tracking-[0.15em] uppercase mb-2">{p.medium}</div>
+                    <div className="text-[#F5F5F5] font-bold text-xl leading-tight">{p.title}</div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#B89D5C] font-bold text-xl">€{p.price.toLocaleString()}</span>
+                    <span className="text-[#8B8B8B] text-xs font-mono flex items-center gap-1 group-hover:text-[#F5F5F5] transition-colors">
+                      View <ArrowUpRight size={12} />
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            </RevealBlock>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Testimonials ── */}
+      <section className="pt-32">
+        <div className="max-w-[1440px] mx-auto px-8 lg:px-16">
+          <RevealBlock>
+            <div className="text-center mb-20">
+              <div className="text-[11px] font-mono text-[#B89D5C] tracking-[0.2em] uppercase mb-4">Voices</div>
+              <h2 className="text-[clamp(36px,5vw,64px)] font-extrabold tracking-[-0.02em] text-[#F5F5F5]" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+                What Our Community Says
+              </h2>
+            </div>
+          </RevealBlock>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#2A2A2A]">
+            {TESTIMONIALS.map((t, i) => (
+              <RevealBlock key={t.name} delay={i * 0.12}>
+                <div className="bg-[#0A0A0A] p-10 h-full flex flex-col">
+                  <div className="flex gap-1 mb-8">
+                    {Array.from({ length: t.rating }).map((_, j) => (
+                      <Star key={j} size={12} fill="#B89D5C" className="text-[#B89D5C]" />
+                    ))}
+                  </div>
+                  <p className="text-[#F5F5F5] text-base leading-relaxed flex-1 mb-10 italic">"{t.text}"</p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-[#171717] border border-[#2A2A2A] flex items-center justify-center text-[#B89D5C] text-xs font-bold">
+                      {t.avatar}
+                    </div>
+                    <div>
+                      <div className="text-[#F5F5F5] text-sm font-semibold">{t.name}</div>
+                      <div className="text-[#8B8B8B] text-xs font-mono">{t.role}</div>
+                    </div>
+                  </div>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section className="max-w-[1440px] mx-auto px-8 lg:px-16 pt-32">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+          <RevealBlock className="lg:col-span-4">
+            <div className="text-[11px] font-mono text-[#B89D5C] tracking-[0.2em] uppercase mb-4">Questions</div>
+            <h2 className="text-[clamp(32px,4vw,56px)] font-extrabold tracking-[-0.02em] text-[#F5F5F5] leading-tight" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+              Frequently Asked
+            </h2>
+            <GoldDivider />
+            <p className="text-[#8B8B8B] leading-relaxed text-sm">
+              Everything you need to know about collecting original works and enrolling in our masterclass curriculum.
+            </p>
+          </RevealBlock>
+          <div className="lg:col-span-8">
+            {FAQ_ITEMS.map((item, i) => (
+              <RevealBlock key={i} delay={i * 0.06}>
+                <div className="border-b border-[#2A2A2A]">
+                  <button
+                    onClick={() => setFaqOpen(faqOpen === i ? null : i)}
+                    className="w-full flex items-center justify-between py-6 text-left group"
+                  >
+                    <span className="text-[#F5F5F5] font-semibold text-base pr-8 group-hover:text-[#B89D5C] transition-colors">{item.q}</span>
+                    <div className="shrink-0 w-6 h-6 border border-[#2A2A2A] flex items-center justify-center">
+                      {faqOpen === i ? <Minus size={12} className="text-[#B89D5C]" /> : <Plus size={12} className="text-[#8B8B8B]" />}
+                    </div>
+                  </button>
+                  <AnimatePresence>
+                    {faqOpen === i && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                        className="overflow-hidden"
+                      >
+                        <p className="text-[#8B8B8B] text-sm leading-relaxed pb-6">{item.a}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </RevealBlock>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA Banner ── */}
+      <section className="max-w-[1440px] mx-auto px-8 lg:px-16 pt-32">
+        <RevealBlock>
+          <div className="bg-[#111111] border border-[#2A2A2A] p-16 text-center relative overflow-hidden">
+            <div className="absolute inset-0 opacity-5">
+              <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_39px,#B89D5C_39px,#B89D5C_40px),repeating-linear-gradient(90deg,transparent,transparent_39px,#B89D5C_39px,#B89D5C_40px)]" />
+            </div>
+            <div className="relative z-10">
+              <div className="text-[11px] font-mono text-[#B89D5C] tracking-[0.25em] uppercase mb-6">Begin Your Journey</div>
+              <h2 className="text-[clamp(32px,4vw,64px)] font-extrabold tracking-[-0.02em] text-[#F5F5F5] mb-6" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+                The Canvas<br />Awaits You
+              </h2>
+              <p className="text-[#8B8B8B] max-w-md mx-auto mb-10 text-sm leading-relaxed">
+                Join a community of serious painters and collectors who have made Artist Kashi their studio, gallery, and academy.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link href="/courses">
+                  <PrimaryBtn>
+                    Explore Courses <ArrowRight size={16} />
+                  </PrimaryBtn>
+                </Link>
+                <Link href="/shop">
+                  <GhostBtn>
+                    Browse Originals
+                  </GhostBtn>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </RevealBlock>
+      </section>
     </main>
   );
 }

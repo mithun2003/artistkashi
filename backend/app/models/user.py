@@ -7,15 +7,16 @@ from app.models.base import Base
 
 
 class Role(str, enum.Enum):
-    student = "student"
-    instructor = "instructor"
+    user = "user"
     admin = "admin"
-    vendor = "vendor"
 
+
+from sqlalchemy.orm import relationship
 
 class User(SQLAlchemyBaseUserTableUUID, Base):
     # Additional user profile fields
     full_name = Column(String(length=255), nullable=True)
     phone = Column(String(length=32), nullable=True)
-    role = Column(Enum(Role), nullable=False, server_default=Role.student.value)
+    role = Column(Enum(Role), nullable=False, server_default=Role.user.value)
     # Note: addresses are a separate table linked by foreign key (see Address model)
+    addresses = relationship("Address", back_populates="user", lazy="selectin", cascade="all, delete-orphan")

@@ -1,10 +1,5 @@
 packages:
-  - "."
-onlyBuiltDependencies:
-  - sharp
-  - unrs-resolver
-minimumReleaseAge: 0
-minimumReleaseAgeStrict: false
+  - '.'
 allowBuilds:
   sharp: true
   unrs-resolver: true

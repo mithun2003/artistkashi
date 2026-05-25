@@ -6,8 +6,8 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from threading import Timer
 
-# Updated regex to include main.py, schemas package, and all .py files in app/routes
-WATCHER_REGEX_PATTERN = re.compile(r"(main\.py|schemas/.*\.py|routes/.*\.py)$")
+# Updated regex to include main.py, schemas package, and all .py files in app/api
+WATCHER_REGEX_PATTERN = re.compile(r"(main\.py|schemas/.*\.py|api/.*\.py)$")
 APP_PATH = "app"
 
 
@@ -37,8 +37,9 @@ class MyHandler(FileSystemEventHandler):
     def run_mypy_checks(self):
         """Run mypy type checks and print output."""
         print("Running mypy type checks...")
+        cmd = ["mypy", "app"] if os.path.exists("/.dockerenv") else ["uv", "run", "mypy", "app"]
         result = subprocess.run(
-            ["uv", "run", "mypy", "app"],
+            cmd,
             capture_output=True,
             text=True,
             check=False,
@@ -55,14 +56,13 @@ class MyHandler(FileSystemEventHandler):
         """Run the OpenAPI schema generation command."""
         print("Proceeding with OpenAPI schema generation...")
         try:
+            cmd = (
+                ["python", "-m", "commands.generate_openapi_schema"]
+                if os.path.exists("/.dockerenv")
+                else ["uv", "run", "python", "-m", "commands.generate_openapi_schema"]
+            )
             subprocess.run(
-                [
-                    "uv",
-                    "run",
-                    "python",
-                    "-m",
-                    "commands.generate_openapi_schema",
-                ],
+                cmd,
                 check=True,
             )
             print("OpenAPI schema generation completed successfully.")
