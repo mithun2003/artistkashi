@@ -41,8 +41,29 @@ __all__ = [
 
 async def create_db_and_tables():
     """Create all database tables."""
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+    except TypeError as exc:
+        # Likely a driver/SQLAlchemy asyncpg version mismatch. Log versions for debugging.
+        try:
+            import asyncpg
+            asyncpg_ver = asyncpg.__version__
+        except Exception:
+            asyncpg_ver = "unknown"
+        try:
+            import sqlalchemy
+            sa_ver = sqlalchemy.__version__
+        except Exception:
+            sa_ver = "unknown"
+        import logging
+        logging.getLogger("app").error(
+            "Database connection TypeError: %s. asyncpg=%s sqlalchemy=%s",
+            exc,
+            asyncpg_ver,
+            sa_ver,
+        )
+        raise
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:

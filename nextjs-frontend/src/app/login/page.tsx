@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+export const dynamic = 'force-dynamic';
+
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import { RevealBlock } from "@/components/ui/misc";
 import { PrimaryBtn } from "@/components/ui/buttons";
@@ -17,8 +19,11 @@ import { toast } from "sonner";
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const returnTo = getSafeReturnTo(searchParams.get("returnTo"));
+  const [returnTo, setReturnTo] = useState<string | null>(null);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setReturnTo(getSafeReturnTo(params.get("returnTo")));
+  }, []);
   const { login } = useAuth();
   const {
     register,

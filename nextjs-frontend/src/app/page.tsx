@@ -224,16 +224,12 @@ export default function HomePage() {
       </section>
 
       {/* ── About Instructor ── */}
-      <section className="max-w-[1440px] mx-auto px-8 lg:px-16 pt-32">
+      <section className="max-w-360 mx-auto px-8 lg:px-16 pt-32">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <RevealBlock>
-            <div className="relative aspect-[4/5] overflow-hidden bg-[#111111] border border-[#2A2A2A]">
-              <img 
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=1000&fit=crop&auto=format" 
-                alt="Artist Kashi - Professional Painter and Instructor" 
-                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
-              />
-              <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-[#0A0A0A] to-transparent">
+            <div className="relative aspect-4/5 overflow-hidden bg-[#111111] border border-[#2A2A2A]">
+              <img src="/images/ak.jpeg" alt="Artist Kashi - Professional Painter and Instructor" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
+              <div className="absolute bottom-0 left-0 right-0 p-8 bg-linear-to-t from-[#0A0A0A] to-transparent">
                 <div className="text-[#B89D5C] font-mono text-xs tracking-widest uppercase mb-2">Lead Instructor</div>
                 <div className="text-[#F5F5F5] text-2xl font-bold" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Kashi</div>
               </div>
