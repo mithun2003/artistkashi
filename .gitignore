@@ -16,6 +16,8 @@ eggs/
 .eggs/
 lib/
 lib64/
+!nextjs-frontend/src/lib/
+!nextjs-frontend/src/lib/**
 parts/
 sdist/
 var/
@@ -159,3 +161,4 @@ backend/.venv
 nextjs-frontend/node_modules
 nextjs-frontend/.next
 local-shared-data/
+.vercel
