@@ -162,3 +162,10 @@ nextjs-frontend/node_modules
 nextjs-frontend/.next
 local-shared-data/
 .vercel
+
+# Ignore all env files
+.env
+.env.*
+
+# But keep example files
+!.env.example
