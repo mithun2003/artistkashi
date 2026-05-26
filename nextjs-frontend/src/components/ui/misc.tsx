@@ -21,12 +21,12 @@ export function RevealBlock({ children, delay = 0, className = "" }: { children:
 }
 
 export function GoldDivider({ className }: { className?: string }) {
-  return <div className={cn("w-12 h-px bg-[#B89D5C] my-6", className)} />;
+  return <div className={cn("w-12 h-px bg-gold my-6", className)} />;
 }
 
 export function Tag({ label }: { label: string }) {
   return (
-    <span className="text-[11px] tracking-[0.15em] uppercase font-mono text-[#8B8B8B] border border-[#2A2A2A] px-3 py-1">
+    <span className="text-label tracking-[0.15em] uppercase font-mono text-text-muted border border-border px-3 py-1">
       {label}
     </span>
   );

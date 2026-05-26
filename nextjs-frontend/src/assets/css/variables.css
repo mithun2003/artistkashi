@@ -1,0 +1,54 @@
+@theme {
+  /* Colors - Cinematic Luxury Palette */
+  --color-gold: #b89d5c;
+  --color-dark: #0a0a0a;
+  --color-dark-soft: #0d0d0d;
+  --color-muted: #171717;
+  --color-muted-light: #131313;
+  --color-border: #2a2a2a;
+  --color-border-soft: #1a1a1a;
+  --color-text-main: #f5f5f5;
+  --color-text-muted: #8b8b8b;
+
+  /* Map standard tailwind colors to our palette */
+  --color-background: var(--color-dark);
+  --color-foreground: var(--color-text-main);
+  --color-primary: var(--color-gold);
+  --color-secondary: var(--color-muted);
+  
+  /* Fonts */
+  --font-inter-tight: "Inter Tight", sans-serif;
+  --font-dm-mono: "DM Mono", monospace;
+
+  /* Spacing */
+  --spacing-360: 90rem; /* 1440px */
+
+  /* Text Sizes */
+  --text-2xs: 10px;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 30px;
+  --text-4xl: 36px;
+  --text-5xl: 48px;
+
+  /* Semantic Text Sizes */
+  --text-label: 11px;
+  
+  /* Display sizes (Responsive clamps) */
+  --text-display-huge: clamp(48px, 7vw, 96px);
+  --text-display-lg: clamp(32px, 5vw, 72px);
+  --text-display-md: clamp(24px, 3vw, 40px);
+  --text-display-sm: clamp(20px, 2vw, 32px);
+
+  /* Semantic Heading Utilities */
+  --text-h1: var(--text-display-huge);
+  --text-h2: var(--text-display-lg);
+  --text-h3: var(--text-display-md);
+  --text-h4: var(--text-display-sm);
+  --text-h5: var(--text-2xl);
+  --text-h6: var(--text-xl);
+}

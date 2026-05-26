@@ -1,50 +1,35 @@
 @import "tailwindcss";
-
-@theme {
-  --font-inter-tight: "Inter Tight", sans-serif;
-  --font-dm-mono: "DM Mono", monospace;
-
-  --color-background: #0a0a0a;
-  --color-foreground: #f5f5f5;
-
-  --color-card: #0d0d0d;
-  --color-card-foreground: #f5f5f5;
-
-  --color-popover: #0a0a0a;
-  --color-popover-foreground: #f5f5f5;
-
-  --color-primary: #b89d5c;
-  --color-primary-foreground: #0a0a0a;
-
-  --color-secondary: #171717;
-  --color-secondary-foreground: #f5f5f5;
-
-  --color-muted: #171717;
-  --color-muted-foreground: #8b8b8b;
-
-  --color-accent: #b89d5c;
-  --color-accent-foreground: #f5f5f5;
-
-  --color-destructive: #7f1d1d;
-  --color-destructive-foreground: #f5f5f5;
-
-  --color-border: #2a2a2a;
-  --color-input: #2a2a2a;
-  --color-ring: #b89d5c;
-
-  --radius-lg: 0.5rem;
-  --radius-md: calc(0.5rem - 2px);
-  --radius-sm: calc(0.5rem - 4px);
-}
+@import "../assets/css/variables.css";
 
 @layer base {
   * {
     @apply border-border;
   }
+  
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased text-base;
     font-family: var(--font-inter-tight);
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1 {
+    @apply text-h1 font-extrabold tracking-tight;
+    font-family: var(--font-inter-tight);
+  }
+
+  h2 {
+    @apply text-h2 font-bold;
+    font-family: var(--font-inter-tight);
+  }
+
+  h3 {
+    @apply text-h3 font-bold;
+    font-family: var(--font-inter-tight);
+  }
+
+  h4 {
+    @apply text-h4 font-bold;
+    font-family: var(--font-inter-tight);
   }
 
   input:-webkit-autofill,
@@ -58,10 +43,6 @@
     transition: background-color 9999s ease-in-out 0s;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-inter-tight);
-    @apply tracking-tight;
-  }
   .font-mono {
     font-family: var(--font-dm-mono);
   }
@@ -84,7 +65,7 @@
 
 @layer utilities {
   .luxury-gradient {
-    background: linear-gradient(180deg, rgba(10, 10, 10, 0) 0%, rgba(10, 10, 10, 0.8) 100%);
+    @apply bg-linear-to-b from-transparent to-dark/80;
   }
   .gold-shimmer {
     background: linear-gradient(90deg, transparent, rgba(184, 157, 92, 0.1), transparent);
@@ -103,12 +84,11 @@
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  @apply bg-dark;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a2a2a;
-  border-radius: 10px;
+  @apply bg-border rounded-full;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #b89d5c;
+  @apply bg-gold;
 }

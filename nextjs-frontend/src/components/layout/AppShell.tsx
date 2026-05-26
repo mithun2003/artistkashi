@@ -26,11 +26,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         position="bottom-right"
         toastOptions={{
           style: {
-            background: "#111111",
-            border: "1px solid #2A2A2A",
-            color: "#F5F5F5",
+            background: "var(--color-muted-light)",
+            border: "1px solid var(--color-border)",
+            color: "var(--color-text-main)",
             borderRadius: "0",
-            fontFamily: "'Inter Tight', sans-serif",
           },
         }}
       />

@@ -13,7 +13,7 @@ export default function Icon() {
       <div
         style={{
           alignItems: "center",
-          background: "#0A0A0A",
+          background: "#0a0a0a",
           display: "flex",
           height: "100%",
           justifyContent: "center",
@@ -24,7 +24,7 @@ export default function Icon() {
           style={{
             alignItems: "center",
             background: "#0F0F0F",
-            border: "1px solid #2A2A2A",
+            border: "1px solid #2a2a2a",
             borderRadius: 10,
             boxSizing: "border-box",
             display: "flex",
@@ -37,8 +37,8 @@ export default function Icon() {
             width: 28,
           }}
         >
-          <span style={{ color: "#F5F5F5" }}>A</span>
-          <span style={{ color: "#B89D5C" }}>K</span>
+          <span style={{ color: "#f5f5f5" }}>A</span>
+          <span style={{ color: "#b89d5c" }}>K</span>
         </div>
       </div>
     ),

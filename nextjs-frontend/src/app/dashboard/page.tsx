@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { 
   LayoutDashboard, BookOpen, Package, Settings, 
   LogOut, Clock, Check, ShoppingBag, ArrowUpRight,
@@ -48,8 +49,8 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A]">
-        <div className="text-[#B89D5C] font-mono animate-pulse">AUTHENTICATING...</div>
+      <div className="min-h-screen flex items-center justify-center bg-dark">
+        <div className="text-gold font-mono animate-pulse">AUTHENTICATING...</div>
       </div>
     );
   }
@@ -58,29 +59,29 @@ export default function DashboardPage() {
 
   return (
     <main className="pt-20 min-h-screen">
-      <div className="max-w-[1440px] mx-auto px-8 lg:px-16 py-12">
+      <div className="max-w-360 mx-auto px-8 lg:px-16 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-3">
-            <div className="border border-[#2A2A2A] bg-[#111111] p-6 mb-6">
-              <div className="w-14 h-14 bg-[#171717] border border-[#2A2A2A] flex items-center justify-center text-[#B89D5C] font-bold text-xl mb-4" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+            <div className="border border-border bg-muted-light p-6 mb-6">
+              <div className="w-14 h-14 bg-muted border border-border flex items-center justify-center text-gold font-bold text-xl mb-4">
                 {user.name.substring(0, 2).toUpperCase()}
               </div>
-              <div className="text-[#F5F5F5] font-bold text-lg" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{user.name}</div>
-              <div className="text-[#8B8B8B] text-sm font-mono">{user.email}</div>
+              <div className="text-text-main font-bold text-lg">{user.name}</div>
+              <div className="text-text-muted text-sm font-mono">{user.email}</div>
               <div className="mt-4 flex items-center gap-2">
                 <span className={cn(
-                  "border text-[10px] font-mono tracking-widest uppercase px-2.5 py-1",
+                  "border text-tiny font-mono tracking-widest uppercase px-2.5 py-1",
                   user.role === "admin" 
                     ? "bg-red-500/10 border-red-500/30 text-red-500" 
-                    : "bg-[#B89D5C]/10 border-[#B89D5C]/30 text-[#B89D5C]"
+                    : "bg-gold/10 border-gold/30 text-gold"
                 )}>
                   {getRoleLabel(user)}
                 </span>
               </div>
             </div>
 
-            <div className="border border-[#2A2A2A] bg-[#111111] overflow-hidden">
+            <div className="border border-border bg-muted-light overflow-hidden">
               {[
                 { id: "overview", label: "Overview", icon: LayoutDashboard },
                 { id: "courses", label: "My Courses", icon: BookOpen },
@@ -91,18 +92,18 @@ export default function DashboardPage() {
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
                   className={cn(
-                    "w-full flex items-center gap-4 px-6 py-4 text-sm text-left border-b border-[#2A2A2A] last:border-b-0 transition-colors",
-                    activeTab === item.id ? "bg-[#1A1A1A] text-[#F5F5F5]" : "text-[#8B8B8B] hover:text-[#F5F5F5] hover:bg-[#171717]"
+                    "w-full flex items-center gap-4 px-6 py-4 text-sm text-left border-b border-border last:border-b-0 transition-colors",
+                    activeTab === item.id ? "bg-border-soft text-text-main" : "text-text-muted hover:text-text-main hover:bg-muted"
                   )}
                 >
-                  <item.icon size={16} className={activeTab === item.id ? "text-[#B89D5C]" : ""} />
+                  <item.icon size={16} className={activeTab === item.id ? "text-gold" : ""} />
                   {item.label}
                 </button>
               ))}
               {user.role === "admin" && (
                 <Link
                   href="/admin"
-                  className="w-full flex items-center gap-4 px-6 py-4 text-sm text-[#8B8B8B] hover:text-red-500 hover:bg-[#171717] transition-colors border-t border-[#2A2A2A]"
+                  className="w-full flex items-center gap-4 px-6 py-4 text-sm text-text-muted hover:text-red-500 hover:bg-muted transition-colors border-t border-border"
                 >
                   <Settings size={16} /> Instructor Panel
                 </Link>
@@ -117,7 +118,7 @@ export default function DashboardPage() {
                     router.push("/");
                   }
                 }}
-                className="w-full flex items-center gap-4 px-6 py-4 text-sm text-[#8B8B8B] hover:text-[#F5F5F5] transition-colors"
+                className="w-full flex items-center gap-4 px-6 py-4 text-sm text-text-muted hover:text-text-main transition-colors"
               >
                 <LogOut size={16} /> Sign Out
               </button>
@@ -129,53 +130,58 @@ export default function DashboardPage() {
             {activeTab === "overview" && (
               <div>
                 <div className="mb-8">
-                  <div className="text-[11px] font-mono text-[#B89D5C] tracking-widest uppercase mb-2">Student Portal</div>
-                  <h1 className="text-[clamp(28px,3vw,48px)] font-extrabold tracking-tight text-[#F5F5F5]" style={{ fontFamily: "'Inter Tight', sans-serif" }}>
+                  <div className="text-label font-mono text-gold tracking-widest uppercase mb-2">Student Portal</div>
+                  <h1 className="text-h3 font-extrabold tracking-tight text-text-main">
                     {greetingLabel}, Amara.
                   </h1>
                 </div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[#2A2A2A] mb-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border mb-8">
                   {[
                     { label: "Enrolled Courses", value: "3", icon: BookOpen },
                     { label: "Hours Watched", value: "47h", icon: Clock },
                     { label: "Lessons Done", value: "84", icon: Check },
                     { label: "Art Purchases", value: "2", icon: ShoppingBag },
                   ].map((s) => (
-                    <div key={s.label} className="bg-[#111111] p-6">
-                      <s.icon size={18} className="text-[#B89D5C] mb-3" />
-                      <div className="text-[#F5F5F5] font-extrabold text-3xl" style={{ fontFamily: "'Inter Tight', sans-serif" }}>{s.value}</div>
-                      <div className="text-[#8B8B8B] text-[11px] font-mono mt-1 uppercase tracking-widest">{s.label}</div>
+                    <div key={s.label} className="bg-muted-light p-6">
+                      <s.icon size={18} className="text-gold mb-3" />
+                      <div className="text-text-main font-extrabold text-3xl">{s.value}</div>
+                      <div className="text-text-muted text-label font-mono mt-1 uppercase tracking-widest">{s.label}</div>
                     </div>
                   ))}
                 </div>
 
                 {/* Continue Watching */}
-                <div className="border border-[#2A2A2A] bg-[#111111] mb-6">
-                  <div className="px-8 py-6 border-b border-[#2A2A2A] flex items-center justify-between">
-                    <h2 className="text-[#F5F5F5] font-bold text-xl" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Continue Watching</h2>
-                    <Link href="/lesson-player" className="text-[#B89D5C] text-xs font-mono tracking-widest uppercase hover:text-[#F5F5F5] transition-colors flex items-center gap-1">
+                <div className="border border-border bg-muted-light mb-6">
+                  <div className="px-8 py-6 border-b border-border flex items-center justify-between">
+                    <h2 className="text-text-main font-bold text-xl">Continue Watching</h2>
+                    <Link href="/lesson-player" className="text-gold text-xs font-mono tracking-widest uppercase hover:text-text-main transition-colors flex items-center gap-1">
                       Open <ArrowUpRight size={12} />
                     </Link>
                   </div>
                   <Link
                     href="/lesson-player"
-                    className="group w-full flex items-center gap-6 p-6 hover:bg-[#171717] transition-colors"
+                    className="group w-full flex items-center gap-6 p-6 hover:bg-muted transition-colors"
                   >
-                    <div className="w-28 h-16 shrink-0 overflow-hidden relative bg-[#0A0A0A]">
-                      <img src={COURSES[0].image} alt={COURSES[0].title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                    <div className="w-28 h-16 shrink-0 overflow-hidden relative bg-dark">
+                      <Image
+                        src={COURSES[0].image}
+                        alt={COURSES[0].title}
+                        fill
+                        className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                      />
                       <div className="absolute inset-0 flex items-center justify-center">
                         <Play size={18} fill="white" className="text-white ml-0.5 drop-shadow-md" />
                       </div>
                     </div>
                     <div className="flex-1 text-left">
-                      <div className="text-[10px] font-mono text-[#8B8B8B] uppercase tracking-widest mb-1">Lesson 3 of 42</div>
-                      <div className="text-[#F5F5F5] font-semibold mb-2">Color theory for oil painters</div>
-                      <div className="w-full h-1 bg-[#2A2A2A]">
-                        <div className="h-full bg-[#B89D5C]" style={{ width: "34%" }} />
+                      <div className="text-tiny font-mono text-text-muted uppercase tracking-widest mb-1">Lesson 3 of 42</div>
+                      <div className="text-text-main font-semibold mb-2">Color theory for oil painters</div>
+                      <div className="w-full h-1 bg-border">
+                        <div className="h-full bg-gold w-[34%]" />
                       </div>
-                      <div className="text-[11px] font-mono text-[#8B8B8B] mt-1">34% complete · 14 min remaining</div>
+                      <div className="text-label font-mono text-text-muted mt-1">34% complete · 14 min remaining</div>
                     </div>
                   </Link>
                 </div>
@@ -184,28 +190,33 @@ export default function DashboardPage() {
 
             {activeTab === "courses" && (
               <div>
-                <h2 className="text-[#F5F5F5] font-bold text-3xl mb-8" style={{ fontFamily: "'Inter Tight', sans-serif" }}>My Courses</h2>
-                <div className="space-y-px bg-[#2A2A2A]">
+                <h2 className="text-text-main font-bold text-3xl mb-8">My Courses</h2>
+                <div className="space-y-px bg-border">
                   {COURSES.map((c) => (
                     <Link
                       key={c.id}
                       href="/lesson-player"
-                      className="group w-full bg-[#111111] flex items-center gap-6 p-6 text-left hover:bg-[#171717] transition-colors"
+                      className="group w-full bg-muted-light flex items-center gap-6 p-6 text-left hover:bg-muted transition-colors"
                     >
-                      <div className="w-20 h-14 shrink-0 overflow-hidden bg-[#0A0A0A]">
-                        <img src={c.image} alt={c.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                      <div className="w-20 h-14 shrink-0 overflow-hidden relative bg-dark">
+                        <Image
+                          src={c.image}
+                          alt={c.title}
+                          fill
+                          className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-[#F5F5F5] font-semibold truncate">{c.title}</div>
-                        <div className="text-[#8B8B8B] text-xs font-mono mt-1">{c.instructor}</div>
+                        <div className="text-text-main font-semibold truncate">{c.title}</div>
+                        <div className="text-text-muted text-xs font-mono mt-1">{c.instructor}</div>
                         <div className="flex items-center gap-3 mt-2">
-                          <div className="w-32 h-1 bg-[#2A2A2A]">
-                            <div className="h-full bg-[#B89D5C]" style={{ width: `${Math.random() * 60 + 10}%` }} />
+                          <div className="w-32 h-1 bg-border">
+                            <div className="h-full bg-gold w-[45%]" />
                           </div>
-                          <span className="text-[10px] font-mono text-[#8B8B8B]">{Math.floor(Math.random() * 40 + 10)}%</span>
+                          <span className="text-tiny font-mono text-text-muted">45%</span>
                         </div>
                       </div>
-                      <ChevronRight size={16} className="text-[#8B8B8B] group-hover:text-[#F5F5F5] transition-colors shrink-0" />
+                      <ChevronRight size={16} className="text-text-muted group-hover:text-text-main transition-colors shrink-0" />
                     </Link>
                   ))}
                 </div>
@@ -214,30 +225,30 @@ export default function DashboardPage() {
 
             {activeTab === "orders" && (
               <div>
-                <h2 className="text-[#F5F5F5] font-bold text-3xl mb-8" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Purchase History</h2>
-                <div className="border border-[#2A2A2A] overflow-hidden">
+                <h2 className="text-text-main font-bold text-3xl mb-8">Purchase History</h2>
+                <div className="border border-border overflow-hidden">
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="border-b border-[#2A2A2A]">
+                        <tr className="border-b border-border">
                           {["Item", "Type", "Date", "Amount", "Status"].map((h) => (
-                            <th key={h} className="text-left px-6 py-4 text-[11px] font-mono text-[#8B8B8B] tracking-widest uppercase bg-[#0D0D0D]">{h}</th>
+                            <th key={h} className="text-left px-6 py-4 text-label font-mono text-text-muted tracking-widest uppercase bg-dark-soft">{h}</th>
                           ))}
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-[#2A2A2A]">
+                      <tbody className="divide-y divide-border">
                         {[
                           { item: "Oil Painting Fundamentals", type: "Course", date: "12 Apr 2026", amount: "€280", status: "Active" },
                           { item: "Solitude in Ochre", type: "Painting", date: "03 Mar 2026", amount: "€4,800", status: "Shipped" },
                           { item: "Abstract Expression Workshop", type: "Course", date: "18 Jan 2026", amount: "€195", status: "Active" },
                         ].map((r, i) => (
-                          <tr key={i} className="hover:bg-[#111111] transition-colors">
-                            <td className="px-6 py-4 text-[#F5F5F5]">{r.item}</td>
-                            <td className="px-6 py-4 text-[#8B8B8B] font-mono text-xs">{r.type}</td>
-                            <td className="px-6 py-4 text-[#8B8B8B] font-mono text-xs">{r.date}</td>
-                            <td className="px-6 py-4 text-[#F5F5F5] font-semibold">{r.amount}</td>
+                          <tr key={i} className="hover:bg-muted-light transition-colors">
+                            <td className="px-6 py-4 text-text-main">{r.item}</td>
+                            <td className="px-6 py-4 text-text-muted font-mono text-xs">{r.type}</td>
+                            <td className="px-6 py-4 text-text-muted font-mono text-xs">{r.date}</td>
+                            <td className="px-6 py-4 text-text-main font-semibold">{r.amount}</td>
                             <td className="px-6 py-4">
-                              <span className={cn("text-[10px] font-mono tracking-widest uppercase px-2.5 py-1", r.status === "Active" ? "bg-[#B89D5C]/10 text-[#B89D5C] border border-[#B89D5C]/30" : "bg-[#8B8B8B]/10 text-[#8B8B8B] border border-[#8B8B8B]/20")}>
+                              <span className={cn("text-tiny font-mono tracking-widest uppercase px-2.5 py-1", r.status === "Active" ? "bg-gold/10 text-gold border border-gold/30" : "bg-text-muted/10 text-text-muted border border-text-muted/20")}>
                                 {r.status}
                               </span>
                             </td>
@@ -252,19 +263,19 @@ export default function DashboardPage() {
 
             {activeTab === "settings" && (
               <div>
-                <h2 className="text-[#F5F5F5] font-bold text-3xl mb-8" style={{ fontFamily: "'Inter Tight', sans-serif" }}>Profile Settings</h2>
-                <div className="border border-[#2A2A2A] bg-[#111111] divide-y divide-[#2A2A2A]">
+                <h2 className="text-text-main font-bold text-3xl mb-8">Profile Settings</h2>
+                <div className="border border-border bg-muted-light divide-y divide-border">
                   {[
                     { label: "Full Name", value: "Amara Mensah", type: "text" },
                     { label: "Email", value: "amara@studio.com", type: "email" },
                     { label: "Location", value: "Lagos, Nigeria", type: "text" },
                   ].map((f) => (
                     <div key={f.label} className="px-8 py-6 flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
-                      <label className="text-[11px] font-mono text-[#8B8B8B] tracking-widest uppercase md:w-32 shrink-0">{f.label}</label>
+                      <label className="text-label font-mono text-text-muted tracking-widest uppercase md:w-32 shrink-0">{f.label}</label>
                       <input
                         type={f.type}
                         defaultValue={f.value}
-                        className="flex-1 bg-transparent text-[#F5F5F5] text-sm outline-none border-b border-[#2A2A2A] focus:border-[#B89D5C] pb-1 transition-colors"
+                        className="flex-1 bg-transparent text-text-main text-sm outline-none border-b border-border focus:border-gold pb-1 transition-colors"
                       />
                     </div>
                   ))}

@@ -1,14 +1,24 @@
 services:
   backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
     env_file:
       - ./backend/.env.development
+
+    ports:
+      - "8000:8000"
+
+    networks:
+      - my_network
 
     depends_on:
       db:
         condition: service_healthy
 
       redis:
-        condition: service_started
+        condition: service_healthy
 
   db:
     image: postgres:17
@@ -16,7 +26,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydatabase
+      POSTGRES_DB: artistkashi
 
     ports:
       - "5432:5432"
@@ -28,11 +38,23 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d mydatabase" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d artistkashi" ]
       interval: 5s
       timeout: 5s
       retries: 10
       start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - my_network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   db_test:
     image: postgres:17
