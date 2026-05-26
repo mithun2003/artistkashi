@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-store";
 import { AppShell } from "@/components/layout/AppShell";
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata: Metadata = {
   title: "Artist Kashi | Paint. Collect. Master.",
@@ -24,6 +26,8 @@ export default function RootLayout({
         <AuthProvider>
           <AppShell>{children}</AppShell>
         </AuthProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
