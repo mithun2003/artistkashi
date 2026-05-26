@@ -1,14 +1,25 @@
 #!/bin/bash
 
-if [ -f /.dockerenv ]; then
-    echo "Running in Docker"
-    uv sync
-    fastapi dev app/main.py --host 0.0.0.0 --port 8000 --reload &
-    python watcher.py
+if [ "$ENVIRONMENT" = "production" ]; then
+    echo "Running in production"
+
+    alembic upgrade head
+
+    uvicorn app.main:app \
+        --host 0.0.0.0 \
+        --port 8000
+
 else
-    echo "Running locally with uv"
-    uv run fastapi dev app/main.py --host 0.0.0.0 --port 8000 --reload &
-    uv run python watcher.py
+    echo "Running in development"
+
+    uv sync
+
+    fastapi dev app/main.py \
+        --host 0.0.0.0 \
+        --port 8000 \
+        --reload &
+    
+    python watcher.py
 fi
 
 wait
