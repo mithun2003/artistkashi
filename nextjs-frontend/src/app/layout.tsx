@@ -1,4 +1,10 @@
+import React from "react";
 import type { Metadata } from "next";
+import { Inter_Tight, DM_Mono } from "next/font/google";
+
+const inter = Inter_Tight({ subsets: ["latin"], variable: "--font-inter-tight", weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"] });
+const dmMono = DM_Mono({ subsets: ["latin"], variable: "--font-dm-mono", weight: ["300", "400", "500"] });
+
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-store";
 import { AppShell } from "@/components/layout/AppShell";
@@ -38,11 +44,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${dmMono.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+        <link rel="preload" as="image" href="https://images.unsplash.com/photo-1774126512715-5a8858c579c9?w=1800&h=1100&fit=crop&auto=format" />
       </head>
       <body className="antialiased bg-dark">
         <JsonLd

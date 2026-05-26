@@ -49,6 +49,7 @@ export default function LessonPlayerPage() {
               src="https://images.unsplash.com/photo-1775346098886-72ab6697b331?w=1200&h=680&fit=crop&auto=format"
               alt="Lesson video"
               fill
+              sizes="100vw"
               className="object-contain grayscale opacity-60"
             />
             {/* Watermark */}

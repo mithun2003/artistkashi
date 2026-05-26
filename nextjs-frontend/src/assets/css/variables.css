@@ -16,9 +16,8 @@
   --color-primary: var(--color-gold);
   --color-secondary: var(--color-muted);
   
-  /* Fonts */
-  --font-inter-tight: "Inter Tight", sans-serif;
-  --font-dm-mono: "DM Mono", monospace;
+  /* Fonts - controlled by next/font/google when available; fallbacks used in CSS where necessary */
+  /* DO NOT redefine --font-inter-tight or --font-dm-mono here to allow next/font to inject performant font-face and variable values. */
 
   /* Spacing */
   --spacing-360: 90rem; /* 1440px */

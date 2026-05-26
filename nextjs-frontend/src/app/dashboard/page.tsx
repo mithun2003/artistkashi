@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { 
-  LayoutDashboard, BookOpen, Package, Settings, 
+import {
+  LayoutDashboard, BookOpen, Package, Settings,
   LogOut, Clock, Check, ShoppingBag, ArrowUpRight,
   ChevronRight, Play
 } from "lucide-react";
@@ -72,8 +72,8 @@ export default function DashboardPage() {
               <div className="mt-4 flex items-center gap-2">
                 <span className={cn(
                   "border text-tiny font-mono tracking-widest uppercase px-2.5 py-1",
-                  user.role === "admin" 
-                    ? "bg-red-500/10 border-red-500/30 text-red-500" 
+                  user.role === "admin"
+                    ? "bg-red-500/10 border-red-500/30 text-red-500"
                     : "bg-gold/10 border-gold/30 text-gold"
                 )}>
                   {getRoleLabel(user)}
@@ -169,6 +169,7 @@ export default function DashboardPage() {
                         src={COURSES[0].image}
                         alt={COURSES[0].title}
                         fill
+                        sizes="112px"
                         className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
                       />
                       <div className="absolute inset-0 flex items-center justify-center">
@@ -203,6 +204,7 @@ export default function DashboardPage() {
                           src={c.image}
                           alt={c.title}
                           fill
+                          sizes="80px"
                           className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
                         />
                       </div>

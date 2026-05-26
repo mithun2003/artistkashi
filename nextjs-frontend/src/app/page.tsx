@@ -148,6 +148,7 @@ export default function HomePage() {
                     src={p.image}
                     alt={p.title}
                     fill
+                    sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
                     className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-dark via-transparent to-transparent opacity-80" />
@@ -196,6 +197,7 @@ export default function HomePage() {
                     src={c.image}
                     alt={c.title}
                     fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                     className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-dark via-transparent to-transparent" />
@@ -233,10 +235,11 @@ export default function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <RevealBlock>
             <div className="relative aspect-4/5 overflow-hidden bg-muted-light border border-border">
-              <Image 
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=1000&fit=crop&auto=format" 
-                alt="Artist Kashi - Professional Painter and Instructor" 
+              <Image
+                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=1000&fit=crop&auto=format"
+                alt="Artist Kashi - Professional Painter and Instructor"
                 fill
+                sizes="(min-width: 1024px) 45vw, (min-width: 768px) 50vw, 100vw"
                 className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
               />
               <div className="absolute bottom-0 left-0 right-0 p-8 bg-linear-to-t from-dark to-transparent">
