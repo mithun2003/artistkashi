@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.core.cache import init_redis, close_redis
-from app.core.db import create_db_and_tables
+from app.database import create_db_and_tables
 from app.core.error_handler import setup_exception_handlers
 from app.core.queue import init_queue, close_queue
 from app.middleware.response import ResponseWrapperMiddleware

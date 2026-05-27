@@ -56,6 +56,19 @@ Docker (recommended local development)
 
 2. Environment: copy backend/.env.example to backend/.env and update SECRET KEYS and DATABASE_URL if needed.
 
+Admin bootstrap (backend):
+
+- Run `python -m commands.create_admin` from the `backend/` folder.
+- Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` in the environment, or pass `--email` and `--password`.
+- The command is idempotent: it creates the user if missing, or promotes an existing user to superuser.
+- The commented `admin-bootstrap` service in `docker-compose.yml` shows the same command for local one-off runs.
+
+Render production:
+
+- Keep the app service running normally from the Dockerfile.
+- Open a Render shell or create a one-off job using the same image, then run `python -m commands.create_admin` with the admin env vars set.
+- If you only need to promote an existing account, you can omit `ADMIN_PASSWORD`; the command will leave the stored password unchanged unless `ADMIN_UPDATE_PASSWORD=true`.
+
 Notes on cleanup performed
 
 - Disabled GitHub workflows and archived pipeline files to keep repository minimal. They can be restored or re-enabled later.
@@ -71,5 +84,4 @@ If you want, grant permission and I will continue by:
 - Removing or archiving more unused files and components
 - Replacing clientService shim with generated OpenAPI client
 - Implementing basic CI via Vercel configuration
-
 

@@ -20,6 +20,17 @@ services:
       redis:
         condition: service_healthy
 
+  # admin-bootstrap:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   env_file:
+  #     - ./backend/.env.development
+  #   command: ["python", "-m", "commands.create_admin"]
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+
   db:
     image: postgres:17
 

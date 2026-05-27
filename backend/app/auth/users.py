@@ -1,5 +1,4 @@
 import uuid
-import re
 import logging
 
 from typing import Optional
@@ -24,6 +23,7 @@ from app.database import get_user_db
 from app.services.email import send_reset_password_email
 from app.models.user import User
 from app.schemas.user import UserCreate
+from app.auth.password_policy import validate_password_rules
 
 logger = logging.getLogger(__name__)
 
@@ -53,16 +53,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         password: str,
         user: UserCreate,
     ) -> None:
-        errors = []
-
-        if len(password) < 8:
-            errors.append("Password should be at least 8 characters.")
-        if user.email in password:
-            errors.append("Password should not contain e-mail.")
-        if not any(char.isupper() for char in password):
-            errors.append("Password should contain at least one uppercase letter.")
-        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
-            errors.append("Password should contain at least one special character.")
+        errors = validate_password_rules(user.email, password)
 
         if errors:
             logger.warning(f"❌ Password validation failed for {user.email}: {errors}")
@@ -94,4 +85,3 @@ fastapi_users = FastAPIUsers[User, uuid.UUID](get_user_manager, [auth_backend])
 current_active_user = fastapi_users.current_user(active=True)
 
 logger.info("✅ Authentication system initialized")
-
