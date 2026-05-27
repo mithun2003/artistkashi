@@ -70,24 +70,50 @@ export const getSafeReturnTo = (returnTo?: string | null) => {
 const parseErrorMessage = async (response: Response): Promise<string> => {
   const contentType = response.headers.get("content-type") ?? "";
 
+  // Handle common HTTP status codes first
+  if (response.status === 401) return "Your session has expired. Please log in again.";
+  if (response.status === 403) return "You do not have permission to perform this action.";
+  if (response.status === 404) return "The requested resource was not found.";
+  if (response.status === 429) return "Too many requests. Please try again later.";
+  if (response.status >= 500) return "Our gallery server is currently experiencing issues. Please try again soon.";
+
   if (contentType.includes("application/json")) {
     try {
       const payload = await response.json() as ApiResponse<unknown>;
+
+      // Map technical error codes to user-friendly messages
+      const errorMap: Record<string, string> = {
+        "LOGIN_BAD_CREDENTIALS": "Incorrect email or password.",
+        "REGISTER_USER_ALREADY_EXISTS": "This email is already registered.",
+        "LOGIN_USER_NOT_VERIFIED": "Please verify your email address before logging in.",
+        "RESET_PASSWORD_BAD_TOKEN": "The password reset link is invalid or has expired.",
+        "EMAIL_NOT_FOUND": "No account found with this email address.",
+        "USER_NOT_ACTIVE": "This account has been deactivated.",
+      };
 
       if (payload.success === false) {
         if (payload.errors) {
           const messages = Object.values(payload.errors).flat().filter((m) => m.length > 0);
           if (messages.length > 0) return messages[0];
         }
-        return payload.message;
+        
+        // Check if message is a technical code that needs mapping
+        if (payload.message && errorMap[payload.message]) {
+          return errorMap[payload.message];
+        }
+        
+        return payload.message || "Something went wrong with your request.";
       }
 
       // Handle raw FastAPI error structure (detail)
       const raw = payload as any;
       if (raw.detail) {
-        if (typeof raw.detail === "string") return raw.detail;
+        if (typeof raw.detail === "string") {
+          if (errorMap[raw.detail]) return errorMap[raw.detail];
+          return raw.detail;
+        }
         if (Array.isArray(raw.detail) && raw.detail.length > 0) {
-          return raw.detail[0].msg || "Validation error";
+          return raw.detail[0].msg || "Please check your information and try again.";
         }
       }
     } catch (e) {
@@ -95,8 +121,7 @@ const parseErrorMessage = async (response: Response): Promise<string> => {
     }
   }
 
-  const body = await response.text();
-  return body || response.statusText || "Request failed";
+  return "An unexpected error occurred. Please try again.";
 };
 
 /**

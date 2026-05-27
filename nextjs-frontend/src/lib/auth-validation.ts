@@ -33,5 +33,12 @@ export const signupSchema = z
     }
   });
 
+export const profileSchema = z.object({
+  fullName: z.string().min(2, "Full name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().optional(),
+});
+
+export type ProfileFormValues = z.infer<typeof profileSchema>;
 export type LoginFormValues = z.infer<typeof loginSchema>;
 export type SignupFormValues = z.infer<typeof signupSchema>;

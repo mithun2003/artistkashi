@@ -79,15 +79,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       try {
         const current = await currentUserRequest(storedToken);
-        if (!active) {
-          return;
-        }
+        if (!active) return;
 
         setUser(current);
         setToken(storedToken);
         persistSession(current, storedToken);
       } catch (error) {
-        console.error("Failed to restore auth session", error);
+        // Silently fail auth restoration - just treat as guest
         clearSession();
         if (active) {
           setUser(null);

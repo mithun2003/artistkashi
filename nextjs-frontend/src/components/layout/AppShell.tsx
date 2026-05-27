@@ -14,14 +14,16 @@ const authRoutes = new Set(["/login", "/signup"]);
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isAuthRoute = authRoutes.has(pathname);
+  const isAdminRoute = pathname.startsWith("/admin");
+  const hideNavFooter = isAuthRoute || isAdminRoute;
 
   return (
     <>
       {!isAuthRoute && <GalaxyBackground />}
       {!isAuthRoute && <CustomCursor />}
-      {!isAuthRoute && <Navbar />}
+      {!hideNavFooter && <Navbar />}
       {children}
-      {!isAuthRoute && <Footer />}
+      {!hideNavFooter && <Footer />}
       <Toaster
         position="bottom-right"
         toastOptions={{

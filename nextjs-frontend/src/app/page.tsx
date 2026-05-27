@@ -13,6 +13,8 @@ import { RevealBlock, GoldDivider } from "@/components/ui/misc";
 import { GalaxyBackground } from "@/components/shared/GalaxyBackground";
 import { PAINTINGS, COURSES, TESTIMONIALS, FAQ_ITEMS } from "@/data/constants";
 import { cn } from "@/lib/utils";
+import { defaultHomeSettings as settings } from "@/lib/home-customization";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 
 export default function HomePage() {
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
@@ -22,11 +24,10 @@ export default function HomePage() {
       {/* ── Hero ── */}
       <section className="relative h-screen min-h-200 flex flex-col justify-center overflow-hidden">
         <div className="absolute inset-0 bg-dark">
-          <Image
-            src="https://images.unsplash.com/photo-1774126512715-5a8858c579c9?w=1800&h=1100&fit=crop&auto=format"
-            alt="Dimly lit gallery at night"
+          <ImageWithFallback
+            src={settings.hero.bgImage}
+            alt="Hero Background"
             fill
-            sizes="100vw"
             className="object-cover opacity-35 grayscale"
             priority
           />
@@ -62,7 +63,7 @@ export default function HomePage() {
             transition={{ duration: 1, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="mt-8 text-text-muted text-lg max-w-md leading-relaxed"
           >
-            A singular platform for those who take the painted world seriously — original works, masterclass curriculum, and an uncompromising aesthetic.
+            {settings.hero.subtitle}
           </motion.p>
 
           <motion.div
@@ -73,12 +74,12 @@ export default function HomePage() {
           >
             <Link href="/courses">
               <PrimaryBtn>
-                Begin Learning <ArrowRight size={16} />
+                {settings.hero.primaryBtnText} <ArrowRight size={16} />
               </PrimaryBtn>
             </Link>
             <Link href="/shop">
               <GhostBtn>
-                View Paintings
+                {settings.hero.ghostBtnText}
               </GhostBtn>
             </Link>
           </motion.div>
@@ -125,9 +126,9 @@ export default function HomePage() {
         <RevealBlock>
           <div className="flex items-end justify-between mb-16 border-b border-border pb-10">
             <div>
-              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">Original Works</div>
-              <h2 className="text-h2 font-extrabold leading-tight tracking-[-0.02em] text-text-main">
-                Paintings<br />Available Now
+              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">{settings.featuredPaintings.label}</div>
+              <h2 className="text-h2 font-extrabold leading-tight tracking-[-0.02em] text-text-main whitespace-pre-line">
+                {settings.featuredPaintings.title}
               </h2>
             </div>
             <Link href="/shop" className="hidden md:flex items-center gap-2 text-text-muted hover:text-gold transition-colors text-sm font-mono tracking-widest uppercase">
@@ -135,7 +136,6 @@ export default function HomePage() {
             </Link>
           </div>
         </RevealBlock>
-
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-border">
           {PAINTINGS.map((p, i) => (
             <RevealBlock key={p.id} delay={i * 0.1}>
@@ -174,9 +174,9 @@ export default function HomePage() {
         <RevealBlock>
           <div className="flex items-end justify-between mb-16 border-b border-border pb-10">
             <div>
-              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">Masterclass Series</div>
-              <h2 className="text-h2 font-extrabold leading-tight tracking-[-0.02em] text-text-main">
-                Learn from<br />Master Painters
+              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">{settings.featuredCourses.label}</div>
+              <h2 className="text-h2 font-extrabold leading-tight tracking-[-0.02em] text-text-main whitespace-pre-line">
+                {settings.featuredCourses.title}
               </h2>
             </div>
             <Link href="/courses" className="hidden md:flex items-center gap-2 text-text-muted hover:text-gold transition-colors text-sm font-mono tracking-widest uppercase">
@@ -184,7 +184,6 @@ export default function HomePage() {
             </Link>
           </div>
         </RevealBlock>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
           {COURSES.map((c, i) => (
             <RevealBlock key={c.id} delay={i * 0.12}>
@@ -235,35 +234,28 @@ export default function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <RevealBlock>
             <div className="relative aspect-4/5 overflow-hidden bg-muted-light border border-border">
-              <Image
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=1000&fit=crop&auto=format"
-                alt="Artist Kashi - Professional Painter and Instructor"
+              <ImageWithFallback
+                src={settings.about.image}
+                alt="Artist Kashi"
                 fill
-                sizes="(min-width: 1024px) 45vw, (min-width: 768px) 50vw, 100vw"
                 className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
               />
               <div className="absolute bottom-0 left-0 right-0 p-8 bg-linear-to-t from-dark to-transparent">
-                <div className="text-gold font-mono text-xs tracking-widest uppercase mb-2">Lead Instructor</div>
-                <div className="text-text-main text-2xl font-bold">Kashi</div>
+                <div className="text-gold font-mono text-xs tracking-widest uppercase mb-2">{settings.about.instructorRole}</div>
+                <div className="text-text-main text-2xl font-bold">{settings.about.instructorName}</div>
               </div>
             </div>
           </RevealBlock>
           <RevealBlock delay={0.2}>
             <div>
-              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-6">The Artist Behind the Vision</div>
+              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-6">{settings.about.label}</div>
               <h2 className="text-h2 font-extrabold tracking-[-0.02em] text-text-main leading-tight mb-8">
-                Mastering the Art of <span className="text-gold">Visual Storytelling</span>
+                {settings.about.title}
               </h2>
               <div className="space-y-6 text-text-muted leading-relaxed">
-                <p>
-                  With over two decades of professional experience in contemporary oil painting and classical Artist techniques, <strong>Kashi</strong> has dedicated his life to the pursuit of artistic excellence and the preservation of master-level craftsmanship.
-                </p>
-                <p>
-                  His work is characterized by a profound understanding of light, shadow, and the emotional resonance of color. As the founder of <strong>Artist Kashi Academy</strong>, he bridges the gap between traditional methods and modern expression, empowering thousands of students globally to find their unique voice.
-                </p>
-                <p>
-                  Kashi's philosophy centers on the belief that technical mastery is the foundation of true creative freedom. Through his uncompromising curriculum, he provides the tools necessary for serious artists to transcend mere representation and create works of lasting impact.
-                </p>
+                <p>{settings.about.description1}</p>
+                <p>{settings.about.description2}</p>
+                <p>{settings.about.description3}</p>
               </div>
               <div className="mt-10 flex flex-wrap gap-8">
                 {[
@@ -335,17 +327,16 @@ export default function HomePage() {
       <section className="max-w-360 mx-auto px-8 lg:px-16 pt-32">
         <RevealBlock>
           <div className="relative overflow-hidden aspect-21/9">
-            <Image
-              src="https://images.unsplash.com/photo-1775346098886-72ab6697b331?w=1400&h=600&fit=crop&auto=format"
-              alt="Ornate gallery with paintings"
+            <ImageWithFallback
+              src={settings.videoCta.bgImage}
+              alt="Studio Video"
               fill
-              sizes="100vw"
               className="object-cover grayscale opacity-40"
             />
             <div className="absolute inset-0 bg-linear-to-r from-dark via-dark/60 to-dark/40 flex flex-col items-start justify-center px-12 lg:px-20">
-              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-6">Inside the Studio</div>
+              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-6">{settings.videoCta.label}</div>
               <h2 className="text-h3 font-extrabold tracking-[-0.02em] text-text-main max-w-lg leading-tight mb-8">
-                Watch How a Painting Comes to Life
+                {settings.videoCta.title}
               </h2>
               <Link
                 href="/lesson-player"
@@ -449,13 +440,13 @@ export default function HomePage() {
       <section className="max-w-360 mx-auto px-8 lg:px-16 pt-32">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
           <RevealBlock className="lg:col-span-4">
-            <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">Questions</div>
+            <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">{settings.faq.label}</div>
             <h2 className="text-h2 font-extrabold tracking-[-0.02em] text-text-main leading-tight">
-              Frequently Asked
+              {settings.faq.title}
             </h2>
             <GoldDivider />
             <p className="text-text-muted leading-relaxed text-sm">
-              Everything you need to know about collecting original works and enrolling in our masterclass curriculum.
+              {settings.faq.description}
             </p>
           </RevealBlock>
           <div className="lg:col-span-8">
@@ -499,22 +490,22 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_39px,var(--color-gold)_39px,var(--color-gold)_40px),repeating-linear-gradient(90deg,transparent,transparent_39px,var(--color-gold)_39px,var(--color-gold)_40px)]" />
             </div>
             <div className="relative z-10">
-              <div className="text-label font-mono text-gold tracking-[0.25em] uppercase mb-6">Begin Your Journey</div>
+              <div className="text-label font-mono text-gold tracking-[0.25em] uppercase mb-6">{settings.banner.label}</div>
               <h2 className="text-h2 font-extrabold tracking-[-0.02em] text-text-main mb-6">
-                The Canvas<br />Awaits You
+                {settings.banner.title}
               </h2>
               <p className="text-text-muted max-w-md mx-auto mb-10 text-sm leading-relaxed">
-                Join a community of serious painters and collectors who have made Artist Kashi their studio, gallery, and academy.
+                {settings.banner.description}
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link href="/courses">
                   <PrimaryBtn>
-                    Explore Courses <ArrowRight size={16} />
+                    {settings.banner.primaryBtnText} <ArrowRight size={16} />
                   </PrimaryBtn>
                 </Link>
                 <Link href="/shop">
                   <GhostBtn>
-                    Browse Originals
+                    {settings.banner.ghostBtnText}
                   </GhostBtn>
                 </Link>
               </div>
