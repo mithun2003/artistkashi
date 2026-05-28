@@ -5,7 +5,7 @@ from typing import Any, Callable
 from arq import create_pool
 from arq.connections import RedisSettings
 
-from app.config import settings
+from app.core.config import settings
 
 # Global job queue pool
 pool: Any = None

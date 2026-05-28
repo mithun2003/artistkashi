@@ -13,7 +13,7 @@ import { PrimaryBtn } from "@/components/ui/buttons";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-store";
 import { signupSchema, type SignupFormValues } from "@/lib/auth-validation";
-import { getAuthErrorMessage, getSafeReturnTo, type AuthErrorInput } from "@/lib/auth-api";
+import { getAuthErrorMessage, getSafeReturnTo, type AuthErrorInput } from "@/api/auth-api";
 import { toast } from "sonner";
 import { AuthGuard } from "@/components/shared/AuthGuard";
 
@@ -51,7 +51,7 @@ export default function SignupPage() {
 
   return (
     <AuthGuard guestOnly>
-      <main className="flex min-h-dvh items-center justify-center overflow-hidden bg-dark px-4 py-6 sm:px-6 sm:py-8">
+      <main className="flex min-h-dvh items-center justify-center overflow-hidden px-4 py-6 sm:px-6 sm:py-8">
         <div className="w-full max-w-md">
           <RevealBlock>
             <div className="mb-8 text-center sm:mb-10">

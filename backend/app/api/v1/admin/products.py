@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import Any
-from app.auth.users import current_active_user
+from app.core.auth.users import current_active_user
 
 router = APIRouter(prefix="/products", tags=["admin-products"])
 

@@ -7,7 +7,7 @@ export function Footer () {
         <div className='md:col-span-1'>
           <div className='mb-6'>
             <div
-              className='text-text-main text-2xl font-extrabold tracking-[0.1em] uppercase'
+              className='text-text-main text-2xl font-extrabold tracking-widest uppercase'
             >
               Artist
             </div>

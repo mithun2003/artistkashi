@@ -19,7 +19,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <>
-      {!isAuthRoute && <GalaxyBackground />}
+      <GalaxyBackground />
       {!isAuthRoute && <CustomCursor />}
       {!hideNavFooter && <Navbar />}
       {children}

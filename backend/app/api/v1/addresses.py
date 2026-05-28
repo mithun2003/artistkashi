@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.database import get_async_session
+from app.core.db import get_async_session
 from app.models.address import Address
 from app.schemas.address import AddressCreate, AddressRead, AddressUpdate
 from app.crud.address import crud_address
-from app.auth.users import current_active_user
+from app.core.auth.users import current_active_user
 
 from app.schemas.responses import ResponseModel
 

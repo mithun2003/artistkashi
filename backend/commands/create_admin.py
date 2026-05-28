@@ -18,8 +18,8 @@ from fastapi_users.password import PasswordHelper
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.password_policy import validate_password_rules
-from app.database import async_session
+from app.core.auth.password_policy import validate_password_rules
+from app.core.db import async_session
 from app.models.user import User
 
 

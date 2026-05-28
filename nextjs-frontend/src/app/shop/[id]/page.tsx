@@ -9,7 +9,7 @@ import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { PAINTINGS } from "@/data/constants";
 import { notFound, usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-store";
-import { getSafeReturnTo } from "@/lib/auth-api";
+import { getSafeReturnTo } from "@/api/auth-api";
 import { toast } from "sonner";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {

@@ -1,10 +1,10 @@
 import logging
 
 from app.api import router as api_router
-from app.config import settings
+from app.core.config import settings
 from app.core.logger import configure_logging
 from app.core.setup import create_application
-from app.utils.routing import simple_generate_unique_route_id
+from app.core.routing import simple_generate_unique_route_id
 
 # Configure logging
 configure_logging()
@@ -19,5 +19,3 @@ app = create_application(
 )
 
 logger.info("🚀 ArtistKashi FastAPI Backend initialized")
-
-

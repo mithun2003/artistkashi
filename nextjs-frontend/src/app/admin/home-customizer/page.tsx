@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { 
   Save, 
@@ -12,7 +12,13 @@ import {
   MousePointer2,
   ChevronDown,
   ChevronUp,
-  AlertCircle
+  AlertCircle,
+  Plus,
+  Trash2,
+  Video,
+  BarChart3,
+  MessageSquare,
+  HelpCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PrimaryBtn } from "@/components/ui/buttons";
@@ -21,32 +27,94 @@ import {
   defaultHomeSettings, 
   type HomePageSettings 
 } from "@/lib/home-customization";
+import { fetchHomeSettings } from "@/api/home";
+import { saveHomeSettingsAction } from "@/app/admin/home-customizer/actions";
 import { toast } from "sonner";
 
 export default function HomeCustomizerPage() {
   const [activeSection, setActiveSection] = useState<string | null>("hero");
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
     reset,
+    control,
+    watch,
     formState: { errors, isDirty },
   } = useForm<HomePageSettings>({
     resolver: zodResolver(homePageSchema),
     defaultValues: defaultHomeSettings,
-    mode: "onBlur",
+    mode: "onChange", // For character counters
   });
 
-  const onSubmit = (data: HomePageSettings) => {
-    // In a real app, this would be an API call
-    console.log("Saving Home Settings:", data);
-    toast.success("Home page settings saved!", {
-      description: "Changes will be visible to users immediately.",
-    });
+  useEffect(() => {
+    let active = true;
+
+    fetchHomeSettings()
+      .then((data) => {
+        if (active) {
+          reset(data);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          toast.error("Failed to load home settings");
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [reset]);
+
+  // Field arrays for dynamic lists
+  const { fields: heroStats, append: addHeroStat, remove: removeHeroStat } = useFieldArray({
+    control,
+    name: "hero.stats",
+  });
+
+  const { fields: aboutStats, append: addAboutStat, remove: removeAboutStat } = useFieldArray({
+    control,
+    name: "about.stats",
+  });
+
+  const { fields: faqs, append: addFaq, remove: removeFaq } = useFieldArray({
+    control,
+    name: "faq.items",
+  });
+
+  const { fields: testimonials, append: addTestimonial, remove: removeTestimonial } = useFieldArray({
+    control,
+    name: "community.items",
+  });
+
+  const onSubmit = async (data: HomePageSettings) => {
+    setIsLoading(true);
+    try {
+      const saved = await saveHomeSettingsAction(data);
+      reset(saved);
+      toast.success("Home page settings saved to database!");
+    } catch (error) {
+      toast.error("Failed to save settings");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const toggleSection = (section: string) => {
     setActiveSection(activeSection === section ? null : section);
+  };
+
+  // Character counter helper
+  const CharCount = ({ value, max }: { value: string | undefined, max: number }) => {
+    const length = value?.length || 0;
+    const isOver = length > max;
+    return (
+      <div className={cn("text-2xs font-mono mt-1 text-right", isOver ? "text-red-500 font-bold" : "text-text-muted opacity-60")}>
+        {length}/{max} characters
+      </div>
+    );
   };
 
   const SectionHeader = ({ id, title, icon: Icon }: { id: string, title: string, icon: any }) => (
@@ -66,7 +134,7 @@ export default function HomeCustomizerPage() {
           <Icon size={20} />
         </div>
         <div className="text-left">
-          <h3 className={cn("font-bold text-lg", activeSection === id ? "text-text-main" : "text-text-muted")}>{title}</h3>
+          <h3 className={cn("font-bold text-lg leading-none", activeSection === id ? "text-text-main" : "text-text-muted")}>{title}</h3>
         </div>
       </div>
       {activeSection === id ? <ChevronUp size={20} className="text-gold" /> : <ChevronDown size={20} className="text-text-muted" />}
@@ -77,19 +145,19 @@ export default function HomeCustomizerPage() {
     <div className="max-w-4xl mx-auto pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
         <div>
-          <h1 className="text-h3 font-extrabold tracking-tight text-text-main">Home Page Customizer</h1>
-          <p className="text-text-muted text-sm mt-1">Design and refine the landing experience of Artist Kashi.</p>
+          <h1 className="text-h3 font-extrabold tracking-tight text-text-main leading-none">Home Page Customizer</h1>
+          <p className="text-text-muted text-sm mt-2">Design and persist the landing experience to the database.</p>
         </div>
         <div className="flex items-center gap-3">
           <button 
             onClick={() => reset()}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-mono tracking-widest uppercase text-text-muted hover:text-text-main transition-colors"
-            disabled={!isDirty}
+            className="flex items-center gap-2 px-4 py-2 text-xs font-mono tracking-widest uppercase text-text-muted hover:text-text-main transition-colors disabled:opacity-30"
+            disabled={!isDirty || isLoading}
           >
-            <RotateCcw size={14} /> Reset Changes
+            <RotateCcw size={14} /> Reset
           </button>
-          <PrimaryBtn onClick={handleSubmit(onSubmit)} className="px-6 py-3">
-            <Save size={16} /> Save Changes
+          <PrimaryBtn onClick={handleSubmit(onSubmit)} className="px-6 py-3" disabled={isLoading}>
+            <Save size={16} /> {isLoading ? "Saving..." : "Save to DB"}
           </PrimaryBtn>
         </div>
       </div>
@@ -99,75 +167,90 @@ export default function HomeCustomizerPage() {
         <div className="overflow-hidden">
           <SectionHeader id="hero" title="Hero / Landing" icon={Layout} />
           {activeSection === "hero" && (
-            <div className="p-8 space-y-6">
+            <div className="p-8 space-y-8 animate-in fade-in duration-300">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Main Headline (supports \n)</label>
+                <div className="space-y-2">
+                  <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Main Headline</label>
                   <textarea 
                     {...register("hero.title")}
-                    className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none h-32"
+                    className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none h-32 resize-none"
                   />
-                  {errors.hero?.title && <p className="text-xs text-red-500 font-mono">{errors.hero.title.message}</p>}
+                  <CharCount value={watch("hero.title")} max={150} />
                 </div>
-                <div className="space-y-4">
-                  <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Subtitle Description</label>
+                <div className="space-y-2">
+                  <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Subtitle</label>
                   <textarea 
                     {...register("hero.subtitle")}
-                    className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none h-32"
+                    className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none h-32 resize-none"
                   />
-                  {errors.hero?.subtitle && <p className="text-xs text-red-500 font-mono">{errors.hero.subtitle.message}</p>}
+                  <CharCount value={watch("hero.subtitle")} max={300} />
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-4">
-                  <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Primary Button</label>
-                  <input {...register("hero.primaryBtnText")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
-                  {errors.hero?.primaryBtnText && <p className="text-xs text-red-500 font-mono">{errors.hero.primaryBtnText.message}</p>}
+                  <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Media Type</label>
+                  <div className="flex gap-4">
+                    {["image", "video"].map((type) => (
+                      <label key={type} className="flex-1 cursor-pointer">
+                        <input {...register("hero.mediaType")} type="radio" value={type} className="sr-only peer" />
+                        <div className="p-4 border border-border bg-dark text-center peer-checked:border-gold peer-checked:text-gold transition-colors flex items-center justify-center gap-2 font-mono text-xs uppercase tracking-widest">
+                          {type === "image" ? <ImageIcon size={14} /> : <Video size={14} />} {type}
+                        </div>
+                      </label>
+                    ))}
+                  </div>
                 </div>
-                <div className="space-y-4">
-                  <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Secondary Button</label>
-                  <input {...register("hero.ghostBtnText")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
-                  {errors.hero?.ghostBtnText && <p className="text-xs text-red-500 font-mono">{errors.hero.ghostBtnText.message}</p>}
+                <div className="space-y-2">
+                  <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Media URL (S3/CDN Link)</label>
+                  <input {...register("hero.mediaUrl")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
                 </div>
-                <div className="space-y-4">
-                  <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Background Image URL</label>
-                  <input {...register("hero.bgImage")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
-                  {errors.hero?.bgImage && <p className="text-xs text-red-500 font-mono">{errors.hero.bgImage.message}</p>}
+              </div>
+
+              {/* Stats Management */}
+              <div className="space-y-4 pt-4 border-t border-border/40">
+                <div className="flex items-center justify-between">
+                  <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Hero Statistics (Max 4)</label>
+                  {heroStats.length < 4 && (
+                    <button type="button" onClick={() => addHeroStat({ label: "", value: "" })} className="text-gold flex items-center gap-1 text-2xs font-mono uppercase tracking-widest hover:text-text-main transition-colors">
+                      <Plus size={12} /> Add Stat
+                    </button>
+                  )}
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {heroStats.map((field, index) => (
+                    <div key={field.id} className="flex gap-2 items-start bg-dark/50 p-4 border border-border/50">
+                      <div className="flex-1 space-y-3">
+                        <input {...register(`hero.stats.${index}.value` as const)} placeholder="Value (e.g. 12K+)" className="w-full bg-transparent border-b border-border focus:border-gold outline-none py-1 text-sm text-text-main" />
+                        <input {...register(`hero.stats.${index}.label` as const)} placeholder="Label (e.g. Students)" className="w-full bg-transparent border-b border-border focus:border-gold outline-none py-1 text-2xs font-mono uppercase text-text-muted" />
+                      </div>
+                      <button type="button" onClick={() => removeHeroStat(index)} className="text-red-500/50 hover:text-red-500 transition-colors p-1">
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           )}
         </div>
 
-        {/* --- Featured Sections --- */}
+        {/* --- Featured & Best Sellers --- */}
         <div className="overflow-hidden">
-          <SectionHeader id="featured" title="Featured Collections" icon={Type} />
+          <SectionHeader id="featured" title="Featured Collections & Sellers" icon={BarChart3} />
           {activeSection === "featured" && (
             <div className="p-8 space-y-10">
               <div className="space-y-6">
-                <h4 className="text-gold font-mono text-xs tracking-[0.2em] uppercase border-b border-border pb-2">Paintings Section</h4>
+                <h4 className="text-gold font-mono text-2xs tracking-[0.2em] uppercase border-b border-border pb-2">Paintings Section</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-                    <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Small Label</label>
-                    <input {...register("featuredPaintings.label")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
+                  <div className="space-y-2">
+                    <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Title</label>
+                    <textarea {...register("featuredPaintings.title")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none h-24 resize-none" />
+                    <CharCount value={watch("featuredPaintings.title")} max={150} />
                   </div>
-                  <div className="space-y-4">
-                    <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Main Title</label>
-                    <textarea {...register("featuredPaintings.title")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none h-24" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <h4 className="text-gold font-mono text-xs tracking-[0.2em] uppercase border-b border-border pb-2">Courses Section</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-                    <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Small Label</label>
-                    <input {...register("featuredCourses.label")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
-                  </div>
-                  <div className="space-y-4">
-                    <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Main Title</label>
-                    <textarea {...register("featuredCourses.title")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none h-24" />
+                  <div className="bg-dark/30 p-6 border border-border border-dashed flex flex-col items-center justify-center text-center">
+                    <ImageIcon size={24} className="text-text-muted mb-2" />
+                    <p className="text-xs text-text-muted font-mono uppercase tracking-widest">Painting Selection UI Coming Soon</p>
                   </div>
                 </div>
               </div>
@@ -179,104 +262,144 @@ export default function HomeCustomizerPage() {
         <div className="overflow-hidden">
           <SectionHeader id="about" title="About Instructor" icon={ImageIcon} />
           {activeSection === "about" && (
-            <div className="p-8 space-y-6">
+            <div className="p-8 space-y-8 animate-in fade-in duration-300">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="space-y-4">
-                  <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Small Label</label>
-                  <input {...register("about.label")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
-                </div>
-                <div className="space-y-4">
-                  <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Main Title</label>
-                  <input {...register("about.title")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
-                </div>
-                <div className="space-y-4">
+                <div className="space-y-2">
                   <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Instructor Name</label>
                   <input {...register("about.instructorName")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
                 </div>
-              </div>
-
-              <div className="space-y-4">
-                <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Description Paragraph 1</label>
-                <textarea {...register("about.description1")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none h-24" />
-                {errors.about?.description1 && <p className="text-xs text-red-500 font-mono">{errors.about.description1.message}</p>}
-              </div>
-              <div className="space-y-4">
-                <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Description Paragraph 2</label>
-                <textarea {...register("about.description2")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none h-24" />
-                {errors.about?.description2 && <p className="text-xs text-red-500 font-mono">{errors.about.description2.message}</p>}
-              </div>
-              <div className="space-y-4">
-                <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Description Paragraph 3</label>
-                <textarea {...register("about.description3")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none h-24" />
-                {errors.about?.description3 && <p className="text-xs text-red-500 font-mono">{errors.about.description3.message}</p>}
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Instructor Role</label>
-                  <input {...register("about.instructorRole")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
-                </div>
-                <div className="space-y-4">
-                  <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Instructor Image URL</label>
+                <div className="space-y-2 md:col-span-2">
+                  <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Image URL</label>
                   <input {...register("about.image")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Biography Paragraphs (Max 600ch each)</label>
+                {[1, 2, 3].map((num) => (
+                  <div key={num}>
+                    <textarea 
+                      {...register(`about.description${num}` as any)} 
+                      placeholder={`Paragraph ${num}`}
+                      className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none h-32 resize-none" 
+                    />
+                    <CharCount value={watch(`about.description${num}` as any)} max={600} />
+                  </div>
+                ))}
+              </div>
+
+              {/* About Stats */}
+              <div className="space-y-4 pt-4 border-t border-border/40">
+                <div className="flex items-center justify-between">
+                  <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Achievement Stats (Max 4)</label>
+                  {aboutStats.length < 4 && (
+                    <button type="button" onClick={() => addAboutStat({ label: "", value: "" })} className="text-gold flex items-center gap-1 text-2xs font-mono uppercase tracking-widest hover:text-text-main transition-colors">
+                      <Plus size={12} /> Add Stat
+                    </button>
+                  )}
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {aboutStats.map((field, index) => (
+                    <div key={field.id} className="flex gap-2 items-start bg-dark/50 p-4 border border-border/50">
+                      <div className="flex-1 space-y-2">
+                        <input {...register(`about.stats.${index}.value` as const)} placeholder="20+ Yrs" className="w-full bg-transparent border-b border-border focus:border-gold outline-none py-1 text-sm text-text-main font-bold" />
+                        <input {...register(`about.stats.${index}.label` as const)} placeholder="Experience" className="w-full bg-transparent border-b border-border focus:border-gold outline-none py-1 text-[9px] font-mono uppercase text-text-muted" />
+                      </div>
+                      <button type="button" onClick={() => removeAboutStat(index)} className="text-red-500/30 hover:text-red-500 transition-colors p-1">
+                        <Trash2 size={12} />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           )}
         </div>
 
-        {/* --- Video / FAQ / Banner --- */}
+        {/* --- FAQ Management --- */}
         <div className="overflow-hidden">
-          <SectionHeader id="extra" title="Extra Sections (Video, FAQ, Banner)" icon={MousePointer2} />
-          {activeSection === "extra" && (
-            <div className="p-8 space-y-12">
+          <SectionHeader id="faq" title="FAQ Management" icon={HelpCircle} />
+          {activeSection === "faq" && (
+            <div className="p-8 space-y-8 animate-in fade-in duration-300">
               <div className="space-y-6">
-                <h4 className="text-gold font-mono text-xs tracking-[0.2em] uppercase border-b border-border pb-2">Video CTA</h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  <input {...register("videoCta.label")} placeholder="Label" className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
-                  <input {...register("videoCta.title")} placeholder="Title" className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
-                  <input {...register("videoCta.bgImage")} placeholder="Background Image URL" className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <h4 className="text-gold font-mono text-xs tracking-[0.2em] uppercase border-b border-border pb-2">FAQ Header</h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  <input {...register("faq.label")} placeholder="Label" className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
-                  <input {...register("faq.title")} placeholder="Title" className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
-                  <textarea {...register("faq.description")} placeholder="Description" className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none h-20" />
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <h4 className="text-gold font-mono text-xs tracking-[0.2em] uppercase border-b border-border pb-2">Bottom Banner</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-                    <input {...register("banner.label")} placeholder="Label" className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
-                    <input {...register("banner.title")} placeholder="Title" className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
+                  <div className="space-y-2">
+                    <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">FAQ Section Title</label>
+                    <input {...register("faq.title")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
                   </div>
-                  <div className="space-y-4">
-                    <textarea {...register("banner.description")} placeholder="Description" className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none h-32" />
+                  <div className="space-y-2">
+                    <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Section Description</label>
+                    <textarea {...register("faq.description")} className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none h-20 resize-none" />
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <input {...register("banner.primaryBtnText")} placeholder="Primary Button" className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
-                  <input {...register("banner.ghostBtnText")} placeholder="Ghost Button" className="w-full bg-dark border border-border p-4 text-text-main focus:border-gold outline-none" />
+
+                <div className="space-y-4 pt-6 border-t border-border/40">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Individual FAQ Items</label>
+                    <button type="button" onClick={() => addFaq({ question: "", answer: "" })} className="text-gold flex items-center gap-1 text-2xs font-mono uppercase tracking-widest hover:text-text-main transition-colors">
+                      <Plus size={12} /> New FAQ
+                    </button>
+                  </div>
+                  <div className="space-y-4">
+                    {faqs.map((field, index) => (
+                      <div key={field.id} className="bg-dark/50 border border-border/50 p-6 space-y-4 relative group">
+                        <button type="button" onClick={() => removeFaq(index)} className="absolute top-4 right-4 text-red-500/50 hover:text-red-500 transition-colors">
+                          <Trash2 size={14} />
+                        </button>
+                        <div className="pr-10 space-y-4">
+                          <input {...register(`faq.items.${index}.question` as const)} placeholder="The Question" className="w-full bg-transparent border-b border-border/50 focus:border-gold outline-none py-2 text-text-main font-bold" />
+                          <textarea {...register(`faq.items.${index}.answer` as const)} placeholder="The Answer (Max 1000 characters)" className="w-full bg-transparent border border-border/20 focus:border-gold outline-none p-4 text-sm text-text-muted h-32 resize-none" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* --- Community & Testimonials --- */}
+        <div className="overflow-hidden">
+          <SectionHeader id="community" title="Testimonials & Community" icon={MessageSquare} />
+          {activeSection === "community" && (
+            <div className="p-8 space-y-8 animate-in fade-in duration-300">
+              <div className="flex items-center justify-between">
+                <label className="block text-tiny font-mono text-text-muted uppercase tracking-widest">Community Reviews</label>
+                <button type="button" onClick={() => addTestimonial({ name: "", role: "", text: "", rating: 5, avatar: "AK" })} className="text-gold flex items-center gap-1 text-2xs font-mono uppercase tracking-widest hover:text-text-main transition-colors">
+                  <Plus size={12} /> New Review
+                </button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {testimonials.map((field, index) => (
+                  <div key={field.id} className="bg-dark/50 border border-border/50 p-6 space-y-4 relative group">
+                    <button type="button" onClick={() => removeTestimonial(index)} className="absolute top-4 right-4 text-red-500/30 hover:text-red-500 transition-colors">
+                      <Trash2 size={14} />
+                    </button>
+                    <div className="flex items-center gap-4">
+                       <input {...register(`community.items.${index}.avatar` as const)} placeholder="Initials" className="w-10 h-10 bg-muted border border-border text-gold text-xs font-bold text-center outline-none focus:border-gold" maxLength={2} />
+                       <div className="flex-1 space-y-1">
+                          <input {...register(`community.items.${index}.name` as const)} placeholder="User Name" className="w-full bg-transparent text-sm font-bold text-text-main outline-none" />
+                          <input {...register(`community.items.${index}.role` as const)} placeholder="Role (e.g. Collector)" className="w-full bg-transparent text-2xs font-mono uppercase text-text-muted outline-none" />
+                       </div>
+                    </div>
+                    <textarea {...register(`community.items.${index}.text` as const)} placeholder="Review Text" className="w-full bg-dark border border-border/30 focus:border-gold outline-none p-4 text-sm text-text-muted h-24 resize-none" />
+                  </div>
+                ))}
               </div>
             </div>
           )}
         </div>
       </form>
 
-      {/* Safety Info */}
+      {/* Database Persist Info */}
       <div className="mt-8 p-6 bg-gold/5 border border-gold/20 flex items-start gap-4">
         <AlertCircle className="text-gold shrink-0 mt-0.5" size={18} />
         <div>
-          <h5 className="text-gold font-bold text-sm mb-1">Visual Safety Enabled</h5>
+          <h5 className="text-gold font-bold text-sm mb-1">Database-Backed Persistence</h5>
           <p className="text-text-muted text-xs leading-relaxed">
-            All text fields have character limits enforced to ensure the home page design remains consistent across all screen sizes. 
-            URLs are validated to prevent broken image references.
+            Changes saved here are stored in the PostgreSQL database and fetched dynamically by the home page. 
+            Hero statistics and achievement counters are fully editable.
           </p>
         </div>
       </div>

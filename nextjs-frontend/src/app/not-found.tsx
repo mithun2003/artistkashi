@@ -9,13 +9,13 @@ export default function NotFound() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-dark px-6 relative overflow-hidden">
       {/* Background Decorative Element */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
       
       <div className="max-w-xl w-full text-center relative z-10">
         <RevealBlock>
           <div className="mb-8">
             <span className="text-[120px] font-black text-white/5 leading-none select-none">404</span>
-            <div className="text-gold font-mono tracking-[0.3em] uppercase text-sm mt-[-60px]">
+            <div className="text-gold font-mono tracking-[0.3em] uppercase text-sm -mt-15">
               Lost in the Canvas
             </div>
           </div>

@@ -2,7 +2,7 @@ from pathlib import Path
 import urllib.parse
 
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
-from app.config import settings
+from app.core.config import settings
 from app.models.user import User
 
 

@@ -7,11 +7,17 @@ services:
     env_file:
       - ./backend/.env.development
 
+    environment:
+      - PYTHONUNBUFFERED=1
+
     ports:
       - "8000:8000"
 
     networks:
       - my_network
+
+    volumes:
+      - ./backend/app:/app/app
 
     depends_on:
       db:

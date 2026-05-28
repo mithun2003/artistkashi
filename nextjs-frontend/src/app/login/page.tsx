@@ -13,7 +13,7 @@ import { PrimaryBtn } from "@/components/ui/buttons";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-store";
 import { loginSchema, type LoginFormValues } from "@/lib/auth-validation";
-import { getAuthErrorMessage, getSafeReturnTo, type AuthErrorInput } from "@/lib/auth-api";
+import { getAuthErrorMessage, getSafeReturnTo, type AuthErrorInput } from "@/api/auth-api";
 import { toast } from "sonner";
 import { AuthGuard } from "@/components/shared/AuthGuard";
 
@@ -52,11 +52,11 @@ export default function LoginPage() {
 
   return (
     <AuthGuard guestOnly>
-      <main className="flex min-h-[100dvh] items-center justify-center overflow-hidden bg-dark px-4 py-6 sm:px-6 sm:py-8">
+      <main className="flex min-h-dvh items-center justify-center overflow-hidden px-4 py-6 sm:px-6 sm:py-8">
         <div className="w-full max-w-md">
           <RevealBlock>
             <div className="mb-8 text-center sm:mb-10">
-              <div className="text-text-main text-2xl font-extrabold tracking-[0.1em] uppercase">Artist</div>
+              <div className="text-text-main text-2xl font-extrabold tracking-widest uppercase">Artist</div>
               <div className="text-gold text-tiny font-mono tracking-[0.25em] uppercase">Kashi</div>
               <h1 className="mt-6 text-3xl font-bold text-text-main sm:mt-8">Welcome Back</h1>
               <p className="text-text-muted text-sm mt-2">Enter your credentials to access your collection.</p>

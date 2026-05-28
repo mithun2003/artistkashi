@@ -10,7 +10,7 @@ import {
   registerRequest,
   type AuthUser,
   type SignupInput,
-} from "@/lib/auth-api";
+} from "@/api/auth-api";
 
 interface AuthContextType {
   user: AuthUser | null;

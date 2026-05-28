@@ -1,15 +1,18 @@
 """Redis cache and utilities."""
 
 import json
+import logging
 from typing import Any
 
 import redis.asyncio as redis
+from redis.exceptions import RedisError
 
-from app.config import settings
+from app.core.config import settings
 
 # Global redis client and pool
 client: redis.Redis | None = None
 pool: redis.ConnectionPool | None = None
+logger = logging.getLogger(__name__)
 
 
 async def init_redis() -> None:
@@ -37,28 +40,38 @@ async def get_redis() -> redis.Redis:
 
 async def cache_get(key: str) -> Any:
     """Get value from cache."""
-    redis_client = await get_redis()
-    value = await redis_client.get(key)
-    if value:
-        try:
-            return json.loads(value)
-        except (json.JSONDecodeError, TypeError):
-            return value
-    return None
+    try:
+        redis_client = await get_redis()
+        value = await redis_client.get(key)
+        if value:
+            try:
+                return json.loads(value)
+            except (json.JSONDecodeError, TypeError):
+                return value
+        return None
+    except RedisError as exc:
+        logger.warning("Redis cache get failed for %s: %s", key, exc)
+        return None
 
 
 async def cache_set(key: str, value: Any, expire: int = 3600) -> None:
     """Set value in cache with expiration."""
-    redis_client = await get_redis()
-    if isinstance(value, (dict, list)):
-        value = json.dumps(value)
-    await redis_client.setex(key, expire, value)
+    try:
+        redis_client = await get_redis()
+        if isinstance(value, (dict, list)):
+            value = json.dumps(value)
+        await redis_client.setex(key, expire, value)
+    except RedisError as exc:
+        logger.warning("Redis cache set failed for %s: %s", key, exc)
 
 
 async def cache_delete(key: str) -> None:
     """Delete key from cache."""
-    redis_client = await get_redis()
-    await redis_client.delete(key)
+    try:
+        redis_client = await get_redis()
+        await redis_client.delete(key)
+    except RedisError as exc:
+        logger.warning("Redis cache delete failed for %s: %s", key, exc)
 
 
 async def cache_clear(pattern: str = "*") -> None:

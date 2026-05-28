@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSchema, type ProfileFormValues } from "@/lib/auth-validation";
-import { getAuthErrorMessage, getRoleLabel, type AuthErrorInput } from "@/lib/auth-api";
+import { getAuthErrorMessage, getRoleLabel, type AuthErrorInput } from "@/api/auth-api";
 import { toast } from "sonner";
 import { AuthGuard } from "@/components/shared/AuthGuard";
 

@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-store";
 import { AuthGuard } from "@/components/shared/AuthGuard";
 import { toast } from "sonner";
-import { getAuthErrorMessage, type AuthErrorInput } from "@/lib/auth-api";
+import { getAuthErrorMessage, type AuthErrorInput } from "@/api/auth-api";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false); // For mobile
@@ -90,7 +90,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </div>
               ) : (
                 <div className="flex flex-col leading-none items-center lg:items-start transition-all duration-300">
-                  <span className="text-text-main text-xl font-extrabold tracking-[0.1em] uppercase">Artist</span>
+                  <span className="text-text-main text-xl font-extrabold tracking-widest uppercase">Artist</span>
                   <span className="text-gold text-tiny font-mono tracking-[0.25em] uppercase -mt-0.5">Kashi</span>
                 </div>
               )}
@@ -148,7 +148,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 sidebarCollapsed ? "lg:opacity-0 lg:w-0" : "opacity-100 w-auto"
               )}>
                 <div className="text-text-main text-sm font-bold truncate">{user?.name}</div>
-                <div className="text-text-muted text-[10px] font-mono uppercase tracking-widest">Admin</div>
+                <div className="text-text-muted text-2xs font-mono uppercase tracking-widest">Admin</div>
               </div>
             </div>
             
@@ -209,7 +209,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               
               <Link 
                 href="/dashboard"
-                className="hidden sm:block text-[11px] font-mono tracking-widest uppercase text-gold hover:text-text-main transition-colors border border-gold/30 px-3 py-1.5"
+                className="hidden sm:block text-label font-mono tracking-widest uppercase text-gold hover:text-text-main transition-colors border border-gold/30 px-3 py-1.5"
               >
                 Student View
               </Link>

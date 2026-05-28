@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import Any, List
-from app.auth.users import current_active_user
+from app.core.auth.users import current_active_user
 from app.schemas.responses import ResponseModel
 
 router = APIRouter(prefix="/users", tags=["admin-users"])

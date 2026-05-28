@@ -18,12 +18,12 @@ from fastapi_users.authentication import (
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
 
-from app.config import settings
-from app.database import get_user_db
+from app.core.config import settings
+from app.core.db import get_user_db
 from app.services.email import send_reset_password_email
 from app.models.user import User
 from app.schemas.user import UserCreate
-from app.auth.password_policy import validate_password_rules
+from app.core.auth.password_policy import validate_password_rules
 
 logger = logging.getLogger(__name__)
 

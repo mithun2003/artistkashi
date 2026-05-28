@@ -6,7 +6,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_db
-from app.auth.users import current_active_user
+from app.core.auth.users import current_active_user
 from app.models.user import User
 
 # Database dependency

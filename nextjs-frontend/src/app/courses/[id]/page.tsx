@@ -10,7 +10,7 @@ import { COURSES, CURRICULUM } from "@/data/constants";
 import Link from "next/link";
 import { notFound, usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-store";
-import { getSafeReturnTo } from "@/lib/auth-api";
+import { getSafeReturnTo } from "@/api/auth-api";
 
 export default function CourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
