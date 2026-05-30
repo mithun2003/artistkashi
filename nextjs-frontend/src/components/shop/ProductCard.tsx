@@ -14,14 +14,23 @@ interface ProductCardProps {
   view?: "grid" | "list";
 }
 
-export function ProductCard({ product, delay = 0, view = "grid" }: ProductCardProps) {
+export function ProductCard({
+  product,
+  delay = 0,
+  view = "grid",
+}: ProductCardProps) {
   const [wishlisted, setWishlisted] = useState(false);
 
   return (
     <RevealBlock delay={delay}>
       <div className="group bg-dark relative h-full flex flex-col">
         <Link href={`/shop/${product.id}`} className="block w-full">
-          <div className={cn("relative overflow-hidden bg-muted-light", view === "grid" ? "aspect-[3/4]" : "aspect-[16/9]")}>
+          <div
+            className={cn(
+              "relative overflow-hidden bg-muted-light",
+              view === "grid" ? "aspect-[3/4]" : "aspect-[16/9]"
+            )}
+          >
             <ImageWithFallback
               src={product.image}
               alt={product.title}
@@ -33,7 +42,9 @@ export function ProductCard({ product, delay = 0, view = "grid" }: ProductCardPr
               </span>
             </div>
             {product.sold && (
-              <div className="absolute top-4 left-4 bg-dark/80 text-text-muted text-tiny font-mono tracking-widest uppercase px-2.5 py-1">SOLD</div>
+              <div className="absolute top-4 left-4 bg-dark/80 text-text-muted text-tiny font-mono tracking-widest uppercase px-2.5 py-1">
+                SOLD
+              </div>
             )}
           </div>
         </Link>
@@ -41,15 +52,25 @@ export function ProductCard({ product, delay = 0, view = "grid" }: ProductCardPr
           onClick={() => setWishlisted(!wishlisted)}
           className="absolute top-4 right-4 w-8 h-8 bg-dark/60 backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
         >
-          <Heart size={14} fill={wishlisted ? "var(--color-gold)" : "none"} className={wishlisted ? "text-gold" : "text-text-muted"} />
+          <Heart
+            size={14}
+            fill={wishlisted ? "var(--color-gold)" : "none"}
+            className={wishlisted ? "text-gold" : "text-text-muted"}
+          />
         </button>
         <div className="p-5 border-t border-border flex-1 flex flex-col justify-between">
           <div>
-            <div className="text-tiny font-mono text-text-muted tracking-widest uppercase mb-1">{product.medium}</div>
-            <div className="text-text-main font-semibold mb-2">{product.title}</div>
+            <div className="text-tiny font-mono text-text-muted tracking-widest uppercase mb-1">
+              {product.medium}
+            </div>
+            <div className="text-text-main font-semibold mb-2">
+              {product.title}
+            </div>
           </div>
           <div className="flex items-center justify-between mt-4">
-            <span className="text-gold font-bold text-lg">€{product.price.toLocaleString()}</span>
+            <span className="text-gold font-bold text-lg">
+              €{product.price.toLocaleString()}
+            </span>
             {!product.sold && (
               <button className="text-tiny font-mono text-text-muted tracking-widest uppercase hover:text-text-main transition-colors flex items-center gap-1">
                 <ShoppingBag size={11} /> Inquire
@@ -62,29 +83,45 @@ export function ProductCard({ product, delay = 0, view = "grid" }: ProductCardPr
   );
 }
 
-export function BestSellerCard({ product, delay = 0 }: { product: Painting; delay?: number }) {
-    return (
-      <RevealBlock delay={delay}>
-        <Link
-          href={`/shop/${product.id}`}
-          className="group bg-dark flex gap-6 p-6 w-full text-left hover:bg-muted-light transition-colors"
-        >
-          <div className="w-24 h-32 shrink-0 overflow-hidden bg-muted">
-            <ImageWithFallback src={product.image} alt={product.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
-          </div>
-          <div className="flex flex-col justify-between py-1">
-            <div>
-              <div className="text-tiny font-mono text-text-muted tracking-[0.15em] uppercase mb-2">{product.medium}</div>
-              <div className="text-text-main font-bold text-xl leading-tight">{product.title}</div>
+export function BestSellerCard({
+  product,
+  delay = 0,
+}: {
+  product: Painting;
+  delay?: number;
+}) {
+  return (
+    <RevealBlock delay={delay}>
+      <Link
+        href={`/shop/${product.id}`}
+        className="group bg-dark flex gap-6 p-6 w-full text-left hover:bg-muted-light transition-colors"
+      >
+        <div className="w-24 h-32 shrink-0 overflow-hidden bg-muted">
+          <ImageWithFallback
+            src={product.image}
+            alt={product.title}
+            className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+          />
+        </div>
+        <div className="flex flex-col justify-between py-1">
+          <div>
+            <div className="text-tiny font-mono text-text-muted tracking-[0.15em] uppercase mb-2">
+              {product.medium}
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-gold font-bold text-xl">€{product.price.toLocaleString()}</span>
-              <span className="text-text-muted text-xs font-mono flex items-center gap-1 group-hover:text-text-main transition-colors">
-                View <ArrowUpRight size={12} />
-              </span>
+            <div className="text-text-main font-bold text-xl leading-tight">
+              {product.title}
             </div>
           </div>
-        </Link>
-      </RevealBlock>
-    );
-  }
+          <div className="flex items-center justify-between">
+            <span className="text-gold font-bold text-xl">
+              €{product.price.toLocaleString()}
+            </span>
+            <span className="text-text-muted text-xs font-mono flex items-center gap-1 group-hover:text-text-main transition-colors">
+              View <ArrowUpRight size={12} />
+            </span>
+          </div>
+        </div>
+      </Link>
+    </RevealBlock>
+  );
+}

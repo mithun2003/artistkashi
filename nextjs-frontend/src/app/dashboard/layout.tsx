@@ -4,12 +4,17 @@ import { buildMetadata, siteUrl } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
   title: "Student Dashboard",
-  description: "Manage your enrolled courses, orders, and account settings in your dashboard.",
+  description:
+    "Manage your enrolled courses, orders, and account settings in your dashboard.",
   path: "/dashboard",
   noIndex: true,
 });
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <>
       <JsonLd
@@ -29,4 +34,3 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     </>
   );
 }
-

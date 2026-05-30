@@ -2,8 +2,16 @@ import React from "react";
 import type { Metadata } from "next";
 import { Inter_Tight, DM_Mono } from "next/font/google";
 
-const inter = Inter_Tight({ subsets: ["latin"], variable: "--font-inter-tight", weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"] });
-const dmMono = DM_Mono({ subsets: ["latin"], variable: "--font-dm-mono", weight: ["300", "400", "500"] });
+const inter = Inter_Tight({
+  subsets: ["latin"],
+  variable: "--font-inter-tight",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
+const dmMono = DM_Mono({
+  subsets: ["latin"],
+  variable: "--font-dm-mono",
+  weight: ["300", "400", "500"],
+});
 
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-store";
@@ -46,7 +54,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${dmMono.variable}`}>
       <head>
-        <link rel="preload" as="image" href="https://images.unsplash.com/photo-1774126512715-5a8858c579c9?w=1800&h=1100&fit=crop&auto=format" />
+        <link
+          rel="preload"
+          as="image"
+          href="https://images.unsplash.com/photo-1774126512715-5a8858c579c9?w=1800&h=1100&fit=crop&auto=format"
+        />
       </head>
       <body className="antialiased bg-dark">
         <JsonLd

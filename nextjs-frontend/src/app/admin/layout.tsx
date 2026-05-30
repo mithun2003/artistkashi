@@ -3,19 +3,19 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { 
-  LayoutDashboard, 
-  BookOpen, 
-  ShoppingBag, 
-  Users, 
-  Settings, 
-  LogOut, 
-  Menu, 
-  Bell, 
-  Search, 
+import {
+  LayoutDashboard,
+  BookOpen,
+  ShoppingBag,
+  Users,
+  Settings,
+  LogOut,
+  Menu,
+  Bell,
+  Search,
   ChevronRight,
   PanelLeftClose,
-  PanelLeftOpen
+  PanelLeftOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-store";
@@ -23,7 +23,11 @@ import { AuthGuard } from "@/components/shared/AuthGuard";
 import { toast } from "sonner";
 import { getAuthErrorMessage, type AuthErrorInput } from "@/api/auth-api";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(false); // For mobile
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false); // For desktop
   const pathname = usePathname();
@@ -44,7 +48,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const menuItems = [
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
-    { label: "Home Customizer", href: "/admin/home-customizer", icon: Settings },
+    {
+      label: "Home Customizer",
+      href: "/admin/home-customizer",
+      icon: Settings,
+    },
     { label: "Courses", href: "/admin/courses", icon: BookOpen },
     { label: "Orders", href: "/admin/orders", icon: ShoppingBag },
     { label: "Users", href: "/admin/users", icon: Users },
@@ -66,17 +74,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className="h-screen bg-transparent flex overflow-hidden relative z-10">
         {/* Mobile Sidebar Overlay */}
         {sidebarOpen && (
-          <div 
+          <div
             className="fixed inset-0 bg-dark/60 backdrop-blur-sm z-40 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           />
         )}
 
         {/* Sidebar */}
-        <aside 
+        <aside
           className={cn(
             "fixed inset-y-0 left-0 bg-muted-light/80 backdrop-blur-xl border-r border-border z-50 transition-all duration-300 ease-in-out lg:static lg:inset-0 flex flex-col overflow-hidden",
-            sidebarOpen ? "translate-x-0 w-72" : "-translate-x-full lg:translate-x-0",
+            sidebarOpen
+              ? "translate-x-0 w-72"
+              : "-translate-x-full lg:translate-x-0",
             sidebarCollapsed ? "lg:w-20" : "lg:w-72"
           )}
         >
@@ -90,8 +100,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </div>
               ) : (
                 <div className="flex flex-col leading-none items-center lg:items-start transition-all duration-300">
-                  <span className="text-text-main text-xl font-extrabold tracking-widest uppercase">Artist</span>
-                  <span className="text-gold text-tiny font-mono tracking-[0.25em] uppercase -mt-0.5">Kashi</span>
+                  <span className="text-text-main text-xl font-extrabold tracking-widest uppercase">
+                    Artist
+                  </span>
+                  <span className="text-gold text-tiny font-mono tracking-[0.25em] uppercase -mt-0.5">
+                    Kashi
+                  </span>
                 </div>
               )}
             </Link>
@@ -108,21 +122,35 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   onClick={() => setSidebarOpen(false)}
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all group relative",
-                    isActive 
-                      ? "bg-gold text-dark" 
+                    isActive
+                      ? "bg-gold text-dark"
                       : "text-text-muted hover:text-text-main hover:bg-muted",
                     sidebarCollapsed && "lg:px-0 lg:justify-center lg:gap-0"
                   )}
                 >
-                  <item.icon size={18} className={cn("shrink-0", isActive ? "text-dark" : "text-gold group-hover:text-text-main")} />
-                  <span className={cn(
-                    "transition-all duration-300 whitespace-nowrap",
-                    sidebarCollapsed ? "lg:opacity-0 lg:w-0 lg:ml-0" : "opacity-100 w-auto ml-0"
-                  )}>
+                  <item.icon
+                    size={18}
+                    className={cn(
+                      "shrink-0",
+                      isActive
+                        ? "text-dark"
+                        : "text-gold group-hover:text-text-main"
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      "transition-all duration-300 whitespace-nowrap",
+                      sidebarCollapsed
+                        ? "lg:opacity-0 lg:w-0 lg:ml-0"
+                        : "opacity-100 w-auto ml-0"
+                    )}
+                  >
                     {item.label}
                   </span>
-                  {isActive && !sidebarCollapsed && <ChevronRight size={14} className="ml-auto shrink-0" />}
-                  
+                  {isActive && !sidebarCollapsed && (
+                    <ChevronRight size={14} className="ml-auto shrink-0" />
+                  )}
+
                   {/* Tooltip for collapsed state */}
                   {sidebarCollapsed && (
                     <div className="absolute left-full ml-4 px-2 py-1 bg-gold text-dark text-xs font-mono tracking-widest uppercase opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap hidden lg:block border border-dark">
@@ -135,24 +163,41 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </nav>
 
           {/* Fixed Sidebar Bottom Section */}
-          <div className={cn("border-t border-border shrink-0 bg-muted-light/50 transition-all duration-300", sidebarCollapsed ? "p-2" : "p-4")}>
-            <div className={cn(
-              "bg-dark/50 flex items-center border border-border/50 transition-all duration-300 overflow-hidden",
-              sidebarCollapsed ? "justify-center p-2 rounded-lg" : "p-4 mb-4 gap-3"
-            )}>
+          <div
+            className={cn(
+              "border-t border-border shrink-0 bg-muted-light/50 transition-all duration-300",
+              sidebarCollapsed ? "p-2" : "p-4"
+            )}
+          >
+            <div
+              className={cn(
+                "bg-dark/50 flex items-center border border-border/50 transition-all duration-300 overflow-hidden",
+                sidebarCollapsed
+                  ? "justify-center p-2 rounded-lg"
+                  : "p-4 mb-4 gap-3"
+              )}
+            >
               <div className="w-10 h-10 bg-muted border border-border flex items-center justify-center text-gold font-bold text-sm shrink-0">
                 {user?.name.substring(0, 2).toUpperCase()}
               </div>
-              <div className={cn(
-                "min-w-0 transition-all duration-300",
-                sidebarCollapsed ? "lg:opacity-0 lg:w-0" : "opacity-100 w-auto"
-              )}>
-                <div className="text-text-main text-sm font-bold truncate">{user?.name}</div>
-                <div className="text-text-muted text-2xs font-mono uppercase tracking-widest">Admin</div>
+              <div
+                className={cn(
+                  "min-w-0 transition-all duration-300",
+                  sidebarCollapsed
+                    ? "lg:opacity-0 lg:w-0"
+                    : "opacity-100 w-auto"
+                )}
+              >
+                <div className="text-text-main text-sm font-bold truncate">
+                  {user?.name}
+                </div>
+                <div className="text-text-muted text-2xs font-mono uppercase tracking-widest">
+                  Admin
+                </div>
               </div>
             </div>
-            
-            <button 
+
+            <button
               onClick={handleLogout}
               className={cn(
                 "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-text-muted hover:text-red-500 hover:bg-red-500/5 transition-all",
@@ -160,10 +205,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               )}
             >
               <LogOut size={18} className="shrink-0" />
-              <span className={cn(
-                "transition-all duration-300 whitespace-nowrap",
-                sidebarCollapsed ? "lg:opacity-0 lg:w-0" : "opacity-100 w-auto"
-              )}>
+              <span
+                className={cn(
+                  "transition-all duration-300 whitespace-nowrap",
+                  sidebarCollapsed
+                    ? "lg:opacity-0 lg:w-0"
+                    : "opacity-100 w-auto"
+                )}
+              >
                 Sign Out
               </span>
             </button>
@@ -175,27 +224,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* Top Header - Fixed */}
           <header className="h-20 bg-muted-light/80 backdrop-blur-xl border-b border-border flex items-center justify-between px-4 lg:px-8 shrink-0 z-30">
             <div className="flex items-center gap-4">
-              <button 
+              <button
                 className="lg:hidden text-text-muted hover:text-text-main"
                 onClick={() => setSidebarOpen(true)}
               >
                 <Menu size={24} />
               </button>
-              
+
               {/* Main Desktop Toggle in Header */}
-              <button 
+              <button
                 onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
                 className="hidden lg:flex text-text-muted hover:text-gold transition-colors"
                 title={sidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
               >
-                {sidebarCollapsed ? <PanelLeftOpen size={22} /> : <PanelLeftClose size={22} />}
+                {sidebarCollapsed ? (
+                  <PanelLeftOpen size={22} />
+                ) : (
+                  <PanelLeftClose size={22} />
+                )}
               </button>
 
               <div className="hidden md:flex items-center gap-2 bg-dark/50 px-4 py-2 border border-border focus-within:border-gold transition-colors ml-2">
                 <Search size={16} className="text-text-muted" />
-                <input 
-                  type="text" 
-                  placeholder="Search console..." 
+                <input
+                  type="text"
+                  placeholder="Search console..."
                   className="bg-transparent border-none text-sm text-text-main focus:outline-none w-48 lg:w-64"
                 />
               </div>
@@ -206,8 +259,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Bell size={20} />
                 <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-muted-light"></span>
               </button>
-              
-              <Link 
+
+              <Link
                 href="/dashboard"
                 className="hidden sm:block text-label font-mono tracking-widest uppercase text-gold hover:text-text-main transition-colors border border-gold/30 px-3 py-1.5"
               >
@@ -218,9 +271,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           {/* Page Content - Scrollable */}
           <main className="flex-1 overflow-y-auto p-4 lg:p-10 scrollbar-hide">
-            <div className="max-w-7xl mx-auto">
-              {children}
-            </div>
+            <div className="max-w-7xl mx-auto">{children}</div>
           </main>
         </div>
       </div>

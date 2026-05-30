@@ -17,16 +17,35 @@ export default function ShopPage() {
       <div className="max-w-360 mx-auto px-8 lg:px-16">
         <RevealBlock>
           <div className="border-b border-border pb-16 mb-12">
-            <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">The Gallery Shop</div>
+            <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">
+              The Gallery Shop
+            </div>
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
               <h1 className="text-h1 font-extrabold tracking-[-0.03em] text-text-main leading-[0.9]">
-                Original Works<br />& Art Prints
+                Original Works
+                <br />& Art Prints
               </h1>
               <div className="flex items-center gap-4">
-                <button onClick={() => setView("grid")} className={cn("p-2 border", view === "grid" ? "border-text-main text-text-main" : "border-border text-text-muted")}>
+                <button
+                  onClick={() => setView("grid")}
+                  className={cn(
+                    "p-2 border",
+                    view === "grid"
+                      ? "border-text-main text-text-main"
+                      : "border-border text-text-muted"
+                  )}
+                >
                   <Grid size={16} />
                 </button>
-                <button onClick={() => setView("list")} className={cn("p-2 border", view === "list" ? "border-text-main text-text-main" : "border-border text-text-muted")}>
+                <button
+                  onClick={() => setView("list")}
+                  className={cn(
+                    "p-2 border",
+                    view === "list"
+                      ? "border-text-main text-text-main"
+                      : "border-border text-text-muted"
+                  )}
+                >
                   <List size={16} />
                 </button>
               </div>
@@ -34,7 +53,14 @@ export default function ShopPage() {
           </div>
         </RevealBlock>
 
-        <div className={cn("gap-px bg-border", view === "grid" ? "grid grid-cols-2 lg:grid-cols-4" : "grid grid-cols-1 md:grid-cols-2")}>
+        <div
+          className={cn(
+            "gap-px bg-border",
+            view === "grid"
+              ? "grid grid-cols-2 lg:grid-cols-4"
+              : "grid grid-cols-1 md:grid-cols-2"
+          )}
+        >
           {PAINTINGS.map((p, i) => (
             <ProductCard key={p.id} product={p} delay={i * 0.08} view={view} />
           ))}
@@ -44,12 +70,16 @@ export default function ShopPage() {
         <RevealBlock>
           <div className="mt-24 border border-border p-12 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <div>
-              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">Bespoke</div>
+              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">
+                Bespoke
+              </div>
               <h2 className="text-h3 font-extrabold tracking-tight text-text-main mb-4">
                 Commission a Custom Work
               </h2>
               <p className="text-text-muted leading-relaxed text-sm mb-8">
-                Work directly with an artist from our roster to bring a specific vision to canvas. We manage the brief, timeline, and secure delivery.
+                Work directly with an artist from our roster to bring a specific
+                vision to canvas. We manage the brief, timeline, and secure
+                delivery.
               </p>
               <PrimaryBtn>
                 Begin a Commission <ArrowRight size={16} />

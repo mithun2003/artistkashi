@@ -10,7 +10,11 @@ export const metadata: Metadata = buildMetadata({
   keywords: ["search artworks", "search courses", "artist kashi search"],
 });
 
-export default function SearchLayout({ children }: { children: React.ReactNode }) {
+export default function SearchLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <>
       <JsonLd
@@ -30,4 +34,3 @@ export default function SearchLayout({ children }: { children: React.ReactNode }
     </>
   );
 }
-

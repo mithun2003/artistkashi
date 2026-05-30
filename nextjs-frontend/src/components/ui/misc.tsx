@@ -4,7 +4,15 @@ import React, { useRef } from "react";
 import { motion, useInView } from "motion/react";
 import { cn } from "@/lib/utils";
 
-export function RevealBlock({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
+export function RevealBlock({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   return (

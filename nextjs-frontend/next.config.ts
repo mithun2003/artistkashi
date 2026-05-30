@@ -1,9 +1,11 @@
 import type { NextConfig } from "next";
 
-const backendUrl = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000").replace(/\/$/, "");
+const backendUrl = (
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000"
+).replace(/\/$/, "");
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ['192.168.1.4'],
+  allowedDevOrigins: ["192.168.1.4"],
   async rewrites() {
     return [
       {
@@ -18,8 +20,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
+        protocol: "https",
+        hostname: "images.unsplash.com",
       },
     ],
   },

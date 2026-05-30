@@ -178,6 +178,18 @@ export type UserCreate = {
      * Is Verified
      */
     is_verified?: boolean | null;
+    /**
+     * Full Name
+     */
+    full_name?: string | null;
+    /**
+     * Phone
+     */
+    phone?: string | null;
+    /**
+     * Role
+     */
+    role?: string | null;
 };
 
 /**
@@ -204,6 +216,18 @@ export type UserRead = {
      * Is Verified
      */
     is_verified?: boolean;
+    /**
+     * Full Name
+     */
+    full_name?: string | null;
+    /**
+     * Phone
+     */
+    phone?: string | null;
+    /**
+     * Role
+     */
+    role?: string | null;
 };
 
 /**
@@ -230,6 +254,18 @@ export type UserUpdate = {
      * Is Verified
      */
     is_verified?: boolean | null;
+    /**
+     * Full Name
+     */
+    full_name?: string | null;
+    /**
+     * Phone
+     */
+    phone?: string | null;
+    /**
+     * Role
+     */
+    role?: string | null;
 };
 
 /**

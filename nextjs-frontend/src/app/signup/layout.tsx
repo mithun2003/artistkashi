@@ -5,12 +5,17 @@ import { buildMetadata, siteUrl } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
   title: "Sign Up",
-  description: "Create your Artist Kashi account to enroll in courses and collect original paintings.",
+  description:
+    "Create your Artist Kashi account to enroll in courses and collect original paintings.",
   path: "/signup",
   noIndex: true,
 });
 
-export default function SignupLayout({ children }: { children: React.ReactNode }) {
+export default function SignupLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <>
       <JsonLd
@@ -30,4 +35,3 @@ export default function SignupLayout({ children }: { children: React.ReactNode }
     </>
   );
 }
-

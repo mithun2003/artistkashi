@@ -7,10 +7,19 @@ export const metadata: Metadata = buildMetadata({
   description:
     "Discover original paintings and curated art prints from Artist Kashi, with provenance and worldwide shipping.",
   path: "/shop",
-  keywords: ["original paintings", "art prints", "fine art", "artist kashi shop"],
+  keywords: [
+    "original paintings",
+    "art prints",
+    "fine art",
+    "artist kashi shop",
+  ],
 });
 
-export default function ShopLayout({ children }: { children: React.ReactNode }) {
+export default function ShopLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <>
       <JsonLd
@@ -27,4 +36,3 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
     </>
   );
 }
-

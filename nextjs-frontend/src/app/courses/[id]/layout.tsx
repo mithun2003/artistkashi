@@ -19,7 +19,8 @@ export async function generateMetadata({
   if (!course) {
     return buildMetadata({
       title: "Course Not Found",
-      description: "The requested course could not be found in the Artist Kashi academy.",
+      description:
+        "The requested course could not be found in the Artist Kashi academy.",
       path: `/courses/${id}`,
       noIndex: true,
     });
@@ -31,7 +32,12 @@ export async function generateMetadata({
     path: `/courses/${course.id}`,
     type: "article",
     image: course.image,
-    keywords: [course.title, course.level, "painting course", "art masterclass"],
+    keywords: [
+      course.title,
+      course.level,
+      "painting course",
+      "art masterclass",
+    ],
   });
 }
 
@@ -76,4 +82,3 @@ export default async function CourseDetailLayout({
     </>
   );
 }
-

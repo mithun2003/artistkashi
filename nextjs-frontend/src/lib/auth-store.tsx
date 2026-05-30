@@ -84,7 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(current);
         setToken(storedToken);
         persistSession(current, storedToken);
-      } catch (error) {
+      } catch {
         // Silently fail auth restoration - just treat as guest
         clearSession();
         if (active) {

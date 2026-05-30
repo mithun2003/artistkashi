@@ -1,4 +1,10 @@
-import { Painting, Course, Testimonial, FAQItem, CurriculumSection } from "@/types";
+import {
+  Painting,
+  Course,
+  Testimonial,
+  FAQItem,
+  CurriculumSection,
+} from "@/types";
 
 export const PAINTINGS: Painting[] = [
   {
@@ -6,7 +12,8 @@ export const PAINTINGS: Painting[] = [
     title: "Solitude in Ochre",
     medium: "Oil on linen, 120 × 90 cm",
     price: 4800,
-    image: "https://images.unsplash.com/photo-1541512416146-3cf58d6b27cc?w=600&h=750&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1541512416146-3cf58d6b27cc?w=600&h=750&fit=crop&auto=format",
     sold: false,
   },
   {
@@ -14,7 +21,8 @@ export const PAINTINGS: Painting[] = [
     title: "The Weight of Silence",
     medium: "Oil on canvas, 100 × 80 cm",
     price: 3600,
-    image: "https://images.unsplash.com/photo-1566410824233-a8011929225c?w=600&h=750&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1566410824233-a8011929225c?w=600&h=750&fit=crop&auto=format",
     sold: false,
   },
   {
@@ -22,7 +30,8 @@ export const PAINTINGS: Painting[] = [
     title: "Nocturne No. 7",
     medium: "Acrylic on board, 60 × 80 cm",
     price: 2200,
-    image: "https://images.unsplash.com/photo-1556139930-c23fa4a4f934?w=600&h=750&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1556139930-c23fa4a4f934?w=600&h=750&fit=crop&auto=format",
     sold: true,
   },
   {
@@ -30,7 +39,8 @@ export const PAINTINGS: Painting[] = [
     title: "Cartography of Feeling",
     medium: "Mixed media, 150 × 120 cm",
     price: 6400,
-    image: "https://images.unsplash.com/photo-1570475754561-4effe71c5084?w=600&h=750&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1570475754561-4effe71c5084?w=600&h=750&fit=crop&auto=format",
     sold: false,
   },
   {
@@ -38,7 +48,8 @@ export const PAINTINGS: Painting[] = [
     title: "Ephemeral Dawn",
     medium: "Oil on panel, 50 × 70 cm",
     price: 1850,
-    image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&h=750&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&h=750&fit=crop&auto=format",
     sold: false,
   },
   {
@@ -46,7 +57,8 @@ export const PAINTINGS: Painting[] = [
     title: "Structure of Memory",
     medium: "Mixed media on canvas, 120 × 120 cm",
     price: 5200,
-    image: "https://images.unsplash.com/photo-1549490349-8643362247b5?w=600&h=750&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1549490349-8643362247b5?w=600&h=750&fit=crop&auto=format",
     sold: false,
   },
   {
@@ -54,7 +66,8 @@ export const PAINTINGS: Painting[] = [
     title: "The Quiet Hour",
     medium: "Watercolor on paper, 40 × 60 cm",
     price: 950,
-    image: "https://images.unsplash.com/photo-1582721691120-d1db3852893e?w=600&h=750&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1582721691120-d1db3852893e?w=600&h=750&fit=crop&auto=format",
     sold: true,
   },
   {
@@ -62,7 +75,8 @@ export const PAINTINGS: Painting[] = [
     title: "Resonance in Blue",
     medium: "Acrylic on linen, 90 × 110 cm",
     price: 3100,
-    image: "https://images.unsplash.com/photo-1612733399020-e2194e3dbfda?w=600&h=750&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1612733399020-e2194e3dbfda?w=600&h=750&fit=crop&auto=format",
     sold: false,
   },
 ];
@@ -79,7 +93,8 @@ export const COURSES: Course[] = [
     students: 2847,
     rating: 4.9,
     price: 280,
-    image: "https://images.unsplash.com/photo-1621975496579-6bd9e8c6ab65?w=700&h=420&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1621975496579-6bd9e8c6ab65?w=700&h=420&fit=crop&auto=format",
     tags: ["Oil", "Composition", "Color Theory"],
   },
   {
@@ -93,7 +108,8 @@ export const COURSES: Course[] = [
     students: 1203,
     rating: 4.8,
     price: 420,
-    image: "https://images.unsplash.com/photo-1774126512715-5a8858c579c9?w=700&h=420&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1774126512715-5a8858c579c9?w=700&h=420&fit=crop&auto=format",
     tags: ["Portrait", "Oil", "Anatomy"],
   },
   {
@@ -107,7 +123,8 @@ export const COURSES: Course[] = [
     students: 1876,
     rating: 4.7,
     price: 195,
-    image: "https://images.unsplash.com/photo-1566410824233-a8011929225c?w=700&h=420&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1566410824233-a8011929225c?w=700&h=420&fit=crop&auto=format",
     tags: ["Abstract", "Acrylic", "Texture"],
   },
   {
@@ -121,7 +138,8 @@ export const COURSES: Course[] = [
     students: 3420,
     rating: 4.9,
     price: 150,
-    image: "https://images.unsplash.com/photo-1579783901586-d88db74b4fe4?w=700&h=420&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1579783901586-d88db74b4fe4?w=700&h=420&fit=crop&auto=format",
     tags: ["Still Life", "Charcoal", "Light"],
   },
   {
@@ -135,7 +153,8 @@ export const COURSES: Course[] = [
     students: 5600,
     rating: 5.0,
     price: 120,
-    image: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=700&h=420&fit=crop&auto=format",
+    image:
+      "https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=700&h=420&fit=crop&auto=format",
     tags: ["Color", "Theory", "History"],
   },
 ];
@@ -195,8 +214,40 @@ export const FAQ_ITEMS: FAQItem[] = [
 ];
 
 export const CURRICULUM: CurriculumSection[] = [
-  { section: "01. Foundation", lessons: ["Introduction to the Artist method", "Understanding your materials", "Color theory for oil painters", "The value study system"] },
-  { section: "02. Composition", lessons: ["Dynamic vs static arrangements", "The golden ratio in practice", "Light as compositional force", "Edge control"] },
-  { section: "03. Painting Process", lessons: ["Alla prima technique", "Glazing and layering", "Building texture and impasto", "Wet-on-wet mastery"] },
-  { section: "04. The Finished Work", lessons: ["Varnishing and archival care", "Photographing your paintings", "Entering exhibitions", "Pricing your work"] },
+  {
+    section: "01. Foundation",
+    lessons: [
+      "Introduction to the Artist method",
+      "Understanding your materials",
+      "Color theory for oil painters",
+      "The value study system",
+    ],
+  },
+  {
+    section: "02. Composition",
+    lessons: [
+      "Dynamic vs static arrangements",
+      "The golden ratio in practice",
+      "Light as compositional force",
+      "Edge control",
+    ],
+  },
+  {
+    section: "03. Painting Process",
+    lessons: [
+      "Alla prima technique",
+      "Glazing and layering",
+      "Building texture and impasto",
+      "Wet-on-wet mastery",
+    ],
+  },
+  {
+    section: "04. The Finished Work",
+    lessons: [
+      "Varnishing and archival care",
+      "Photographing your paintings",
+      "Entering exhibitions",
+      "Pricing your work",
+    ],
+  },
 ];

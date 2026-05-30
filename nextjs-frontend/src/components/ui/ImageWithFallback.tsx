@@ -12,17 +12,8 @@ type ImageWithFallbackProps = Omit<ImageProps, "src" | "alt"> & {
 export function ImageWithFallback(props: ImageWithFallbackProps) {
   const [didError, setDidError] = useState(false);
 
-  const {
-    src,
-    alt,
-    style,
-    className,
-    width,
-    height,
-    fill,
-    onError,
-    ...rest
-  } = props;
+  const { src, alt, style, className, width, height, fill, onError, ...rest } =
+    props;
 
   const handleError: NonNullable<ImageProps["onError"]> = (event) => {
     setDidError(true);
@@ -32,7 +23,7 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
   const resolvedSrc = didError ? ERROR_IMG_SRC : src || ERROR_IMG_SRC;
   const resolvedAlt = didError ? "Error loading image" : alt || "Image";
 
-  const sizesProp = fill ? { sizes: (rest as any).sizes ?? "100vw" } : {};
+  const sizesProp = fill ? { sizes: rest.sizes ?? "100vw" } : {};
 
   return (
     <Image

@@ -16,7 +16,11 @@ interface AuthGuardProps {
  * - Redirects logged-in users away from guest-only routes
  * - Redirects users without proper roles
  */
-export function AuthGuard({ children, allowedRoles, guestOnly }: AuthGuardProps) {
+export function AuthGuard({
+  children,
+  allowedRoles,
+  guestOnly,
+}: AuthGuardProps) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -40,7 +44,9 @@ export function AuthGuard({ children, allowedRoles, guestOnly }: AuthGuardProps)
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-dark">
-        <div className="text-gold font-mono animate-pulse">VERIFYING ACCESS...</div>
+        <div className="text-gold font-mono animate-pulse">
+          VERIFYING ACCESS...
+        </div>
       </div>
     );
   }

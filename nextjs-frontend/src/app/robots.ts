@@ -7,11 +7,16 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/dashboard", "/lesson-player", "/login", "/signup"],
+        disallow: [
+          "/admin",
+          "/dashboard",
+          "/lesson-player",
+          "/login",
+          "/signup",
+        ],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
     host: siteUrl,
   };
 }
-

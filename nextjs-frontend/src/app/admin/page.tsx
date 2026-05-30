@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import {
-  BarChart2, BookOpen, Package, ShoppingBag,
-  Users, TrendingUp, ArrowUpRight,
-  Lock, Layers, Search
+  BookOpen,
+  Users,
+  TrendingUp,
+  ArrowUpRight,
+  Lock,
+  Layers,
+  Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { COURSES, PAINTINGS } from "@/data/constants";
 import { PrimaryBtn } from "@/components/ui/buttons";
 
 const stats = [
@@ -25,7 +27,9 @@ export default function AdminPage() {
           <h1 className="text-h3 font-extrabold tracking-tight text-text-main">
             Platform Overview
           </h1>
-          <p className="text-text-muted text-sm mt-1">Welcome back to the instructor command center.</p>
+          <p className="text-text-muted text-sm mt-1">
+            Welcome back to the instructor command center.
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <PrimaryBtn className="px-5 py-2.5 text-xs">
@@ -37,10 +41,22 @@ export default function AdminPage() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s) => (
-          <div key={s.label} className="bg-muted-light border border-border p-6">
-            <div className="text-label font-mono text-text-muted tracking-widest uppercase mb-3">{s.label}</div>
-            <div className="text-text-main font-extrabold text-3xl mb-2">{s.value}</div>
-            <div className={cn("text-label font-mono flex items-center gap-1", s.up ? "text-gold" : "text-text-muted")}>
+          <div
+            key={s.label}
+            className="bg-muted-light border border-border p-6"
+          >
+            <div className="text-label font-mono text-text-muted tracking-widest uppercase mb-3">
+              {s.label}
+            </div>
+            <div className="text-text-main font-extrabold text-3xl mb-2">
+              {s.value}
+            </div>
+            <div
+              className={cn(
+                "text-label font-mono flex items-center gap-1",
+                s.up ? "text-gold" : "text-text-muted"
+              )}
+            >
               <TrendingUp size={11} /> {s.change} vs last month
             </div>
           </div>
@@ -50,7 +66,9 @@ export default function AdminPage() {
       {/* Recent Activity Table */}
       <div className="border border-border bg-muted-light">
         <div className="px-8 py-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <h2 className="text-text-main font-bold text-xl">Recent Transactions</h2>
+          <h2 className="text-text-main font-bold text-xl">
+            Recent Transactions
+          </h2>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 border border-border bg-dark px-4 py-2">
               <Search size={14} className="text-text-muted" />
@@ -66,21 +84,59 @@ export default function AdminPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
-                {["ID", "Item", "Customer", "Date", "Amount", "Status"].map((h) => (
-                  <th key={h} className="text-left px-6 py-4 text-tiny font-mono text-text-muted tracking-widest uppercase bg-dark-soft">{h}</th>
-                ))}
+                {["ID", "Item", "Customer", "Date", "Amount", "Status"].map(
+                  (h) => (
+                    <th
+                      key={h}
+                      className="text-left px-6 py-4 text-tiny font-mono text-text-muted tracking-widest uppercase bg-dark-soft"
+                    >
+                      {h}
+                    </th>
+                  )
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-border-soft">
               {Array.from({ length: 6 }).map((_, i) => (
                 <tr key={i} className="hover:bg-muted transition-colors">
-                  <td className="px-6 py-4 text-text-muted font-mono text-xs">#TXN-{1200 + i}</td>
-                  <td className="px-6 py-4 text-text-main font-medium">{["Oil Painting Fundamentals", "Nocturne No. 7", "Abstract Workshop", "Solitude in Ochre"][i % 4]}</td>
-                  <td className="px-6 py-4 text-text-muted">{["Amara Nwosu", "Hugo D.", "Yuki T.", "Sofia R.", "James O.", "Maya K."][i]}</td>
+                  <td className="px-6 py-4 text-text-muted font-mono text-xs">
+                    #TXN-{1200 + i}
+                  </td>
+                  <td className="px-6 py-4 text-text-main font-medium">
+                    {
+                      [
+                        "Oil Painting Fundamentals",
+                        "Nocturne No. 7",
+                        "Abstract Workshop",
+                        "Solitude in Ochre",
+                      ][i % 4]
+                    }
+                  </td>
+                  <td className="px-6 py-4 text-text-muted">
+                    {
+                      [
+                        "Amara Nwosu",
+                        "Hugo D.",
+                        "Yuki T.",
+                        "Sofia R.",
+                        "James O.",
+                        "Maya K.",
+                      ][i]
+                    }
+                  </td>
                   <td className="px-6 py-4 text-text-muted font-mono text-xs">{`${20 - i} May 2026`}</td>
-                  <td className="px-6 py-4 text-text-main font-semibold">€{[280, 4800, 195, 420, 2200, 280][i]}</td>
+                  <td className="px-6 py-4 text-text-main font-semibold">
+                    €{[280, 4800, 195, 420, 2200, 280][i]}
+                  </td>
                   <td className="px-6 py-4">
-                    <span className={cn("text-tiny font-mono tracking-widest uppercase px-2 py-0.5 border", i % 3 === 0 ? "text-gold border-gold/30 bg-gold/5" : "text-text-muted border-text-muted/20 bg-text-muted/5")}>
+                    <span
+                      className={cn(
+                        "text-tiny font-mono tracking-widest uppercase px-2 py-0.5 border",
+                        i % 3 === 0
+                          ? "text-gold border-gold/30 bg-gold/5"
+                          : "text-text-muted border-text-muted/20 bg-text-muted/5"
+                      )}
+                    >
                       {i % 3 === 0 ? "Pending" : "Complete"}
                     </span>
                   </td>
@@ -106,11 +162,19 @@ export default function AdminPage() {
             { label: "User Management", icon: Users },
             { label: "Platform Security", icon: Lock },
           ].map((a) => (
-            <button key={a.label} className="group bg-muted-light border border-border hover:border-gold transition-all flex items-center gap-4 p-6 text-left">
+            <button
+              key={a.label}
+              className="group bg-muted-light border border-border hover:border-gold transition-all flex items-center gap-4 p-6 text-left"
+            >
               <div className="w-10 h-10 bg-dark border border-border group-hover:border-gold flex items-center justify-center transition-colors">
-                <a.icon size={18} className="text-text-muted group-hover:text-gold transition-colors" />
+                <a.icon
+                  size={18}
+                  className="text-text-muted group-hover:text-gold transition-colors"
+                />
               </div>
-              <span className="text-sm font-medium text-text-main">{a.label}</span>
+              <span className="text-sm font-medium text-text-main">
+                {a.label}
+              </span>
             </button>
           ))}
         </div>

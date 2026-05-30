@@ -8,7 +8,7 @@ export interface ReviewBase {
   text: string;
 }
 
-export interface ReviewCreate extends ReviewBase {}
+export type ReviewCreate = ReviewBase;
 
 export interface ReviewRead extends ReviewBase {
   id: string;

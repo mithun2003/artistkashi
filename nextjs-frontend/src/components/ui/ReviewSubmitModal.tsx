@@ -46,12 +46,14 @@ export function ReviewSubmitModal({
         onClose();
         onSuccess?.();
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to submit review");
+        setError(
+          err instanceof Error ? err.message : "Failed to submit review"
+        );
       } finally {
         setLoading(false);
       }
     },
-    [reviewType, entityId, rating, text, onClose, onSuccess],
+    [reviewType, entityId, rating, text, onClose, onSuccess]
   );
 
   if (!isOpen) return null;
@@ -103,7 +105,10 @@ export function ReviewSubmitModal({
 
           {/* Review Text */}
           <div>
-            <label htmlFor="review-text" className="block text-sm font-medium mb-2">
+            <label
+              htmlFor="review-text"
+              className="block text-sm font-medium mb-2"
+            >
               Your Review
             </label>
             <textarea

@@ -15,7 +15,7 @@
   --color-foreground: var(--color-text-main);
   --color-primary: var(--color-gold);
   --color-secondary: var(--color-muted);
-  
+
   /* Fonts - controlled by next/font/google when available; fallbacks used in CSS where necessary */
   /* DO NOT redefine --font-inter-tight or --font-dm-mono here to allow next/font to inject performant font-face and variable values. */
 
@@ -36,7 +36,7 @@
 
   /* Semantic Text Sizes */
   --text-label: 11px;
-  
+
   /* Display sizes (Responsive clamps) */
   --text-display-huge: clamp(48px, 7vw, 96px);
   --text-display-lg: clamp(32px, 5vw, 72px);

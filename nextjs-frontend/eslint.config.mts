@@ -12,7 +12,7 @@ export default defineConfig([
       "out/**",
       "build/**",
       "next-env.d.ts",
-      "app/openapi-client/**",
+      "src/api/openapi-client/**",
     ],
   },
 
@@ -36,6 +36,7 @@ export default defineConfig([
 
     rules: {
       "react/react-in-jsx-scope": "off",
+      "react/no-unescaped-entities": "off",
     },
   },
 ]);

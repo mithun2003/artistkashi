@@ -19,7 +19,8 @@ export async function generateMetadata({
   if (!painting) {
     return buildMetadata({
       title: "Artwork Not Found",
-      description: "The requested artwork could not be found in the Artist Kashi collection.",
+      description:
+        "The requested artwork could not be found in the Artist Kashi collection.",
       path: `/shop/${id}`,
       noIndex: true,
     });
@@ -73,4 +74,3 @@ export default async function ShopProductLayout({
     </>
   );
 }
-

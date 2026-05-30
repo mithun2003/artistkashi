@@ -1,6 +1,8 @@
 import { client } from "@/api/openapi-client/client.gen";
 
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api").replace(/\/$/, "");
+const API_BASE_URL = (
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api"
+).replace(/\/$/, "");
 
 /**
  * Configure the global API client

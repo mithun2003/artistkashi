@@ -24,7 +24,9 @@ export function Navbar() {
   const links = [
     { label: "Shop", href: "/shop" },
     { label: "Courses", href: "/courses" },
-    ...(user?.role === "admin" ? [{ label: "Instructor", href: "/admin" }] : []),
+    ...(user?.role === "admin"
+      ? [{ label: "Instructor", href: "/admin" }]
+      : []),
   ];
 
   const loginHref = `/login?returnTo=${encodeURIComponent(getSafeReturnTo(pathname) ?? "/")}`;
@@ -34,14 +36,13 @@ export function Navbar() {
       <nav
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-          scrolled ? "bg-dark/70 backdrop-blur-xl border-b border-border" : "bg-transparent"
+          scrolled
+            ? "bg-dark/70 backdrop-blur-xl border-b border-border"
+            : "bg-transparent"
         )}
       >
         <div className="max-w-360 mx-auto px-8 lg:px-16 flex items-center justify-between h-20">
-          <Link
-            href="/"
-            className="flex flex-col leading-none"
-          >
+          <Link href="/" className="flex flex-col leading-none">
             <span className="text-text-main text-xl font-extrabold tracking-[0.12em] uppercase">
               Artist
             </span>
@@ -57,7 +58,9 @@ export function Navbar() {
                 href={l.href}
                 className={cn(
                   "text-[13px] tracking-widest uppercase font-medium transition-colors duration-200",
-                  pathname === l.href ? "text-gold" : "text-text-muted hover:text-text-main"
+                  pathname === l.href
+                    ? "text-gold"
+                    : "text-text-muted hover:text-text-main"
                 )}
               >
                 {l.label}
@@ -66,17 +69,26 @@ export function Navbar() {
           </div>
 
           <div className="hidden lg:flex items-center gap-4">
-            <Link href="/search" className="text-text-muted hover:text-text-main transition-colors">
+            <Link
+              href="/search"
+              className="text-text-muted hover:text-text-main transition-colors"
+            >
               <Search size={20} />
             </Link>
 
             {user ? (
-              <Link href="/dashboard" className="text-gold hover:text-text-main transition-colors">
+              <Link
+                href="/dashboard"
+                className="text-gold hover:text-text-main transition-colors"
+              >
                 <User size={24} />
               </Link>
             ) : (
               <>
-                <Link href={loginHref} className="text-text-muted hover:text-text-main transition-colors text-[13px] tracking-widest uppercase font-medium mr-2">
+                <Link
+                  href={loginHref}
+                  className="text-text-muted hover:text-text-main transition-colors text-[13px] tracking-widest uppercase font-medium mr-2"
+                >
                   Login
                 </Link>
               </>
@@ -85,7 +97,11 @@ export function Navbar() {
 
           <div className="lg:hidden flex items-center gap-4">
             {user ? (
-              <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="text-gold hover:text-text-main transition-colors">
+              <Link
+                href="/dashboard"
+                onClick={() => setMenuOpen(false)}
+                className="text-gold hover:text-text-main transition-colors"
+              >
                 <User size={24} />
               </Link>
             ) : null}

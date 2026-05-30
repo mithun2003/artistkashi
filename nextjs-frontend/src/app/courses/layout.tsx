@@ -7,10 +7,19 @@ export const metadata: Metadata = buildMetadata({
   description:
     "Learn painting through cinematic masterclasses taught by working artists and gallery professionals.",
   path: "/courses",
-  keywords: ["painting courses", "art masterclass", "online art classes", "artist kashi academy"],
+  keywords: [
+    "painting courses",
+    "art masterclass",
+    "online art classes",
+    "artist kashi academy",
+  ],
 });
 
-export default function CoursesLayout({ children }: { children: React.ReactNode }) {
+export default function CoursesLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <>
       <JsonLd
@@ -27,4 +36,3 @@ export default function CoursesLayout({ children }: { children: React.ReactNode 
     </>
   );
 }
-

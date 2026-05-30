@@ -11,8 +11,8 @@ export function GalaxyBackground() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
 
     const stars = Array.from({ length: 400 }, () => ({
       x: Math.random() * width,
@@ -21,7 +21,7 @@ export function GalaxyBackground() {
       alpha: Math.random() * 0.8 + 0.2,
       velocity: (Math.random() * 0.5 + 0.2) * (Math.random() < 0.5 ? 1 : -1),
       speedX: (Math.random() - 0.5) * 0.3,
-      speedY: (Math.random() - 0.5) * 0.3
+      speedY: (Math.random() - 0.5) * 0.3,
     }));
 
     let animationFrameId: number;
@@ -32,7 +32,7 @@ export function GalaxyBackground() {
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
         // More subtle gold color with lower base opacity
-        ctx.fillStyle = `rgba(184, 157, 92, ${star.alpha * 0.4})`; 
+        ctx.fillStyle = `rgba(184, 157, 92, ${star.alpha * 0.4})`;
         ctx.fill();
 
         // Slower twinkle effect

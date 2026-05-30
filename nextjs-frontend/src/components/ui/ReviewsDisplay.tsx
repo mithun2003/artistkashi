@@ -54,7 +54,9 @@ export function ReviewsDisplay({
   };
 
   if (loading) {
-    return <div className="text-center py-8 text-gray-500">Loading reviews...</div>;
+    return (
+      <div className="text-center py-8 text-gray-500">Loading reviews...</div>
+    );
   }
 
   return (

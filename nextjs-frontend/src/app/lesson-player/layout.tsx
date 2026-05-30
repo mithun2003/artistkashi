@@ -9,7 +9,11 @@ export const metadata: Metadata = buildMetadata({
   noIndex: true,
 });
 
-export default function LessonPlayerLayout({ children }: { children: React.ReactNode }) {
+export default function LessonPlayerLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <>
       <JsonLd
@@ -29,4 +33,3 @@ export default function LessonPlayerLayout({ children }: { children: React.React
     </>
   );
 }
-

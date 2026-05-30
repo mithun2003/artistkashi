@@ -1,23 +1,17 @@
 /**
  * Authentication API Utilities
- * 
+ *
  * Refactored to use the centralized OpenAPI client.
  */
 
-import { apiClient } from "./api-client";
-import { 
-  authJwtLogin, 
-  registerRegister, 
-  usersCurrentUser, 
-  authJwtLogout 
+import {
+  authJwtLogin,
+  registerRegister,
+  usersCurrentUser,
+  authJwtLogout,
 } from "@/api/openapi-client/sdk.gen";
-import { 
-  type UserRead as UserData,
-} from "@/api/openapi-client/types.gen";
-import { 
-  ApiResponse, 
-  ApiResponseError, 
-} from "@/types";
+import { type UserRead as UserData } from "@/api/openapi-client/types.gen";
+import { ApiResponseError } from "@/types";
 
 export interface AuthUser {
   id: string;
@@ -42,10 +36,7 @@ export interface SignupInput {
   password: string;
 }
 
-export type AuthErrorInput =
-  | string
-  | Error
-  | ApiResponseError;
+export type AuthErrorInput = string | Error | ApiResponseError;
 
 const TOKEN_KEY = "artistkashi_auth_token";
 const USER_KEY = "artistkashi_auth_user";
@@ -70,33 +61,56 @@ export const getSafeReturnTo = (returnTo?: string | null) => {
  * Human-readable mapping for backend error codes
  */
 const AUTH_ERROR_MESSAGES: Record<string, string> = {
-  "LOGIN_BAD_CREDENTIALS": "Incorrect email or password. Please try again.",
-  "REGISTER_USER_ALREADY_EXISTS": "An account with this email already exists.",
-  "LOGIN_USER_NOT_VERIFIED": "Please verify your email address before logging in.",
-  "RESET_PASSWORD_BAD_TOKEN": "Password reset link is invalid or has expired.",
-  "VERIFY_USER_BAD_TOKEN": "Verification link is invalid or has expired.",
-  "PASSWORD_TOO_SHORT": "Password must be at least 8 characters long.",
-  "PASSWORD_TOO_COMMON": "This password is too common. Please choose a stronger one.",
+  LOGIN_BAD_CREDENTIALS: "Incorrect email or password. Please try again.",
+  REGISTER_USER_ALREADY_EXISTS: "An account with this email already exists.",
+  LOGIN_USER_NOT_VERIFIED:
+    "Please verify your email address before logging in.",
+  RESET_PASSWORD_BAD_TOKEN: "Password reset link is invalid or has expired.",
+  VERIFY_USER_BAD_TOKEN: "Verification link is invalid or has expired.",
+  PASSWORD_TOO_SHORT: "Password must be at least 8 characters long.",
+  PASSWORD_TOO_COMMON:
+    "This password is too common. Please choose a stronger one.",
 };
 
 /**
  * Parses error messages from the API
  */
-export const getAuthErrorMessage = (error: AuthErrorInput) => {
+export const getAuthErrorMessage = (error: unknown): string => {
   if (typeof error === "string") return AUTH_ERROR_MESSAGES[error] || error;
   if (error instanceof Error) return error.message;
 
-  if (error.success === false) {
-    // Check if message is a known error code
-    if (error.message && AUTH_ERROR_MESSAGES[error.message]) {
-      return AUTH_ERROR_MESSAGES[error.message];
+  // Handle OpenAPI client error structure
+  if (error && typeof error === "object") {
+    const err = error as Record<string, unknown>;
+
+    // Check for our custom ApiResponseError structure
+    if (err.success === false) {
+      const message = err.message as string | undefined;
+      if (message && AUTH_ERROR_MESSAGES[message]) {
+        return AUTH_ERROR_MESSAGES[message];
+      }
+
+      const errors = err.errors as Record<string, string[]> | undefined;
+      if (errors) {
+        const messages = Object.values(errors)
+          .flat()
+          .filter((m): m is string => typeof m === "string" && m.length > 0);
+        if (messages.length > 0) return messages[0];
+      }
+      return String(message || "Request failed");
     }
 
-    if (error.errors) {
-      const messages = Object.values(error.errors).flat().filter(m => m.length > 0);
-      if (messages.length > 0) return messages[0];
+    // Check for FastAPI ErrorModel (detail field)
+    const detail = err.detail;
+    if (detail) {
+      if (typeof detail === "string") {
+        return AUTH_ERROR_MESSAGES[detail] || detail;
+      }
+      if (typeof detail === "object" && detail !== null) {
+        const firstError = Object.values(detail)[0];
+        if (typeof firstError === "string") return firstError;
+      }
     }
-    return error.message;
   }
 
   return "Request failed";
@@ -122,7 +136,7 @@ export async function loginRequest(input: LoginInput) {
   });
 
   if (error) {
-    throw new Error(getAuthErrorMessage(error as any));
+    throw new Error(getAuthErrorMessage(error));
   }
 
   return data;
@@ -138,7 +152,7 @@ export async function registerRequest(input: SignupInput) {
   });
 
   if (error) {
-    throw new Error(getAuthErrorMessage(error as any));
+    throw new Error(getAuthErrorMessage(error));
   }
 
   return data;
@@ -152,7 +166,7 @@ export async function currentUserRequest(token: string): Promise<AuthUser> {
   });
 
   if (error) {
-    throw new Error(getAuthErrorMessage(error as any));
+    throw new Error(getAuthErrorMessage(error));
   }
 
   return toAuthUser(data as UserData);

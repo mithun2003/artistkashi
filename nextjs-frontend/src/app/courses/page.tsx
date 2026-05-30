@@ -10,20 +10,26 @@ export default function CoursesPage() {
   const [activeLevel, setActiveLevel] = useState("All");
   const levels = ["All", "Beginner", "Intermediate", "Advanced"];
 
-  const filtered = activeLevel === "All" ? COURSES : COURSES.filter((c) => c.level === activeLevel);
+  const filtered =
+    activeLevel === "All"
+      ? COURSES
+      : COURSES.filter((c) => c.level === activeLevel);
 
   return (
     <main className="pt-32 min-h-screen">
       <div className="max-w-360 mx-auto px-8 lg:px-16">
         <RevealBlock>
           <div className="border-b border-border pb-16 mb-16">
-            <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">Masterclass Series</div>
+            <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">
+              Masterclass Series
+            </div>
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
               <h1 className="text-h1 font-extrabold tracking-[-0.03em] text-text-main leading-[0.9]">
                 MASTERCLASSES
               </h1>
               <p className="text-text-muted max-w-xs text-sm leading-relaxed">
-                Curriculum developed by working artists and gallery professionals. Every lesson earns lifetime access.
+                Curriculum developed by working artists and gallery
+                professionals. Every lesson earns lifetime access.
               </p>
             </div>
           </div>

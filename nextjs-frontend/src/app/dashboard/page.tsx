@@ -3,9 +3,17 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import {
-  LayoutDashboard, BookOpen, Package, Settings,
-  LogOut, Clock, Check, ShoppingBag, ArrowUpRight,
-  ChevronRight, Play
+  LayoutDashboard,
+  BookOpen,
+  Package,
+  Settings,
+  LogOut,
+  Clock,
+  Check,
+  ShoppingBag,
+  ArrowUpRight,
+  ChevronRight,
+  Play,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { COURSES } from "@/data/constants";
@@ -17,7 +25,11 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSchema, type ProfileFormValues } from "@/lib/auth-validation";
-import { getAuthErrorMessage, getRoleLabel, type AuthErrorInput } from "@/api/auth-api";
+import {
+  getAuthErrorMessage,
+  getRoleLabel,
+  type AuthErrorInput,
+} from "@/api/auth-api";
 import { toast } from "sonner";
 import { AuthGuard } from "@/components/shared/AuthGuard";
 
@@ -41,9 +53,10 @@ export default function DashboardPage() {
     },
   });
 
-  const onProfileSubmit = async (data: ProfileFormValues) => {
+  const onProfileSubmit = async () => {
     toast.info("Profile update coming soon.", {
-      description: "This feature is currently being integrated with the backend.",
+      description:
+        "This feature is currently being integrated with the backend.",
     });
   };
 
@@ -78,15 +91,21 @@ export default function DashboardPage() {
                 <div className="w-14 h-14 bg-muted border border-border flex items-center justify-center text-gold font-bold text-xl mb-4">
                   {user.name.substring(0, 2).toUpperCase()}
                 </div>
-                <div className="text-text-main font-bold text-lg">{user.name}</div>
-                <div className="text-text-muted text-sm font-mono">{user.email}</div>
+                <div className="text-text-main font-bold text-lg">
+                  {user.name}
+                </div>
+                <div className="text-text-muted text-sm font-mono">
+                  {user.email}
+                </div>
                 <div className="mt-4 flex items-center gap-2">
-                  <span className={cn(
-                    "border text-tiny font-mono tracking-widest uppercase px-2.5 py-1",
-                    user.role === "admin"
-                      ? "bg-red-500/10 border-red-500/30 text-red-500"
-                      : "bg-gold/10 border-gold/30 text-gold"
-                  )}>
+                  <span
+                    className={cn(
+                      "border text-tiny font-mono tracking-widest uppercase px-2.5 py-1",
+                      user.role === "admin"
+                        ? "bg-red-500/10 border-red-500/30 text-red-500"
+                        : "bg-gold/10 border-gold/30 text-gold"
+                    )}
+                  >
                     {getRoleLabel(user)}
                   </span>
                 </div>
@@ -104,10 +123,15 @@ export default function DashboardPage() {
                     onClick={() => setActiveTab(item.id)}
                     className={cn(
                       "w-full flex items-center gap-4 px-6 py-4 text-sm text-left border-b border-border last:border-b-0 transition-colors",
-                      activeTab === item.id ? "bg-border-soft text-text-main" : "text-text-muted hover:text-text-main hover:bg-muted"
+                      activeTab === item.id
+                        ? "bg-border-soft text-text-main"
+                        : "text-text-muted hover:text-text-main hover:bg-muted"
                     )}
                   >
-                    <item.icon size={16} className={activeTab === item.id ? "text-gold" : ""} />
+                    <item.icon
+                      size={16}
+                      className={activeTab === item.id ? "text-gold" : ""}
+                    />
                     {item.label}
                   </button>
                 ))}
@@ -141,7 +165,9 @@ export default function DashboardPage() {
               {activeTab === "overview" && (
                 <div>
                   <div className="mb-8">
-                    <div className="text-label font-mono text-gold tracking-widest uppercase mb-2">Student Portal</div>
+                    <div className="text-label font-mono text-gold tracking-widest uppercase mb-2">
+                      Student Portal
+                    </div>
                     <h1 className="text-h3 font-extrabold tracking-tight text-text-main">
                       {greetingLabel}, {user.name}.
                     </h1>
@@ -157,8 +183,12 @@ export default function DashboardPage() {
                     ].map((s) => (
                       <div key={s.label} className="bg-muted-light p-6">
                         <s.icon size={18} className="text-gold mb-3" />
-                        <div className="text-text-main font-extrabold text-3xl">{s.value}</div>
-                        <div className="text-text-muted text-label font-mono mt-1 uppercase tracking-widest">{s.label}</div>
+                        <div className="text-text-main font-extrabold text-3xl">
+                          {s.value}
+                        </div>
+                        <div className="text-text-muted text-label font-mono mt-1 uppercase tracking-widest">
+                          {s.label}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -166,8 +196,13 @@ export default function DashboardPage() {
                   {/* Continue Watching */}
                   <div className="border border-border bg-muted-light mb-6">
                     <div className="px-8 py-6 border-b border-border flex items-center justify-between">
-                      <h2 className="text-text-main font-bold text-xl">Continue Watching</h2>
-                      <Link href="/lesson-player" className="text-gold text-xs font-mono tracking-widest uppercase hover:text-text-main transition-colors flex items-center gap-1">
+                      <h2 className="text-text-main font-bold text-xl">
+                        Continue Watching
+                      </h2>
+                      <Link
+                        href="/lesson-player"
+                        className="text-gold text-xs font-mono tracking-widest uppercase hover:text-text-main transition-colors flex items-center gap-1"
+                      >
                         Open <ArrowUpRight size={12} />
                       </Link>
                     </div>
@@ -184,16 +219,26 @@ export default function DashboardPage() {
                           className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
                         />
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <Play size={18} fill="white" className="text-white ml-0.5 drop-shadow-md" />
+                          <Play
+                            size={18}
+                            fill="white"
+                            className="text-white ml-0.5 drop-shadow-md"
+                          />
                         </div>
                       </div>
                       <div className="flex-1 text-left">
-                        <div className="text-tiny font-mono text-text-muted uppercase tracking-widest mb-1">Lesson 3 of 42</div>
-                        <div className="text-text-main font-semibold mb-2">Color theory for oil painters</div>
+                        <div className="text-tiny font-mono text-text-muted uppercase tracking-widest mb-1">
+                          Lesson 3 of 42
+                        </div>
+                        <div className="text-text-main font-semibold mb-2">
+                          Color theory for oil painters
+                        </div>
                         <div className="w-full h-1 bg-border">
                           <div className="h-full bg-gold w-[34%]" />
                         </div>
-                        <div className="text-label font-mono text-text-muted mt-1">34% complete · 14 min remaining</div>
+                        <div className="text-label font-mono text-text-muted mt-1">
+                          34% complete · 14 min remaining
+                        </div>
                       </div>
                     </Link>
                   </div>
@@ -202,7 +247,9 @@ export default function DashboardPage() {
 
               {activeTab === "courses" && (
                 <div>
-                  <h2 className="text-text-main font-bold text-3xl mb-8">My Courses</h2>
+                  <h2 className="text-text-main font-bold text-3xl mb-8">
+                    My Courses
+                  </h2>
                   <div className="space-y-px bg-border">
                     {COURSES.map((c) => (
                       <Link
@@ -220,16 +267,25 @@ export default function DashboardPage() {
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-text-main font-semibold truncate">{c.title}</div>
-                          <div className="text-text-muted text-xs font-mono mt-1">{c.instructor}</div>
+                          <div className="text-text-main font-semibold truncate">
+                            {c.title}
+                          </div>
+                          <div className="text-text-muted text-xs font-mono mt-1">
+                            {c.instructor}
+                          </div>
                           <div className="flex items-center gap-3 mt-2">
                             <div className="w-32 h-1 bg-border">
                               <div className="h-full bg-gold w-[45%]" />
                             </div>
-                            <span className="text-tiny font-mono text-text-muted">45%</span>
+                            <span className="text-tiny font-mono text-text-muted">
+                              45%
+                            </span>
                           </div>
                         </div>
-                        <ChevronRight size={16} className="text-text-muted group-hover:text-text-main transition-colors shrink-0" />
+                        <ChevronRight
+                          size={16}
+                          className="text-text-muted group-hover:text-text-main transition-colors shrink-0"
+                        />
                       </Link>
                     ))}
                   </div>
@@ -238,30 +294,75 @@ export default function DashboardPage() {
 
               {activeTab === "orders" && (
                 <div>
-                  <h2 className="text-text-main font-bold text-3xl mb-8">Purchase History</h2>
+                  <h2 className="text-text-main font-bold text-3xl mb-8">
+                    Purchase History
+                  </h2>
                   <div className="border border-border overflow-hidden">
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="border-b border-border">
-                            {["Item", "Type", "Date", "Amount", "Status"].map((h) => (
-                              <th key={h} className="text-left px-6 py-4 text-label font-mono text-text-muted tracking-widest uppercase bg-dark-soft">{h}</th>
-                            ))}
+                            {["Item", "Type", "Date", "Amount", "Status"].map(
+                              (h) => (
+                                <th
+                                  key={h}
+                                  className="text-left px-6 py-4 text-label font-mono text-text-muted tracking-widest uppercase bg-dark-soft"
+                                >
+                                  {h}
+                                </th>
+                              )
+                            )}
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-border">
                           {[
-                            { item: "Oil Painting Fundamentals", type: "Course", date: "12 Apr 2026", amount: "€280", status: "Active" },
-                            { item: "Solitude in Ochre", type: "Painting", date: "03 Mar 2026", amount: "€4,800", status: "Shipped" },
-                            { item: "Abstract Expression Workshop", type: "Course", date: "18 Jan 2026", amount: "€195", status: "Active" },
+                            {
+                              item: "Oil Painting Fundamentals",
+                              type: "Course",
+                              date: "12 Apr 2026",
+                              amount: "€280",
+                              status: "Active",
+                            },
+                            {
+                              item: "Solitude in Ochre",
+                              type: "Painting",
+                              date: "03 Mar 2026",
+                              amount: "€4,800",
+                              status: "Shipped",
+                            },
+                            {
+                              item: "Abstract Expression Workshop",
+                              type: "Course",
+                              date: "18 Jan 2026",
+                              amount: "€195",
+                              status: "Active",
+                            },
                           ].map((r, i) => (
-                            <tr key={i} className="hover:bg-muted-light transition-colors">
-                              <td className="px-6 py-4 text-text-main">{r.item}</td>
-                              <td className="px-6 py-4 text-text-muted font-mono text-xs">{r.type}</td>
-                              <td className="px-6 py-4 text-text-muted font-mono text-xs">{r.date}</td>
-                              <td className="px-6 py-4 text-text-main font-semibold">{r.amount}</td>
+                            <tr
+                              key={i}
+                              className="hover:bg-muted-light transition-colors"
+                            >
+                              <td className="px-6 py-4 text-text-main">
+                                {r.item}
+                              </td>
+                              <td className="px-6 py-4 text-text-muted font-mono text-xs">
+                                {r.type}
+                              </td>
+                              <td className="px-6 py-4 text-text-muted font-mono text-xs">
+                                {r.date}
+                              </td>
+                              <td className="px-6 py-4 text-text-main font-semibold">
+                                {r.amount}
+                              </td>
                               <td className="px-6 py-4">
-                                <span className={cn("text-tiny font-mono tracking-widest uppercase px-2.5 py-1", r.status === "Active" ? "bg-gold/10 text-gold border border-gold/30" : "bg-text-muted/10 text-text-muted border border-text-muted/20")}>
+                                <span
+                                  className={cn(
+                                    "text-tiny font-mono tracking-widest uppercase px-2.5 py-1",
+                                    r.status === "Active"
+                                      ? "bg-gold/10 text-gold border border-gold/30"
+                                      : "bg-text-muted/10 text-text-muted border border-text-muted/20"
+                                  )}
+                                >
                                   {r.status}
                                 </span>
                               </td>
@@ -276,54 +377,82 @@ export default function DashboardPage() {
 
               {activeTab === "settings" && (
                 <div>
-                  <h2 className="text-text-main font-bold text-3xl mb-8">Profile Settings</h2>
+                  <h2 className="text-text-main font-bold text-3xl mb-8">
+                    Profile Settings
+                  </h2>
                   <form onSubmit={handleSubmit(onProfileSubmit)}>
                     <div className="border border-border bg-muted-light divide-y divide-border">
                       <div className="px-8 py-6 flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
-                        <label className="text-label font-mono text-text-muted tracking-widest uppercase md:w-32 shrink-0">Full Name</label>
+                        <label className="text-label font-mono text-text-muted tracking-widest uppercase md:w-32 shrink-0">
+                          Full Name
+                        </label>
                         <div className="flex-1">
                           <input
                             {...register("fullName")}
                             type="text"
                             className={cn(
                               "w-full bg-transparent text-text-main text-sm outline-none border-b transition-colors pb-1",
-                              errors.fullName ? "border-red-500" : "border-border focus:border-gold"
+                              errors.fullName
+                                ? "border-red-500"
+                                : "border-border focus:border-gold"
                             )}
                           />
-                          {errors.fullName && <p className="mt-1 text-xs text-red-500 font-mono">{errors.fullName.message}</p>}
+                          {errors.fullName && (
+                            <p className="mt-1 text-xs text-red-500 font-mono">
+                              {errors.fullName.message}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="px-8 py-6 flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
-                        <label className="text-label font-mono text-text-muted tracking-widest uppercase md:w-32 shrink-0">Email</label>
+                        <label className="text-label font-mono text-text-muted tracking-widest uppercase md:w-32 shrink-0">
+                          Email
+                        </label>
                         <div className="flex-1">
                           <input
                             {...register("email")}
                             type="email"
                             className={cn(
                               "w-full bg-transparent text-text-main text-sm outline-none border-b transition-colors pb-1",
-                              errors.email ? "border-red-500" : "border-border focus:border-gold"
+                              errors.email
+                                ? "border-red-500"
+                                : "border-border focus:border-gold"
                             )}
                           />
-                          {errors.email && <p className="mt-1 text-xs text-red-500 font-mono">{errors.email.message}</p>}
+                          {errors.email && (
+                            <p className="mt-1 text-xs text-red-500 font-mono">
+                              {errors.email.message}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="px-8 py-6 flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
-                        <label className="text-label font-mono text-text-muted tracking-widest uppercase md:w-32 shrink-0">Phone</label>
+                        <label className="text-label font-mono text-text-muted tracking-widest uppercase md:w-32 shrink-0">
+                          Phone
+                        </label>
                         <div className="flex-1">
                           <input
                             {...register("phone")}
                             type="text"
                             className={cn(
                               "w-full bg-transparent text-text-main text-sm outline-none border-b transition-colors pb-1",
-                              errors.phone ? "border-red-500" : "border-border focus:border-gold"
+                              errors.phone
+                                ? "border-red-500"
+                                : "border-border focus:border-gold"
                             )}
                           />
-                          {errors.phone && <p className="mt-1 text-xs text-red-500 font-mono">{errors.phone.message}</p>}
+                          {errors.phone && (
+                            <p className="mt-1 text-xs text-red-500 font-mono">
+                              {errors.phone.message}
+                            </p>
+                          )}
                         </div>
                       </div>
                     </div>
                     <div className="mt-6">
-                      <PrimaryBtn type="submit">Save Changes <Check size={16} /></PrimaryBtn>
+                      <PrimaryBtn type="submit">
+                        Save Changes <Check size={16} />
+                      </PrimaryBtn>
                     </div>
                   </form>
                 </div>

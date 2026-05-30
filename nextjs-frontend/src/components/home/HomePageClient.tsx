@@ -5,8 +5,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  Play, ArrowRight, ArrowUpRight, Minus, Plus,
-  Star, BookOpen, Clock,
+  Play,
+  ArrowRight,
+  ArrowUpRight,
+  Minus,
+  Plus,
+  Star,
+  BookOpen,
+  Clock,
 } from "lucide-react";
 import { PrimaryBtn, GhostBtn } from "@/components/ui/buttons";
 import { RevealBlock, GoldDivider } from "@/components/ui/misc";
@@ -26,7 +32,9 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
   const featuredPaintings = useMemo(() => {
     const selected = settings.featuredPaintings.items
       .map((id) => PAINTINGS.find((painting) => painting.id === id))
-      .filter((painting): painting is (typeof PAINTINGS)[number] => Boolean(painting));
+      .filter((painting): painting is (typeof PAINTINGS)[number] =>
+        Boolean(painting)
+      );
     return selected.length > 0 ? selected : PAINTINGS.slice(0, 4);
   }, [settings.featuredPaintings.items]);
 
@@ -40,7 +48,9 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
   const collectionPaintings = useMemo(() => {
     const selected = settings.collection.items
       .map((id) => PAINTINGS.find((painting) => painting.id === id))
-      .filter((painting): painting is (typeof PAINTINGS)[number] => Boolean(painting));
+      .filter((painting): painting is (typeof PAINTINGS)[number] =>
+        Boolean(painting)
+      );
     return selected.length > 0 ? selected : PAINTINGS.slice(0, 5);
   }, [settings.collection.items]);
 
@@ -75,7 +85,9 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
             className="flex items-center gap-4 mb-8"
           >
             <div className="w-8 h-px bg-gold" />
-            <span className="text-gold text-label font-mono tracking-[0.25em] uppercase">Artist Kashi | Fine Art & Academy</span>
+            <span className="text-gold text-label font-mono tracking-[0.25em] uppercase">
+              Artist Kashi | Fine Art & Academy
+            </span>
           </motion.div>
 
           <motion.h1
@@ -87,7 +99,9 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
             {settings.hero.title.split("\n").map((line, index) => (
               <span key={line}>
                 {index === 1 ? <span className="text-gold">{line}</span> : line}
-                {index < settings.hero.title.split("\n").length - 1 ? <br /> : null}
+                {index < settings.hero.title.split("\n").length - 1 ? (
+                  <br />
+                ) : null}
               </span>
             ))}
           </motion.h1>
@@ -113,9 +127,7 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
               </PrimaryBtn>
             </Link>
             <Link href="/shop">
-              <GhostBtn>
-                {settings.hero.ghostBtnText}
-              </GhostBtn>
+              <GhostBtn>{settings.hero.ghostBtnText}</GhostBtn>
             </Link>
           </motion.div>
 
@@ -127,12 +139,15 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
           >
             {settings.hero.stats.map((s) => (
               <div key={s.label} className="flex flex-col">
-                <span className="text-2xl font-bold text-text-main">{s.value}</span>
-                <span className="text-label font-mono text-text-muted tracking-[0.15em] uppercase mt-1">{s.label}</span>
+                <span className="text-2xl font-bold text-text-main">
+                  {s.value}
+                </span>
+                <span className="text-label font-mono text-text-muted tracking-[0.15em] uppercase mt-1">
+                  {s.label}
+                </span>
               </div>
             ))}
           </motion.div>
-
         </div>
 
         {/* Scroll indicator */}
@@ -147,7 +162,9 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
             transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
             className="w-px h-12 bg-linear-to-b from-gold to-transparent"
           />
-          <span className="text-tiny font-mono text-text-muted tracking-[0.2em] uppercase rotate-90 origin-center mt-4">Scroll</span>
+          <span className="text-tiny font-mono text-text-muted tracking-[0.2em] uppercase rotate-90 origin-center mt-4">
+            Scroll
+          </span>
         </motion.div>
       </section>
 
@@ -156,12 +173,17 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
         <RevealBlock>
           <div className="flex items-end justify-between mb-16 border-b border-border pb-10">
             <div>
-              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">{settings.featuredPaintings.label}</div>
+              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">
+                {settings.featuredPaintings.label}
+              </div>
               <h2 className="text-h2 font-extrabold leading-tight tracking-[-0.02em] text-text-main whitespace-pre-line">
                 {settings.featuredPaintings.title}
               </h2>
             </div>
-            <Link href="/shop" className="hidden md:flex items-center gap-2 text-text-muted hover:text-gold transition-colors text-sm font-mono tracking-widest uppercase">
+            <Link
+              href="/shop"
+              className="hidden md:flex items-center gap-2 text-text-muted hover:text-gold transition-colors text-sm font-mono tracking-widest uppercase"
+            >
               View All <ArrowUpRight size={16} />
             </Link>
           </div>
@@ -188,9 +210,15 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
                     </div>
                   )}
                   <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                    <div className="text-tiny font-mono text-gold tracking-[0.15em] uppercase mb-1">{p.medium}</div>
-                    <div className="text-text-main font-bold text-base leading-tight">{p.title}</div>
-                    <div className="text-text-muted text-sm mt-1">€{p.price.toLocaleString()}</div>
+                    <div className="text-tiny font-mono text-gold tracking-[0.15em] uppercase mb-1">
+                      {p.medium}
+                    </div>
+                    <div className="text-text-main font-bold text-base leading-tight">
+                      {p.title}
+                    </div>
+                    <div className="text-text-muted text-sm mt-1">
+                      €{p.price.toLocaleString()}
+                    </div>
                   </div>
                 </div>
               </Link>
@@ -204,12 +232,17 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
         <RevealBlock>
           <div className="flex items-end justify-between mb-16 border-b border-border pb-10">
             <div>
-              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">{settings.featuredCourses.label}</div>
+              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">
+                {settings.featuredCourses.label}
+              </div>
               <h2 className="text-h2 font-extrabold leading-tight tracking-[-0.02em] text-text-main whitespace-pre-line">
                 {settings.featuredCourses.title}
               </h2>
             </div>
-            <Link href="/courses" className="hidden md:flex items-center gap-2 text-text-muted hover:text-gold transition-colors text-sm font-mono tracking-widest uppercase">
+            <Link
+              href="/courses"
+              className="hidden md:flex items-center gap-2 text-text-muted hover:text-gold transition-colors text-sm font-mono tracking-widest uppercase"
+            >
               All Courses <ArrowUpRight size={16} />
             </Link>
           </div>
@@ -237,20 +270,36 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
                   </div>
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                     <div className="w-14 h-14 bg-text-main/10 backdrop-blur-md border border-text-main/20 flex items-center justify-center">
-                      <Play size={20} fill="var(--color-text-main)" className="text-text-main ml-1" />
+                      <Play
+                        size={20}
+                        fill="var(--color-text-main)"
+                        className="text-text-main ml-1"
+                      />
                     </div>
                   </div>
                 </div>
                 <div className="p-6 border-t border-border">
-                  <div className="text-label font-mono text-text-muted tracking-[0.15em] mb-3">{c.instructor}</div>
-                  <h3 className="text-text-main font-bold text-xl leading-tight mb-2">{c.title}</h3>
+                  <div className="text-label font-mono text-text-muted tracking-[0.15em] mb-3">
+                    {c.instructor}
+                  </div>
+                  <h3 className="text-text-main font-bold text-xl leading-tight mb-2">
+                    {c.title}
+                  </h3>
                   <p className="text-text-muted text-sm mb-5">{c.subtitle}</p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4 text-[12px] font-mono text-text-muted">
-                      <span className="flex items-center gap-1.5"><BookOpen size={12} />{c.lessons} lessons</span>
-                      <span className="flex items-center gap-1.5"><Clock size={12} />{c.hours}</span>
+                      <span className="flex items-center gap-1.5">
+                        <BookOpen size={12} />
+                        {c.lessons} lessons
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Clock size={12} />
+                        {c.hours}
+                      </span>
                     </div>
-                    <span className="text-text-main font-bold text-lg">€{c.price}</span>
+                    <span className="text-text-main font-bold text-lg">
+                      €{c.price}
+                    </span>
                   </div>
                 </div>
               </Link>
@@ -275,14 +324,20 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
 
               <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-dark to-transparent h-36" />
               <div className="absolute bottom-0 left-0 right-0 p-8 bg-linear-to-t from-dark to-transparent">
-                <div className="text-gold font-mono text-xs tracking-widest uppercase mb-2">{settings.about.instructorRole}</div>
-                <div className="text-text-main text-2xl font-bold">{settings.about.instructorName}</div>
+                <div className="text-gold font-mono text-xs tracking-widest uppercase mb-2">
+                  {settings.about.instructorRole}
+                </div>
+                <div className="text-text-main text-2xl font-bold">
+                  {settings.about.instructorName}
+                </div>
               </div>
             </div>
           </RevealBlock>
           <RevealBlock delay={0.2}>
             <div>
-              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-6">{settings.about.label}</div>
+              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-6">
+                {settings.about.label}
+              </div>
               <h2 className="text-h2 font-extrabold tracking-[-0.02em] text-text-main leading-tight mb-8">
                 {settings.about.title}
               </h2>
@@ -298,15 +353,20 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
                   { label: "Exhibitions", value: "45+" },
                 ].map((stat) => (
                   <div key={stat.label}>
-                    <div className="text-text-main text-xl font-bold">{stat.value}</div>
-                    <div className="text-text-muted text-tiny font-mono tracking-widest uppercase mt-1">{stat.label}</div>
+                    <div className="text-text-main text-xl font-bold">
+                      {stat.value}
+                    </div>
+                    <div className="text-text-muted text-tiny font-mono tracking-widest uppercase mt-1">
+                      {stat.label}
+                    </div>
                   </div>
                 ))}
               </div>
               <div className="mt-12">
                 <Link href="/courses">
                   <GhostBtn className="px-0 hover:pl-4 transition-all">
-                    View Masterclass Curriculum <ArrowRight size={16} className="ml-2" />
+                    View Masterclass Curriculum{" "}
+                    <ArrowRight size={16} className="ml-2" />
                   </GhostBtn>
                 </Link>
               </div>
@@ -319,7 +379,9 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
       <section className="max-w-360 mx-auto px-8 lg:px-16 pt-32">
         <RevealBlock>
           <div className="text-center mb-16">
-            <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">The Gallery</div>
+            <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">
+              The Gallery
+            </div>
             <h2 className="text-h2 font-extrabold tracking-[-0.02em] text-text-main">
               Works in the Collection
             </h2>
@@ -337,7 +399,7 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
                 href={`/shop/${painting.id}`}
                 className={cn(
                   "group relative overflow-hidden block w-full bg-muted-light",
-                  i === 0 ? "aspect-4/5 md:aspect-auto md:h-full" : "aspect-4/3",
+                  i === 0 ? "aspect-4/5 md:aspect-auto md:h-full" : "aspect-4/3"
                 )}
               >
                 <Image
@@ -369,7 +431,9 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
               className="object-cover grayscale opacity-40"
             />
             <div className="absolute inset-0 bg-linear-to-r from-dark via-dark/60 to-dark/40 flex flex-col items-start justify-center px-12 lg:px-20">
-              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-6">{settings.videoCta.label}</div>
+              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-6">
+                {settings.videoCta.label}
+              </div>
               <h2 className="text-h3 font-extrabold tracking-[-0.02em] text-text-main max-w-lg leading-tight mb-8">
                 {settings.videoCta.title}
               </h2>
@@ -378,11 +442,19 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
                 className="group flex items-center gap-4"
               >
                 <div className="w-16 h-16 bg-text-main/10 backdrop-blur-md border border-text-main/20 flex items-center justify-center group-hover:bg-gold/20 group-hover:border-gold/40 transition-all duration-300">
-                  <Play size={22} fill="var(--color-text-main)" className="text-text-main ml-1" />
+                  <Play
+                    size={22}
+                    fill="var(--color-text-main)"
+                    className="text-text-main ml-1"
+                  />
                 </div>
                 <div>
-                  <div className="text-text-main font-semibold">Watch Demo Lesson</div>
-                  <div className="text-text-muted text-sm font-mono">12 min preview</div>
+                  <div className="text-text-main font-semibold">
+                    Watch Demo Lesson
+                  </div>
+                  <div className="text-text-muted text-sm font-mono">
+                    12 min preview
+                  </div>
                 </div>
               </Link>
             </div>
@@ -394,7 +466,9 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
       <section className="max-w-360 mx-auto px-8 lg:px-16 pt-32">
         <RevealBlock>
           <div className="mb-16 border-b border-border pb-10">
-            <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">Most Collected</div>
+            <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">
+              Most Collected
+            </div>
             <h2 className="text-h2 font-extrabold tracking-[-0.02em] text-text-main">
               Best Sellers
             </h2>
@@ -418,11 +492,17 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
                 </div>
                 <div className="flex flex-col justify-between py-1">
                   <div>
-                    <div className="text-tiny font-mono text-text-muted tracking-[0.15em] uppercase mb-2">{course.level}</div>
-                    <div className="text-text-main font-bold text-xl leading-tight">{course.title}</div>
+                    <div className="text-tiny font-mono text-text-muted tracking-[0.15em] uppercase mb-2">
+                      {course.level}
+                    </div>
+                    <div className="text-text-main font-bold text-xl leading-tight">
+                      {course.title}
+                    </div>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gold font-bold text-xl">€{course.price}</span>
+                    <span className="text-gold font-bold text-xl">
+                      €{course.price}
+                    </span>
                     <span className="text-text-muted text-xs font-mono flex items-center gap-1 group-hover:text-text-main transition-colors">
                       View <ArrowUpRight size={12} />
                     </span>
@@ -439,7 +519,9 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
         <div className="max-w-360 mx-auto px-8 lg:px-16">
           <RevealBlock>
             <div className="text-center mb-20">
-              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">{settings.community.label}</div>
+              <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">
+                {settings.community.label}
+              </div>
               <h2 className="text-h2 font-extrabold tracking-[-0.02em] text-text-main">
                 {settings.community.title}
               </h2>
@@ -451,17 +533,28 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
                 <div className="bg-dark p-10 h-full flex flex-col">
                   <div className="flex gap-1 mb-8">
                     {Array.from({ length: testimonial.rating }).map((_, j) => (
-                      <Star key={j} size={12} fill="var(--color-gold)" className="text-gold" />
+                      <Star
+                        key={j}
+                        size={12}
+                        fill="var(--color-gold)"
+                        className="text-gold"
+                      />
                     ))}
                   </div>
-                  <p className="text-text-main text-base leading-relaxed flex-1 mb-10 italic">"{testimonial.text}"</p>
+                  <p className="text-text-main text-base leading-relaxed flex-1 mb-10 italic">
+                    "{testimonial.text}"
+                  </p>
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 bg-muted border border-border flex items-center justify-center text-gold text-xs font-bold">
                       {testimonial.avatar}
                     </div>
                     <div>
-                      <div className="text-text-main text-sm font-semibold">{testimonial.name}</div>
-                      <div className="text-text-muted text-xs font-mono">{testimonial.role}</div>
+                      <div className="text-text-main text-sm font-semibold">
+                        {testimonial.name}
+                      </div>
+                      <div className="text-text-muted text-xs font-mono">
+                        {testimonial.role}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -475,7 +568,9 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
       <section className="max-w-360 mx-auto px-8 lg:px-16 pt-32">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
           <RevealBlock className="lg:col-span-4">
-            <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">{settings.faq.label}</div>
+            <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">
+              {settings.faq.label}
+            </div>
             <h2 className="text-h2 font-extrabold tracking-[-0.02em] text-text-main leading-tight">
               {settings.faq.title}
             </h2>
@@ -492,9 +587,15 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
                     onClick={() => setFaqOpen(faqOpen === i ? null : i)}
                     className="w-full flex items-center justify-between py-6 text-left group"
                   >
-                    <span className="text-text-main font-semibold text-base pr-8 group-hover:text-gold transition-colors">{item.question}</span>
+                    <span className="text-text-main font-semibold text-base pr-8 group-hover:text-gold transition-colors">
+                      {item.question}
+                    </span>
                     <div className="shrink-0 w-6 h-6 border border-border flex items-center justify-center">
-                      {faqOpen === i ? <Minus size={12} className="text-gold" /> : <Plus size={12} className="text-text-muted" />}
+                      {faqOpen === i ? (
+                        <Minus size={12} className="text-gold" />
+                      ) : (
+                        <Plus size={12} className="text-text-muted" />
+                      )}
                     </div>
                   </button>
                   <AnimatePresence>
@@ -506,7 +607,9 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
                         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                         className="overflow-hidden"
                       >
-                        <p className="text-text-muted text-sm leading-relaxed pb-6">{item.answer}</p>
+                        <p className="text-text-muted text-sm leading-relaxed pb-6">
+                          {item.answer}
+                        </p>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -525,7 +628,9 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
               <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_39px,var(--color-gold)_39px,var(--color-gold)_40px),repeating-linear-gradient(90deg,transparent,transparent_39px,var(--color-gold)_39px,var(--color-gold)_40px)]" />
             </div>
             <div className="relative z-10">
-              <div className="text-label font-mono text-gold tracking-[0.25em] uppercase mb-6">{settings.banner.label}</div>
+              <div className="text-label font-mono text-gold tracking-[0.25em] uppercase mb-6">
+                {settings.banner.label}
+              </div>
               <h2 className="text-h2 font-extrabold tracking-[-0.02em] text-text-main mb-6">
                 {settings.banner.title}
               </h2>
@@ -539,9 +644,7 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
                   </PrimaryBtn>
                 </Link>
                 <Link href="/shop">
-                  <GhostBtn>
-                    {settings.banner.ghostBtnText}
-                  </GhostBtn>
+                  <GhostBtn>{settings.banner.ghostBtnText}</GhostBtn>
                 </Link>
               </div>
             </div>

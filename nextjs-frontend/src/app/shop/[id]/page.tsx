@@ -3,7 +3,6 @@
 import { useState, use } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Eye, Heart, ArrowRight, X } from "lucide-react";
-import { RevealBlock } from "@/components/ui/misc";
 import { PrimaryBtn, GhostBtn } from "@/components/ui/buttons";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { PAINTINGS } from "@/data/constants";
@@ -12,7 +11,11 @@ import { useAuth } from "@/lib/auth-store";
 import { getSafeReturnTo } from "@/api/auth-api";
 import { toast } from "sonner";
 
-export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default function ProductDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const resolvedParams = use(params);
   const paintingId = parseInt(resolvedParams.id);
   const painting = PAINTINGS.find((p) => p.id === paintingId) || PAINTINGS[0];
@@ -58,11 +61,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
           {/* Details */}
           <div className="bg-dark p-10 lg:p-14">
-            <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">Original Oil Painting</div>
+            <div className="text-label font-mono text-gold tracking-[0.2em] uppercase mb-4">
+              Original Oil Painting
+            </div>
             <h1 className="text-h3 font-extrabold tracking-[-0.02em] text-text-main leading-tight mb-3">
               {painting.title}
             </h1>
-            <div className="text-text-muted text-sm font-mono mb-8">{painting.medium}</div>
+            <div className="text-text-muted text-sm font-mono mb-8">
+              {painting.medium}
+            </div>
             <div className="text-text-main font-extrabold text-5xl mb-10">
               €{painting.price.toLocaleString()}
             </div>
@@ -76,15 +83,24 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 { label: "Provenance", value: "Direct from artist studio" },
                 { label: "Certificate", value: "Included with purchase" },
               ].map((d) => (
-                <div key={d.label} className="flex gap-6 border-b border-border-soft pb-4">
-                  <span className="text-text-muted font-mono text-[12px] uppercase tracking-widest w-28 shrink-0">{d.label}</span>
+                <div
+                  key={d.label}
+                  className="flex gap-6 border-b border-border-soft pb-4"
+                >
+                  <span className="text-text-muted font-mono text-[12px] uppercase tracking-widest w-28 shrink-0">
+                    {d.label}
+                  </span>
                   <span className="text-text-main">{d.value}</span>
                 </div>
               ))}
             </div>
 
             <div className="flex flex-col gap-4">
-              <PrimaryBtn type="button" onClick={handleInquire} className="w-full justify-center">
+              <PrimaryBtn
+                type="button"
+                onClick={handleInquire}
+                className="w-full justify-center"
+              >
                 Inquire to Purchase <ArrowRight size={16} />
               </PrimaryBtn>
               <GhostBtn className="w-full justify-center">
@@ -94,7 +110,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
             <div className="mt-10 p-6 bg-muted-light border border-border">
               <p className="text-text-muted text-sm leading-relaxed">
-                All original works ship in bespoke archival packaging with a certificate of provenance, artist statement, and full documentation. Insured worldwide shipping included.
+                All original works ship in bespoke archival packaging with a
+                certificate of provenance, artist statement, and full
+                documentation. Insured worldwide shipping included.
               </p>
             </div>
           </div>
@@ -114,7 +132,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             <button className="absolute top-6 right-8 text-text-muted hover:text-text-main">
               <X size={24} />
             </button>
-            <ImageWithFallback src={painting.image} alt={painting.title} className="max-w-[90vw] max-h-[90vh] object-contain" />
+            <ImageWithFallback
+              src={painting.image}
+              alt={painting.title}
+              className="max-w-[90vw] max-h-[90vh] object-contain"
+            />
           </motion.div>
         )}
       </AnimatePresence>

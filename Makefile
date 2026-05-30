@@ -11,6 +11,10 @@ help:
 	@echo "Available commands:"
 	@awk '/^[a-zA-Z_-]+:/{split($$1, target, ":"); print "  " target[1] "\t" substr($$0, index($$0,$$2))}' $(MAKEFILE_LIST)
 
+.PHONY: generate-openapi
+generate-openapi: ## Generate OpenAPI schema from FastAPI
+	$(DOCKER_COMPOSE) exec backend python -m commands.generate_openapi_schema
+
 # Backend commands
 .PHONY: start-backend test-backend
 
@@ -75,3 +79,6 @@ docker-test-frontend: ## Run tests for the frontend
 
 docker-up-mailhog: ## Start mailhog server
 	$(DOCKER_COMPOSE) up mailhog
+
+generate-openapi: ## Generate OpenAPI schema from FastAPI
+	$(DOCKER_COMPOSE) exec backend python -m commands.generate_openapi_schema

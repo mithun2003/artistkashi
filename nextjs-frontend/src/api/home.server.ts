@@ -15,7 +15,12 @@ async function requestJson<T>(path: string): Promise<T> {
   }
 
   const payload = await response.json();
-  if (payload && typeof payload === "object" && "success" in payload && "data" in payload) {
+  if (
+    payload &&
+    typeof payload === "object" &&
+    "success" in payload &&
+    "data" in payload
+  ) {
     return payload.data as T;
   }
 

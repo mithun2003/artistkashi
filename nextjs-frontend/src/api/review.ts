@@ -1,7 +1,14 @@
-import { type ReviewRead, type ReviewCreate, type ReviewReadPublic } from "@/types/reviews";
+import {
+  type ReviewRead,
+  type ReviewCreate,
+  type ReviewReadPublic,
+} from "@/types/reviews";
 
 const getApiBaseUrl = () =>
-  (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000").replace(/\/$/, "");
+  (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000").replace(
+    /\/$/,
+    ""
+  );
 
 const buildUrl = (path: string) => `${getApiBaseUrl()}${path}`;
 
@@ -17,11 +24,18 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.detail ?? `Request failed with status ${response.status}`);
+    throw new Error(
+      error.detail ?? `Request failed with status ${response.status}`
+    );
   }
 
   const payload = await response.json();
-  if (payload && typeof payload === "object" && "success" in payload && "data" in payload) {
+  if (
+    payload &&
+    typeof payload === "object" &&
+    "success" in payload &&
+    "data" in payload
+  ) {
     return payload.data as T;
   }
 
@@ -35,7 +49,7 @@ export async function fetchApprovedReviews(
   type?: string,
   entityId?: number,
   skip?: number,
-  limit?: number,
+  limit?: number
 ): Promise<ReviewReadPublic[]> {
   const params = new URLSearchParams();
   if (type) params.append("review_type", type);
@@ -82,7 +96,7 @@ export async function fetchAllReviews(
   entityId?: number,
   status?: string,
   skip?: number,
-  limit?: number,
+  limit?: number
 ): Promise<ReviewRead[]> {
   const params = new URLSearchParams();
   if (type) params.append("review_type", type);
@@ -114,7 +128,7 @@ export async function fetchReview(reviewId: string): Promise<ReviewRead> {
  */
 export async function updateReview(
   reviewId: string,
-  updates: { status?: string; rating?: number; text?: string },
+  updates: { status?: string; rating?: number; text?: string }
 ): Promise<ReviewRead> {
   return requestJson<ReviewRead>(`/admin/reviews/${reviewId}`, {
     method: "PUT",
