@@ -76,3 +76,12 @@ include = ["commands"]
 [build-system]
 requires = ["hatchling>=1.27.0"]
 build-backend = "hatchling.build"
+
+[tool.watchfiles]
+ignore_paths = [
+    "**/__pycache__",
+    "**/*.pyc", 
+    "**/.mypy_cache",
+    "**/logs",
+    "**/watcher.py",
+]

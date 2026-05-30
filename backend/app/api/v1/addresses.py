@@ -12,7 +12,7 @@ from app.schemas.responses import ResponseModel
 router = APIRouter(tags=["addresses"])
 
 
-@router.post("/addresses", response_model=ResponseModel[AddressRead])
+@router.post("/addresses/yo", response_model=ResponseModel[AddressRead])
 async def create_address(
     payload: AddressCreate, 
     user=Depends(current_active_user), 

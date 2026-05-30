@@ -67,13 +67,31 @@ export const getSafeReturnTo = (returnTo?: string | null) => {
 };
 
 /**
+ * Human-readable mapping for backend error codes
+ */
+const AUTH_ERROR_MESSAGES: Record<string, string> = {
+  "LOGIN_BAD_CREDENTIALS": "Incorrect email or password. Please try again.",
+  "REGISTER_USER_ALREADY_EXISTS": "An account with this email already exists.",
+  "LOGIN_USER_NOT_VERIFIED": "Please verify your email address before logging in.",
+  "RESET_PASSWORD_BAD_TOKEN": "Password reset link is invalid or has expired.",
+  "VERIFY_USER_BAD_TOKEN": "Verification link is invalid or has expired.",
+  "PASSWORD_TOO_SHORT": "Password must be at least 8 characters long.",
+  "PASSWORD_TOO_COMMON": "This password is too common. Please choose a stronger one.",
+};
+
+/**
  * Parses error messages from the API
  */
 export const getAuthErrorMessage = (error: AuthErrorInput) => {
-  if (typeof error === "string") return error;
+  if (typeof error === "string") return AUTH_ERROR_MESSAGES[error] || error;
   if (error instanceof Error) return error.message;
 
   if (error.success === false) {
+    // Check if message is a known error code
+    if (error.message && AUTH_ERROR_MESSAGES[error.message]) {
+      return AUTH_ERROR_MESSAGES[error.message];
+    }
+
     if (error.errors) {
       const messages = Object.values(error.errors).flat().filter(m => m.length > 0);
       if (messages.length > 0) return messages[0];

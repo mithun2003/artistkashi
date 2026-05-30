@@ -6,6 +6,10 @@ const { config } = require("dotenv");
 config({ path: ".env.development" });
 
 const openapiFile = process.env.OPENAPI_OUTPUT_FILE;
+
+console.log("Watcher started");
+console.log("Watching file:", openapiFile);
+
 // Watch the specific file for changes
 chokidar.watch(openapiFile).on("change", (path) => {
   console.log(`File ${path} has been modified. Running generate-client...`);

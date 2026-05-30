@@ -2,11 +2,27 @@ import time
 import re
 import subprocess
 import os
+import sys
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from threading import Timer
 
-# Updated regex to include main.py, schemas package, and all .py files in app/api
+LOCK_FILE = "/tmp/watcher.lock"
+
+def check_single_instance():
+    if os.path.exists(LOCK_FILE):
+        with open(LOCK_FILE, "r") as f:
+            old_pid = f.read().strip()
+        try:
+            os.kill(int(old_pid), 0)
+            print(f"Watcher already running at PID {old_pid}. Exiting.")
+            sys.exit(0)
+        except (OSError, ValueError):
+            os.remove(LOCK_FILE)
+    with open(LOCK_FILE, "w") as f:
+        f.write(str(os.getpid()))
+
+# ← correct for YOUR project structure
 WATCHER_REGEX_PATTERN = re.compile(r"(main\.py|schemas/.*\.py|api/.*\.py)$")
 APP_PATH = "app"
 
@@ -35,34 +51,25 @@ class MyHandler(FileSystemEventHandler):
         self.run_openapi_schema_generation()
 
     def run_mypy_checks(self):
-        """Run mypy type checks and print output."""
         print("Running mypy type checks...")
-        cmd = ["mypy", "app"] if os.path.exists("/.dockerenv") else ["uv", "run", "mypy", "app"]
         result = subprocess.run(
-            cmd,
+            ["uv", "run", "mypy", "app"],
             capture_output=True,
             text=True,
             check=False,
         )
         print(result.stdout, result.stderr, sep="\n")
         print(
-            "Type errors detected! We recommend checking the mypy output for "
-            "more information on the issues."
+            "Type errors detected!"
             if result.returncode
             else "No type errors detected."
         )
 
     def run_openapi_schema_generation(self):
-        """Run the OpenAPI schema generation command."""
         print("Proceeding with OpenAPI schema generation...")
         try:
-            cmd = (
-                ["python", "-m", "commands.generate_openapi_schema"]
-                if os.path.exists("/.dockerenv")
-                else ["uv", "run", "python", "-m", "commands.generate_openapi_schema"]
-            )
             subprocess.run(
-                cmd,
+                ["uv", "run", "python", "-m", "commands.generate_openapi_schema"],
                 check=True,
             )
             print("OpenAPI schema generation completed successfully.")
@@ -71,6 +78,8 @@ class MyHandler(FileSystemEventHandler):
 
 
 if __name__ == "__main__":
+    check_single_instance()
+    print("Watching:", APP_PATH)
     observer = Observer()
     observer.schedule(MyHandler(), APP_PATH, recursive=True)
     observer.start()
@@ -79,4 +88,6 @@ if __name__ == "__main__":
             time.sleep(1)
     except KeyboardInterrupt:
         observer.stop()
+        if os.path.exists(LOCK_FILE):
+            os.remove(LOCK_FILE)
     observer.join()
