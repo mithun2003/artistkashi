@@ -15,12 +15,11 @@ from uuid import UUID
 
 from sqlalchemy import select
 
-from app.crud.review import crud_review
 from app.core.db import async_session
+from app.crud.review import crud_review
 from app.lib.constants import DEFAULT_REVIEWS
 from app.models.review import Review, ReviewStatus
 from app.models.user import User
-from app.schemas.review import ReviewCreate
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -47,7 +46,7 @@ async def get_or_create_reviewer() -> UUID:
     """Get first admin user or create a default one if needed."""
     async with async_session() as session:
         result = await session.execute(
-            select(User).where(User.is_superuser == True).limit(1)
+            select(User).where(User.is_superuser).limit(1)
         )
         admin = result.scalar_one_or_none()
         if admin:
@@ -63,6 +62,7 @@ async def clear_reviews() -> int:
     async with async_session() as session:
         # Use crud_review for consistency if we want, but simple delete is fine
         from sqlalchemy import delete
+
         await session.execute(delete(Review))
         await session.commit()
     return 0
@@ -87,14 +87,10 @@ async def seed_reviews(
         count = 0
         for review_data in DEFAULT_REVIEWS:
             status = ReviewStatus.approved if approve_all else ReviewStatus.pending
-            
+
             await crud_review.create(
                 db=session,
-                object={
-                    **review_data,
-                    "user_id": UUID(user_id_str),
-                    "status": status
-                }
+                object={**review_data, "user_id": UUID(user_id_str), "status": status},
             )
 
             count += 1

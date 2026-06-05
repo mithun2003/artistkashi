@@ -1,16 +1,13 @@
-import uuid
 import logging
-
-from typing import Optional
+import uuid
 
 from fastapi import Depends, Request
 from fastapi_users import (
     BaseUserManager,
     FastAPIUsers,
-    UUIDIDMixin,
     InvalidPasswordException,
+    UUIDIDMixin,
 )
-
 from fastapi_users.authentication import (
     AuthenticationBackend,
     BearerTransport,
@@ -18,13 +15,14 @@ from fastapi_users.authentication import (
 )
 from fastapi_users.db import SQLAlchemyUserDatabase
 
+from app.core.auth.password_policy import validate_password_rules
 from app.core.config import settings
 from app.core.db import get_user_db
-from app.services.email import send_reset_password_email
 from app.models.user import User
 from app.schemas.user import UserCreate
-from app.core.auth.password_policy import validate_password_rules
+from app.services.email import send_reset_password_email
 
+get_user_db_dep = Depends(get_user_db)
 logger = logging.getLogger(__name__)
 
 AUTH_URL_PATH = "auth"
@@ -34,17 +32,17 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     reset_password_token_secret = settings.RESET_PASSWORD_SECRET_KEY
     verification_token_secret = settings.VERIFICATION_SECRET_KEY
 
-    async def on_after_register(self, user: User, request: Optional[Request] = None):
+    async def on_after_register(self, user: User, request: Request | None = None):
         logger.info(f"✅ User registered: {user.email} (ID: {user.id})")
 
     async def on_after_forgot_password(
-        self, user: User, token: str, request: Optional[Request] = None
+        self, user: User, token: str, request: Request | None = None
     ):
         logger.info(f"🔐 Password reset requested for: {user.email}")
         await send_reset_password_email(user, token)
 
     async def on_after_request_verify(
-        self, user: User, token: str, request: Optional[Request] = None
+        self, user: User, token: str, request: Request | None = None
     ):
         logger.info(f"📧 Email verification requested for: {user.email}")
 
@@ -60,7 +58,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
             raise InvalidPasswordException(reason=errors)
 
 
-async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db)):
+async def get_user_manager(user_db: SQLAlchemyUserDatabase = get_user_db_dep):
     yield UserManager(user_db)
 
 

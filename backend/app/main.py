@@ -3,8 +3,8 @@ import logging
 from app.api import router as api_router
 from app.core.config import settings
 from app.core.logger import configure_logging
-from app.core.setup import create_application
 from app.core.routing import simple_generate_unique_route_id
+from app.core.setup import create_application
 
 # Configure logging
 configure_logging()

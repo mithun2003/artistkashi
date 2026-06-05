@@ -1,14 +1,15 @@
 from fastapi import APIRouter
 
 from app.core.auth.users import AUTH_URL_PATH, auth_backend, fastapi_users
-from .admin import router as admin_router
-from .addresses import router as addresses_router
-from .health import router as health_router
-from .users import router as users_router
-from .reviews import router as reviews_router
 from app.schemas.user import UserCreate, UserRead, UserUpdate
 
-router = APIRouter(prefix='/api')
+from .addresses import router as addresses_router
+from .admin import router as admin_router
+from .health import router as health_router
+from .reviews import router as reviews_router
+from .users import router as users_router
+
+router = APIRouter(prefix="/api")
 
 router.include_router(
     fastapi_users.get_auth_router(auth_backend),

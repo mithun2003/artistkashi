@@ -1,5 +1,4 @@
 from collections.abc import AsyncGenerator
-from typing import Optional
 from urllib.parse import urlparse
 
 from fastapi import Depends
@@ -11,10 +10,10 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+import app.models  # noqa: F401
 from app.core.config import settings
 from app.models.base import Base
 from app.models.user import User
-import app.models  # noqa: F401
 
 # Parse database URL for asyncpg
 parsed_db_url = urlparse(settings.DATABASE_URL)
@@ -47,21 +46,25 @@ async_session_maker = async_sessionmaker(
 async_session = async_session_maker
 
 
-async def get_db() -> AsyncGenerator[AsyncSession, None]:
+async def get_db() -> AsyncGenerator[AsyncSession]:
     """Dependency to get database session."""
     async with async_session_maker() as db:
         yield db
 
 
-async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
+async def get_async_session() -> AsyncGenerator[AsyncSession]:
     """Alias for get_db, used by fastapi-users and some routes."""
     async with async_session_maker() as session:
         yield session
 
 
+# Module-level Depends singleton to avoid function calls in default args (Ruff B008)
+get_async_session_dep = Depends(get_async_session)
+
+
 async def get_user_db(
-    session: AsyncSession = Depends(get_async_session),
-) -> AsyncGenerator[SQLAlchemyUserDatabase, None]:
+    session: AsyncSession = get_async_session_dep,
+) -> AsyncGenerator[SQLAlchemyUserDatabase]:
     """Get user database adapter for fastapi-users."""
     if session is None:
         async with async_session_maker() as session:

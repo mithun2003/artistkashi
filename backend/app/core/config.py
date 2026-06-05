@@ -1,5 +1,5 @@
-from typing import Set, Optional, Any
 import json
+
 from pydantic import computed_field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -20,15 +20,15 @@ class Settings(BaseSettings):
 
     # Database Settings
     DATABASE_URL: str
-    TEST_DATABASE_URL: Optional[str] = None
+    TEST_DATABASE_URL: str | None = None
     EXPIRE_ON_COMMIT: bool = False
 
     # Email Settings
-    MAIL_USERNAME: Optional[str] = None
-    MAIL_PASSWORD: Optional[str] = None
-    MAIL_FROM: Optional[str] = None
-    MAIL_SERVER: Optional[str] = None
-    MAIL_PORT: Optional[int] = None
+    MAIL_USERNAME: str | None = None
+    MAIL_PASSWORD: str | None = None
+    MAIL_FROM: str | None = None
+    MAIL_SERVER: str | None = None
+    MAIL_PORT: int | None = None
     MAIL_FROM_NAME: str = "ArtistKashi"
     MAIL_STARTTLS: bool = True
     MAIL_SSL_TLS: bool = False
@@ -37,11 +37,11 @@ class Settings(BaseSettings):
     TEMPLATE_DIR: str = "email_templates"
 
     # CORS Settings
-    CORS_ORIGINS: Set[str]
+    CORS_ORIGINS: set[str]
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
-    def assemble_cors_origins(cls, v: Any) -> Set[str]:
+    def assemble_cors_origins(cls, v: object) -> set[str]:
         if isinstance(v, str) and not v.startswith("["):
             return {item.strip() for item in v.split(",")}
         elif isinstance(v, (list, str)):
@@ -54,7 +54,7 @@ class Settings(BaseSettings):
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
     REDIS_DB: int = 0
-    REDIS_PASSWORD: Optional[str] = None
+    REDIS_PASSWORD: str | None = None
 
     @computed_field
     @property
@@ -65,7 +65,7 @@ class Settings(BaseSettings):
 
     # OpenAPI Settings
     OPENAPI_URL: str = "/openapi.json"
-    OPENAPI_OUTPUT_FILE: Optional[str] = None
+    OPENAPI_OUTPUT_FILE: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", extra="ignore"

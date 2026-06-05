@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import re
 
-
 SPECIAL_CHAR_PATTERN = re.compile(r'[!@#$%^&*(),.?":{}|<>]')
 
 

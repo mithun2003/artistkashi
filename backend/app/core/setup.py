@@ -1,16 +1,16 @@
+import logging
 from collections.abc import AsyncGenerator, Callable
 from contextlib import asynccontextmanager
-from typing import Any
 
-import logging
+# No `Any` types; concrete Settings type is used for annotations
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.core.config import settings
-from app.core.cache import init_redis, close_redis
+from app.core.cache import close_redis, init_redis
+from app.core.config import Settings
 from app.core.db import create_db_and_tables
 from app.core.error_handler import setup_exception_handlers
-from app.core.queue import init_queue, close_queue
+from app.core.queue import close_queue, init_queue
 from app.middleware.response import ResponseWrapperMiddleware
 
 logger = logging.getLogger(__name__)
@@ -38,11 +38,11 @@ async def initialize_queue() -> None:
 
 
 def lifespan_factory(
-    settings: Any,
+    settings: Settings,
     create_tables_on_start: bool = True,
     enable_redis: bool = True,
     enable_queue: bool = True,
-) -> Callable[[FastAPI], AsyncGenerator[None, None]]:
+) -> Callable[[FastAPI], AsyncGenerator]:
     """
     Create lifespan context manager for FastAPI app.
 
@@ -57,7 +57,7 @@ def lifespan_factory(
     """
 
     @asynccontextmanager
-    async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    async def lifespan(app: FastAPI) -> AsyncGenerator:
         """Handle app startup and shutdown."""
         # Startup
         logger.info("🚀 Starting application...")
@@ -105,12 +105,12 @@ def lifespan_factory(
 
 def create_application(
     router: APIRouter,
-    settings: Any,
+    settings: Settings,
     create_tables_on_start: bool = True,
     enable_redis: bool = True,
     enable_queue: bool = True,
-    lifespan: Callable[[FastAPI], AsyncGenerator[None, None]] | None = None,
-    **kwargs: Any,
+    lifespan: Callable[[FastAPI], AsyncGenerator] | None = None,
+    **kwargs: object,
 ) -> FastAPI:
     """
     Create and configure FastAPI application.

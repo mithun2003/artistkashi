@@ -1,5 +1,7 @@
-from sqlalchemy import Column, String, JSON, Boolean
+from sqlalchemy import JSON, Boolean, Column, String
+
 from app.models.base import Base
+
 
 class SiteConfig(Base):
     """

@@ -1,7 +1,5 @@
 """Custom exception classes for the application."""
 
-from typing import Any
-
 
 class AppException(Exception):
     """Base application exception."""
@@ -11,7 +9,7 @@ class AppException(Exception):
         message: str,
         status_code: int = 400,
         error_code: str | None = None,
-        details: dict[str, Any] | None = None,
+        details: dict[str, object] | None = None,
     ) -> None:
         self.message = message
         self.status_code = status_code
@@ -19,15 +17,18 @@ class AppException(Exception):
         self.details = details or {}
         super().__init__(self.message)
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> dict[str, object]:
         from datetime import datetime
+
         return {
             "success": False,
             "message": self.message,
-            "errors": self.details if isinstance(self.details, dict) and self.details else None,
+            "errors": self.details
+            if isinstance(self.details, dict) and self.details
+            else None,
             "meta": {
                 "timestamp": datetime.utcnow().isoformat() + "Z",
-                "error_code": self.error_code
+                "error_code": self.error_code,
             },
         }
 
@@ -35,7 +36,7 @@ class AppException(Exception):
 class ValidationException(AppException):
     """Raised when validation fails."""
 
-    def __init__(self, message: str, details: dict[str, Any] | None = None) -> None:
+    def __init__(self, message: str, details: dict[str, object] | None = None) -> None:
         super().__init__(
             message=message,
             status_code=422,
@@ -83,7 +84,7 @@ class ForbiddenException(AppException):
 class ConflictException(AppException):
     """Raised when a resource already exists."""
 
-    def __init__(self, message: str, details: dict[str, Any] | None = None) -> None:
+    def __init__(self, message: str, details: dict[str, object] | None = None) -> None:
         super().__init__(
             message=message,
             status_code=409,
@@ -106,7 +107,7 @@ class RateLimitException(AppException):
 class DatabaseException(AppException):
     """Raised when database operation fails."""
 
-    def __init__(self, message: str, details: dict[str, Any] | None = None) -> None:
+    def __init__(self, message: str, details: dict[str, object] | None = None) -> None:
         super().__init__(
             message=message,
             status_code=500,

@@ -1,20 +1,25 @@
-from typing import Any, Generic, TypeVar, Optional
-from pydantic import BaseModel, Field
 from datetime import datetime
+from typing import TypeVar
+
+from pydantic import BaseModel, Field
+from pydantic.generics import GenericModel
 
 T = TypeVar("T")
+
 
 class MetaModel(BaseModel):
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
-class ResponseModel(BaseModel, Generic[T]):
+
+class ResponseModel[T](GenericModel):
     success: bool = True
     message: str
-    data: Optional[T] = None
+    data: T | None = None
     meta: MetaModel = Field(default_factory=MetaModel)
+
 
 class ErrorResponseModel(BaseModel):
     success: bool = False
     message: str
-    errors: Optional[dict[str, list[str]]] = None
+    errors: dict[str, list[str]] | None = None
     meta: MetaModel = Field(default_factory=MetaModel)

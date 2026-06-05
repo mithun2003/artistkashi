@@ -14,8 +14,8 @@ import sys
 
 from sqlalchemy import select
 
-from app.crud.site_config import update_config
 from app.core.db import async_session
+from app.crud.site_config import update_config
 from app.lib.constants import DEFAULT_HOME_PAGE_CONFIG
 from app.models.site_config import SiteConfig
 
@@ -32,7 +32,9 @@ def build_parser() -> argparse.ArgumentParser:
 
 async def seed_home_page(overwrite: bool = False) -> tuple[str, SiteConfig]:
     async with async_session() as session:
-        result = await session.execute(select(SiteConfig).where(SiteConfig.key == "home_page"))
+        result = await session.execute(
+            select(SiteConfig).where(SiteConfig.key == "home_page")
+        )
         existing = result.scalar_one_or_none()
         if existing is not None and not overwrite:
             return "unchanged", existing

@@ -1,8 +1,9 @@
 """Test endpoints for demonstration."""
 
+
 from fastapi import APIRouter
+
 from app.schemas.responses import ResponseModel
-from typing import Any
 
 router = APIRouter(tags=["test"])
 

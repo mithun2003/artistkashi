@@ -1,6 +1,6 @@
 """Background job queue using ARQ."""
 
-from typing import Any, Callable
+from collections.abc import Callable
 
 from arq import create_pool
 from arq.connections import RedisSettings
@@ -8,7 +8,7 @@ from arq.connections import RedisSettings
 from app.core.config import settings
 
 # Global job queue pool
-pool: Any = None
+pool: object | None = None
 
 
 async def init_queue() -> None:
@@ -31,7 +31,7 @@ async def close_queue() -> None:
         await pool.aclose()
 
 
-async def get_queue():
+async def get_queue() -> object | None:
     """Get job queue instance."""
     if not pool:
         await init_queue()
@@ -58,7 +58,7 @@ async def enqueue_job(
     return job.job_id
 
 
-async def get_job_result(job_id: str, timeout: int = 10) -> Any:
+async def get_job_result(job_id: str, timeout: int = 10) -> object | None:
     """
     Get job result.
 

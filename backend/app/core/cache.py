@@ -2,7 +2,6 @@
 
 import json
 import logging
-from typing import Any
 
 import redis.asyncio as redis
 from redis.exceptions import RedisError
@@ -38,7 +37,7 @@ async def get_redis() -> redis.Redis:
     return client
 
 
-async def cache_get(key: str) -> Any:
+async def cache_get(key: str) -> object | None:
     """Get value from cache."""
     try:
         redis_client = await get_redis()
@@ -54,7 +53,7 @@ async def cache_get(key: str) -> Any:
         return None
 
 
-async def cache_set(key: str, value: Any, expire: int = 3600) -> None:
+async def cache_set(key: str, value: object, expire: int = 3600) -> None:
     """Set value in cache with expiration."""
     try:
         redis_client = await get_redis()

@@ -105,7 +105,9 @@ async def upsert_admin_user(
 
     if update_password:
         if not password:
-            raise ValueError("ADMIN_PASSWORD is required when --update-password is set.")
+            raise ValueError(
+                "ADMIN_PASSWORD is required when --update-password is set."
+            )
 
         errors = validate_password_rules(cleaned_email, password)
         if errors:

@@ -170,7 +170,7 @@ local-shared-data/
 # But keep example files
 !.env.example
 
-nextjs-frontend/tsconfig.tsbuildinfo
 tsconfig.tsbuildinfo
 .gemini/
 gha-creds-*.json
+.vscode

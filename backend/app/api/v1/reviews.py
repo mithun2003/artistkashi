@@ -1,12 +1,10 @@
-from typing import Any, Optional
-from uuid import UUID
+from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Query
 
-from app.api.dependencies import get_db
-from app.core.auth.users import current_active_user
+from app.api.dependencies import CurrentUserDep, DatabaseDep
 from app.crud.review import crud_review
-from app.models.review import ReviewType, ReviewStatus
+from app.models.review import ReviewStatus, ReviewType
 from app.schemas.responses import ResponseModel
 from app.schemas.review import ReviewCreate, ReviewRead, ReviewReadPublic
 
@@ -15,12 +13,12 @@ router = APIRouter(tags=["reviews"])
 
 @router.get("/reviews", response_model=ResponseModel[list[ReviewReadPublic]])
 async def list_reviews(
-    review_type: Optional[ReviewType] = Query(None),
-    entity_id: Optional[int] = Query(None),
-    skip: int = Query(0, ge=0),
-    limit: int = Query(20, ge=1, le=100),
-    db=Depends(get_db),
-):
+    db: DatabaseDep,
+    review_type: Annotated[ReviewType | None, Query()] = None,
+    entity_id: Annotated[int | None, Query()] = None,
+    skip: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(ge=1, le=100)] = 20,
+) -> ResponseModel:
     """Get approved reviews (public endpoint)."""
     # Using get_multi directly with filters to reduce boilerplate
     filters = {"status": ReviewStatus.approved}
@@ -40,9 +38,9 @@ async def list_reviews(
 @router.post("/reviews", response_model=ResponseModel[ReviewRead])
 async def create_review(
     review_in: ReviewCreate,
-    db=Depends(get_db),
-    user: Any = Depends(current_active_user),
-):
+    user: CurrentUserDep,
+    db: DatabaseDep,
+) -> ResponseModel:
     """Create a new review (requires login)."""
     review = await crud_review.create(
         db=db,
@@ -59,9 +57,9 @@ async def create_review(
 
 @router.get("/reviews/user/my-reviews", response_model=ResponseModel[list[ReviewRead]])
 async def get_my_reviews(
-    db=Depends(get_db),
-    user: Any = Depends(current_active_user),
-):
+    user: CurrentUserDep,
+    db: DatabaseDep,
+) -> ResponseModel:
     """Get current user's reviews."""
     reviews = await crud_review.get_multi(db=db, user_id=user.id)
 

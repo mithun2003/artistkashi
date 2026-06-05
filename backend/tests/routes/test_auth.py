@@ -33,8 +33,8 @@ class AuthTester:
     def __init__(self, api_url: str = API_URL):
         self.api_url = api_url
         self.client = httpx.AsyncClient(base_url=api_url)
-        self.access_token: Optional[str] = None
-        self.user_id: Optional[str] = None
+        self.access_token: str | None = None
+        self.user_id: str | None = None
 
     async def close(self):
         """Close HTTP client."""

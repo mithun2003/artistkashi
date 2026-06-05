@@ -1,12 +1,13 @@
 """Exception handlers and error middleware."""
 
 import logging
-from typing import Any
+from collections.abc import Awaitable, Callable
+from datetime import datetime
 
-from fastapi import FastAPI, Request, status, HTTPException
+from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from datetime import datetime
+from starlette.responses import Response
 
 from app.core.exceptions import AppException
 from app.schemas.responses import ErrorResponseModel, MetaModel
@@ -34,11 +35,17 @@ def setup_exception_handlers(app: FastAPI) -> None:
         )
 
     @app.exception_handler(RequestValidationError)
-    async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    async def validation_exception_handler(
+        request: Request, exc: RequestValidationError
+    ):
         """Handle FastAPI validation errors."""
         errors = {}
         for error in exc.errors():
-            loc = ".".join(str(i) for i in error["loc"][1:]) if len(error["loc"]) > 1 else error["loc"][0]
+            loc = (
+                ".".join(str(i) for i in error["loc"][1:])
+                if len(error["loc"]) > 1
+                else error["loc"][0]
+            )
             if loc not in errors:
                 errors[loc] = []
             errors[loc].append(error["msg"])
@@ -47,11 +54,13 @@ def setup_exception_handlers(app: FastAPI) -> None:
             success=False,
             message="Validation error",
             errors=errors,
-            meta=MetaModel(timestamp=datetime.utcnow())
+            meta=MetaModel(timestamp=datetime.utcnow()),
         ).model_dump()
-        
+
         # Ensure timestamp is string for JSON
-        response_content["meta"]["timestamp"] = response_content["meta"]["timestamp"].isoformat() + "Z"
+        response_content["meta"]["timestamp"] = (
+            response_content["meta"]["timestamp"].isoformat() + "Z"
+        )
 
         return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -69,7 +78,7 @@ def setup_exception_handlers(app: FastAPI) -> None:
                 "errors": None,
                 "meta": {
                     "timestamp": datetime.utcnow().isoformat() + "Z",
-                    "error_code": "HTTP_ERROR"
+                    "error_code": "HTTP_ERROR",
                 },
             },
         )
@@ -94,13 +103,15 @@ def setup_exception_handlers(app: FastAPI) -> None:
                 "errors": None,
                 "meta": {
                     "timestamp": datetime.utcnow().isoformat() + "Z",
-                    "error_code": "INTERNAL_SERVER_ERROR"
+                    "error_code": "INTERNAL_SERVER_ERROR",
                 },
             },
         )
 
 
-async def log_request_middleware(request: Request, call_next):
+async def log_request_middleware(
+    request: Request, call_next: Callable[[Request], Awaitable[Response]]
+) -> Response:
     """Middleware to log all requests."""
     logger.info(
         f"{request.method} {request.url.path}",
