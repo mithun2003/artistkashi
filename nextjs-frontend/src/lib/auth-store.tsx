@@ -3,7 +3,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 import {
-  authStorageKeys,
   currentUserRequest,
   loginRequest,
   logoutRequest,
@@ -11,6 +10,15 @@ import {
   type AuthUser,
   type SignupInput,
 } from "@/api/auth-api";
+import { setAuthToken } from "@/api/client-service";
+import {
+  STORAGE_KEYS,
+  getItem,
+  getJSON,
+  removeItem,
+  setItem,
+  setJSON
+} from "@/lib/storage";
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -23,32 +31,23 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const readStoredUser = (): AuthUser | null => {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  const rawUser = window.localStorage.getItem(authStorageKeys.user);
-  if (!rawUser) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(rawUser) as AuthUser;
-  } catch (error) {
-    console.error("Failed to parse stored auth user", error);
-    clearSession();
-    return null;
-  }
+  if (typeof window === "undefined") return null;
+  return getJSON<AuthUser>(STORAGE_KEYS.AUTH_USER);
 };
 
 const persistSession = (user: AuthUser, token: string) => {
-  window.localStorage.setItem(authStorageKeys.user, JSON.stringify(user));
-  window.localStorage.setItem(authStorageKeys.token, token);
+  try {
+    setJSON(STORAGE_KEYS.AUTH_USER, user);
+    setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+  } catch {
+    //ignore
+
+  }
 };
 
 const clearSession = () => {
-  window.localStorage.removeItem(authStorageKeys.user);
-  window.localStorage.removeItem(authStorageKeys.token);
+  removeItem(STORAGE_KEYS.AUTH_USER);
+  removeItem(STORAGE_KEYS.AUTH_TOKEN);
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -60,8 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let active = true;
 
     const bootstrap = async () => {
-      const storedToken = window.localStorage.getItem(authStorageKeys.token);
-      const storedUser = readStoredUser();
+      const storedToken = getItem(STORAGE_KEYS.AUTH_TOKEN);
 
       if (!storedToken) {
         clearSession();
@@ -73,28 +71,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      if (storedUser) {
-        setUser(storedUser);
-      }
+      const storedUser = readStoredUser();
+      if (storedUser) setUser(storedUser);
 
       try {
-        const current = await currentUserRequest(storedToken);
+        try {
+          setAuthToken(storedToken);
+        } catch {
+          setAuthToken();
+        }
+
+        const current = await currentUserRequest(storedToken as string);
         if (!active) return;
 
         setUser(current);
         setToken(storedToken);
         persistSession(current, storedToken);
       } catch {
-        // Silently fail auth restoration - just treat as guest
         clearSession();
         if (active) {
           setUser(null);
           setToken(null);
         }
       } finally {
-        if (active) {
-          setIsLoading(false);
-        }
+        if (active) setIsLoading(false);
       }
     };
 
@@ -107,6 +107,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     const session = await loginRequest({ email, password });
+
+    try {
+      setAuthToken(session.access_token);
+    } catch {
+      setAuthToken()
+    }
+
     const current = await currentUserRequest(session.access_token);
 
     setUser(current);

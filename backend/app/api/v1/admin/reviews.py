@@ -2,11 +2,12 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, Query, status
+from fastcrud import compute_offset, paginated_response
 
 from app.api.dependencies import CurrentUserDep, DatabaseDep
 from app.crud.review import crud_review
 from app.models.review import ReviewStatus, ReviewType
-from app.schemas.responses import ResponseModel
+from app.schemas.responses import PaginatedResponse, SuccessResponse
 from app.schemas.review import ReviewRead, ReviewUpdate
 
 router = APIRouter(tags=["admin-reviews"])
@@ -20,15 +21,15 @@ def _check_admin(user: CurrentUserDep) -> None:
         )
 
 
-@router.get("/reviews", response_model=ResponseModel[list[ReviewRead]])
+@router.get("/reviews", response_model=PaginatedResponse[ReviewRead])
 async def list_all_reviews(
     user: CurrentUserDep,
     db: DatabaseDep,
-    review_type: Annotated[ReviewType | None, Query(None)] = None,
-    entity_id: Annotated[int | None, Query(None)] = None,
-    status: Annotated[ReviewStatus | None, Query(None)] = None,
-    skip: Annotated[int, Query(ge=0)] = 0,
-    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    review_type: Annotated[ReviewType | None, Query()] = None,
+    entity_id: Annotated[int | None, Query()] = None,
+    status: Annotated[ReviewStatus | None, Query()] = None,
+    page: Annotated[int, Query(ge=1)] = 1,
+    page_size: Annotated[int, Query(ge=1, le=100)] = 50,
 ):
     """List all reviews (admin only)."""
     _check_admin(user)
@@ -41,15 +42,22 @@ async def list_all_reviews(
     if status:
         filters["status"] = status
 
-    reviews = await crud_review.get_multi(db=db, offset=skip, limit=limit, **filters)
-
-    data = (
-        reviews["data"] if isinstance(reviews, dict) and "data" in reviews else reviews
+    reviews_data = await crud_review.get_multi(
+        db=db,
+        offset=compute_offset(page, page_size),
+        limit=page_size,
+        return_total_count=True,
+        **filters,
     )
-    return ResponseModel(message="Reviews retrieved successfully", data=data)
+
+    return paginated_response(
+        crud_data=reviews_data,
+        page=page,
+        items_per_page=page_size,
+    )
 
 
-@router.get("/reviews/{review_id}", response_model=ResponseModel[ReviewRead])
+@router.get("/reviews/{review_id}", response_model=SuccessResponse[ReviewRead])
 async def get_review_detail(
     review_id: UUID,
     user: CurrentUserDep,
@@ -62,10 +70,10 @@ async def get_review_detail(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Review not found"
         )
-    return ResponseModel(message="Review retrieved successfully", data=review)
+    return SuccessResponse(message="Review retrieved successfully", data=review)
 
 
-@router.put("/reviews/{review_id}", response_model=ResponseModel[ReviewRead])
+@router.put("/reviews/{review_id}", response_model=SuccessResponse[ReviewRead])
 async def update_review(
     review_id: UUID,
     review_in: ReviewUpdate,
@@ -81,10 +89,10 @@ async def update_review(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Review not found"
         )
-    return ResponseModel(message="Review updated successfully", data=review)
+    return SuccessResponse(message="Review updated successfully", data=review)
 
 
-@router.delete("/reviews/{review_id}", response_model=ResponseModel[dict])
+@router.delete("/reviews/{review_id}", response_model=SuccessResponse[dict])
 async def delete_review(
     review_id: UUID,
     user: CurrentUserDep,
@@ -99,4 +107,4 @@ async def delete_review(
         )
 
     await crud_review.delete(db=db, id=review_id)
-    return ResponseModel(message="Review deleted successfully", data={})
+    return SuccessResponse(message="Review deleted successfully", data={})

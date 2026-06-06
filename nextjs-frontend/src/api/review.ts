@@ -1,16 +1,11 @@
+import { apiClient } from "@/lib/api-client";
 import {
-  type ReviewRead,
   type ReviewCreate,
+  type ReviewRead,
   type ReviewReadPublic,
 } from "@/types/reviews";
 
-const getApiBaseUrl = () =>
-  (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000").replace(
-    /\/$/,
-    ""
-  );
-
-const buildUrl = (path: string) => `${getApiBaseUrl()}${path}`;
+const buildUrl = (path: string) => `${apiClient.getConfig().baseURL}${path}`;
 
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(buildUrl(path), {

@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 
 from app.api.dependencies import CurrentUserDep, DatabaseDep
 from app.crud.site_config import crud_site_config
-from app.schemas.responses import ResponseModel
+from app.schemas.responses import SuccessResponse
 from app.schemas.site_config import HomePageConfig
 
 router = APIRouter(tags=["admin-site-config"])
@@ -16,14 +16,14 @@ def _check_admin(user: CurrentUserDep) -> None:
         )
 
 
-@router.get("/home", response_model=ResponseModel[HomePageConfig])
+@router.get("/home", response_model=SuccessResponse[HomePageConfig])
 async def get_home_page_settings(db: DatabaseDep):
     # Using the inherited custom method
     config = await crud_site_config.get_home_page_config(db)
-    return ResponseModel(message="Operation successful", data=config)
+    return SuccessResponse(message="Operation successful", data=config)
 
 
-@router.put("/home", response_model=ResponseModel[HomePageConfig])
+@router.put("/home", response_model=SuccessResponse[HomePageConfig])
 async def update_home_page_settings(
     config_in: HomePageConfig,
     db: DatabaseDep,
@@ -45,4 +45,4 @@ async def update_home_page_settings(
                 "description": "Main landing page configuration",
             },
         )
-    return ResponseModel(message="Operation successful", data=config_in)
+    return SuccessResponse(message="Operation successful", data=config_in)

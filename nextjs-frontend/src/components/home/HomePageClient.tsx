@@ -1,25 +1,25 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { motion, AnimatePresence } from "motion/react";
+import { GhostBtn, PrimaryBtn } from "@/components/ui/buttons";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
+import { GoldDivider, RevealBlock } from "@/components/ui/misc";
+import { COURSES, PAINTINGS } from "@/data/constants";
+import { type HomePageSettings } from "@/lib/home-customization";
+import { cn } from "@/lib/utils";
 import {
-  Play,
   ArrowRight,
   ArrowUpRight,
-  Minus,
-  Plus,
-  Star,
   BookOpen,
   Clock,
+  Minus,
+  Play,
+  Plus,
+  Star,
 } from "lucide-react";
-import { PrimaryBtn, GhostBtn } from "@/components/ui/buttons";
-import { RevealBlock, GoldDivider } from "@/components/ui/misc";
-import { PAINTINGS, COURSES } from "@/data/constants";
-import { cn } from "@/lib/utils";
-import { type HomePageSettings } from "@/lib/home-customization";
-import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
+import { AnimatePresence, motion } from "motion/react";
+import Image from "next/image";
+import Link from "next/link";
+import { useMemo, useState } from "react";
 
 type HomePageClientProps = {
   initialSettings: HomePageSettings;
@@ -71,7 +71,6 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
             alt="Hero Background"
             fill
             className="object-cover opacity-35 grayscale"
-            priority
           />
           <div className="absolute inset-0 bg-linear-to-t from-dark via-dark/50 to-transparent" />
         </div>
@@ -94,7 +93,7 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
             initial={{ opacity: 0, y: 60 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="text-h1 font-extrabold leading-[0.9] tracking-[-0.03em] text-text-main max-w-225 whitespace-pre-line"
+            className="cinematic-text text-text-main max-w-225 whitespace-pre-line mb-4"
           >
             {settings.hero.title.split("\n").map((line, index) => (
               <span key={line}>
@@ -188,7 +187,7 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
             </Link>
           </div>
         </RevealBlock>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-border">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px ">
           {featuredPaintings.map((p, i) => (
             <RevealBlock key={p.id} delay={i * 0.1}>
               <Link

@@ -83,12 +83,10 @@ export default function AdminLayout({
         {/* Sidebar */}
         <aside
           className={cn(
-            "fixed inset-y-0 left-0 bg-muted-light/80 backdrop-blur-xl border-r border-border z-50 transition-all duration-300 ease-in-out lg:static lg:inset-0 flex flex-col overflow-hidden",
-            sidebarOpen
-              ? "translate-x-0 w-72"
-              : "-translate-x-full lg:translate-x-0",
-            sidebarCollapsed ? "lg:w-20" : "lg:w-72"
+            "fixed inset-y-0 left-0 bg-muted-light/80 backdrop-blur-xl border-r border-border z-50 lg:static lg:inset-0 flex flex-col overflow-hidden transition-width duration-300 ease-in-out",
+            sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
           )}
+          style={{ width: sidebarCollapsed ? "5rem" : "18rem" }}
         >
           {/* Sidebar Header - Logo Only */}
           <div className="h-20 flex items-center justify-center px-4 border-b border-border shrink-0 overflow-hidden">

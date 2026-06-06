@@ -1,17 +1,15 @@
-/**
- * Authentication API Utilities
- *
- * Refactored to use the centralized OpenAPI client.
- */
-
 import {
-  authJwtLogin,
-  registerRegister,
-  usersCurrentUser,
-  authJwtLogout,
-} from "@/api/openapi-client/sdk.gen";
-import { type UserRead as UserData } from "@/api/openapi-client/types.gen";
-import { ApiResponseError } from "@/types";
+  authJwtLogin as clientAuthJwtLogin,
+  authJwtLogout as clientAuthJwtLogout,
+  registerRegister as clientRegisterRegister,
+  setAuthToken as clientSetAuthToken,
+  usersCurrentUser as clientUsersCurrentUser,
+} from "@/api/client-service";
+import type { UserRead } from "@/api/openapi-client/types.gen";
+import { STORAGE_KEYS } from "@/lib/storage";
+import type { ApiResponse as AppApiResponse, ApiResponseSuccess } from "@/types";
+import type { ApiResponseError } from "@/types";
+import type { AxiosError } from "axios";
 
 export interface AuthUser {
   id: string;
@@ -36,30 +34,17 @@ export interface SignupInput {
   password: string;
 }
 
-export type AuthErrorInput = string | Error | ApiResponseError;
+export type AuthErrorInput =
+  | string
+  | Error
+  | ApiResponseError
+  | AxiosError
+  | unknown;
 
-const TOKEN_KEY = "artistkashi_auth_token";
-const USER_KEY = "artistkashi_auth_user";
+export const authStorageKeys = STORAGE_KEYS;
 
-export const normalizeAuthRole = (role?: string | null): AuthUser["role"] =>
-  role === "admin" || role === "instructor" ? "admin" : "user";
+const ADMIN_ROLES = new Set(["admin", "instructor"]);
 
-export const getRoleLabel = (user: Pick<AuthUser, "role" | "backendRole">) =>
-  user.role === "admin" ? "Instructor" : "User";
-
-export const getSafeReturnTo = (returnTo?: string | null) => {
-  if (!returnTo || !returnTo.startsWith("/")) {
-    return null;
-  }
-  if (returnTo.startsWith("/login") || returnTo.startsWith("/signup")) {
-    return null;
-  }
-  return returnTo;
-};
-
-/**
- * Human-readable mapping for backend error codes
- */
 const AUTH_ERROR_MESSAGES: Record<string, string> = {
   LOGIN_BAD_CREDENTIALS: "Incorrect email or password. Please try again.",
   REGISTER_USER_ALREADY_EXISTS: "An account with this email already exists.",
@@ -72,115 +57,198 @@ const AUTH_ERROR_MESSAGES: Record<string, string> = {
     "This password is too common. Please choose a stronger one.",
 };
 
-/**
- * Parses error messages from the API
- */
-export const getAuthErrorMessage = (error: unknown): string => {
-  if (typeof error === "string") return AUTH_ERROR_MESSAGES[error] || error;
-  if (error instanceof Error) return error.message;
+type ApiErrorPayload = {
+  message?: string;
+  errors?: Record<string, string | string[]>;
+  meta?: unknown;
+  status?: number;
+};
 
-  // Handle OpenAPI client error structure
-  if (error && typeof error === "object") {
-    const err = error as Record<string, unknown>;
+type UserReadLike = {
+  id?: string | number;
+  email: string;
+  full_name?: string | null;
+  phone?: string | null;
+  role?: string | null;
+  is_active?: boolean | null;
+  is_verified?: boolean | null;
+};
 
-    // Check for our custom ApiResponseError structure
-    if (err.success === false) {
-      const message = err.message as string | undefined;
-      if (message && AUTH_ERROR_MESSAGES[message]) {
-        return AUTH_ERROR_MESSAGES[message];
-      }
+export const normalizeAuthRole = (role?: string | null): AuthUser["role"] =>
+  role && ADMIN_ROLES.has(role) ? "admin" : "user";
 
-      const errors = err.errors as Record<string, string[]> | undefined;
-      if (errors) {
-        const messages = Object.values(errors)
-          .flat()
-          .filter((m): m is string => typeof m === "string" && m.length > 0);
-        if (messages.length > 0) return messages[0];
-      }
-      return String(message || "Request failed");
+export const getRoleLabel = (user: Pick<AuthUser, "role">) =>
+  user.role === "admin" ? "Instructor" : "User";
+
+export const getSafeReturnTo = (returnTo?: string | null): string | null => {
+  if (!returnTo?.startsWith("/")) {
+    return null;
+  }
+
+  if (returnTo.startsWith("/login") || returnTo.startsWith("/signup")) {
+    return null;
+  }
+
+  try {
+    const decoded = decodeURIComponent(returnTo);
+
+    if (/^https?:\/\//i.test(decoded)) {
+      return null;
+    }
+  } catch {
+    return null;
+  }
+
+  return returnTo;
+};
+
+const extractPayload = (
+  error: AxiosError<ApiErrorPayload>
+): ApiErrorPayload | undefined =>
+  error.response?.data ??
+  (error as { error?: ApiErrorPayload }).error ??
+  (error as { data?: ApiErrorPayload }).data;
+
+export const getAuthErrorMessage = (error: AuthErrorInput): string => {
+  if (!error) {
+    return "Request failed";
+  }
+
+  if (typeof error === "string") {
+    return AUTH_ERROR_MESSAGES[error] ?? error;
+  }
+
+  if (error instanceof Error) {
+    const payload = extractPayload(error as AxiosError<ApiErrorPayload>);
+
+    if (payload?.message) {
+      return AUTH_ERROR_MESSAGES[payload.message] ?? payload.message;
     }
 
-    // Check for FastAPI ErrorModel (detail field)
-    const detail = err.detail;
-    if (detail) {
-      if (typeof detail === "string") {
-        return AUTH_ERROR_MESSAGES[detail] || detail;
-      }
-      if (typeof detail === "object" && detail !== null) {
-        const firstError = Object.values(detail)[0];
-        if (typeof firstError === "string") return firstError;
+    if (payload?.errors) {
+      const messages = Object.values(payload.errors)
+        .flatMap((value) => (Array.isArray(value) ? value : [value]))
+        .map(String);
+
+      if (messages.length) {
+        return messages[0];
       }
     }
+
+    if (payload?.meta) {
+      return typeof payload.meta === "string"
+        ? payload.meta
+        : JSON.stringify(payload.meta);
+    }
+
+    return error.message;
+  }
+
+  const obj = error as Record<string, unknown>;
+
+  const message = obj?.message;
+
+  if (typeof message === "string" && AUTH_ERROR_MESSAGES[message]) {
+    return AUTH_ERROR_MESSAGES[message];
+  }
+
+  if (typeof message === "string") {
+    return message;
   }
 
   return "Request failed";
 };
 
-const toAuthUser = (user: UserData): AuthUser => ({
-  id: String(user.id),
-  email: user.email,
-  name: user.full_name || user.email.split("@")[0],
-  fullName: user.full_name,
-  role: normalizeAuthRole(user.role),
-  backendRole: user.role,
-  isActive: user.is_active,
-  isVerified: user.is_verified,
-});
+const safelySetAuthToken = (token: string | null): void => {
+  try {
+    clientSetAuthToken(token);
+  } catch {
+    // ignore
+  }
+};
+
+function assertSuccess<T>(
+  response: AppApiResponse<T>
+): asserts response is ApiResponseSuccess<T> {
+  if (typeof response.status === "number") {
+    if (response.status < 200 || response.status >= 300) {
+      throw new Error(getAuthErrorMessage(response as ApiResponseError));
+    }
+
+    return;
+  }
+
+  if (!response.success) {
+    throw new Error(getAuthErrorMessage(response as ApiResponseError));
+  }
+}
+
+const toAuthUser = (user: UserRead | UserReadLike): AuthUser => {
+  const u = user as UserReadLike;
+
+  const fallbackName = u.email?.split("@")[0] ?? "User";
+
+  return {
+    id: String(u.id ?? ""),
+    email: u.email,
+    name: u.full_name ?? fallbackName,
+    fullName: u.full_name ?? null,
+    phone: u.phone ?? null,
+    role: normalizeAuthRole(u.role),
+    backendRole: u.role ?? null,
+    isActive: typeof u.is_active === "boolean" ? u.is_active : undefined,
+    isVerified: typeof u.is_verified === "boolean" ? u.is_verified : undefined,
+  };
+};
 
 export async function loginRequest(input: LoginInput) {
-  const { data, error } = await authJwtLogin({
+  const response = await clientAuthJwtLogin({
     body: {
       username: input.email,
       password: input.password,
     },
+    url: "/api/auth/jwt/login",
   });
 
-  if (error) {
-    throw new Error(getAuthErrorMessage(error));
-  }
+  assertSuccess(response);
 
-  return data;
+  return response.data;
 }
 
 export async function registerRequest(input: SignupInput) {
-  const { data, error } = await registerRegister({
+  const response = await clientRegisterRegister({
     body: {
       email: input.email,
       password: input.password,
       full_name: input.fullName,
     },
+    url: "/api/auth/register",
   });
 
-  if (error) {
-    throw new Error(getAuthErrorMessage(error));
-  }
+  assertSuccess(response);
 
-  return data;
+  return response.data;
 }
 
 export async function currentUserRequest(token: string): Promise<AuthUser> {
-  const { data, error } = await usersCurrentUser({
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  safelySetAuthToken(token);
 
-  if (error) {
-    throw new Error(getAuthErrorMessage(error));
+  const response = await clientUsersCurrentUser();
+
+  assertSuccess(response);
+
+  return toAuthUser(response.data);
+}
+
+export async function logoutRequest(token?: string): Promise<void> {
+  safelySetAuthToken(token ?? null);
+
+  try {
+    await clientAuthJwtLogout();
+  } catch {
+    // ignore logout failures
+  } finally {
+    safelySetAuthToken(null);
   }
-
-  return toAuthUser(data as UserData);
 }
-
-export async function logoutRequest(token: string) {
-  await authJwtLogout({
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-}
-
-export const authStorageKeys = {
-  token: TOKEN_KEY,
-  user: USER_KEY,
-} as const;
+export { toAuthUser };

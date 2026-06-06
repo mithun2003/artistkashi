@@ -5,9 +5,13 @@ from app.schemas.user import UserCreate, UserRead, UserUpdate
 
 from .addresses import router as addresses_router
 from .admin import router as admin_router
+from .cart import router as cart_router
+from .courses import router as courses_router
 from .health import router as health_router
+from .products import router as products_router
 from .reviews import router as reviews_router
 from .users import router as users_router
+from .wishlist import router as wishlist_router
 
 router = APIRouter(prefix="/api")
 
@@ -42,3 +46,7 @@ router.include_router(users_router)
 router.include_router(addresses_router)
 router.include_router(reviews_router)
 router.include_router(admin_router)
+router.include_router(courses_router)
+router.include_router(products_router)
+router.include_router(cart_router)
+router.include_router(wishlist_router)

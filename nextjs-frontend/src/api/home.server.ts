@@ -28,5 +28,5 @@ async function requestJson<T>(path: string): Promise<T> {
 }
 
 export async function fetchHomeSettingsCached(): Promise<HomePageSettings> {
-  return requestJson<HomePageSettings>("/admin/config/home");
+  return requestJson<HomePageSettings>("/api/admin/config/home");
 }

@@ -62,6 +62,7 @@ export interface ApiResponseMeta {
 }
 
 export interface ApiResponseSuccess<T> {
+  status?: number;
   success: true;
   message: string;
   data: T;
@@ -69,6 +70,7 @@ export interface ApiResponseSuccess<T> {
 }
 
 export interface ApiResponseError {
+  status?: number;
   success: false;
   message: string;
   errors?: Record<string, string[]>;

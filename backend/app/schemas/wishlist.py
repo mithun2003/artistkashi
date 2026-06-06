@@ -1,0 +1,24 @@
+import uuid
+
+from pydantic import BaseModel, ConfigDict
+
+from app.schemas.course import CourseRead
+from app.schemas.product import ProductRead
+
+
+class WishlistBase(BaseModel):
+    product_id: int | None = None
+    course_id: int | None = None
+
+
+class WishlistCreate(WishlistBase):
+    pass
+
+
+class WishlistRead(WishlistBase):
+    id: int
+    user_id: uuid.UUID
+    product: ProductRead | None = None
+    course: CourseRead | None = None
+
+    model_config = ConfigDict(from_attributes=True)

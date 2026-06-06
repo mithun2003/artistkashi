@@ -23,6 +23,7 @@ import { AuthGuard } from "@/components/shared/AuthGuard";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const returnTo = getSafeReturnTo(searchParams.get("returnTo"));
@@ -37,6 +38,7 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
+    setIsSubmitting(true);
     try {
       const user = await login(data.email, data.password);
       toast.success(`Welcome back, ${user.name}!`, {
@@ -54,6 +56,8 @@ export default function LoginPage() {
       }
     } catch (error) {
       toast.error(getAuthErrorMessage(error as AuthErrorInput));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -130,8 +134,8 @@ export default function LoginPage() {
                   </p>
                 )}
               </div>
-              <PrimaryBtn type="submit" className="w-full justify-center">
-                Sign In <ArrowRight size={16} />
+              <PrimaryBtn type="submit" className="w-full justify-center" disabled={isSubmitting}>
+                {isSubmitting ? "Signing in..." : <>Sign In <ArrowRight size={16} /></>}
               </PrimaryBtn>
             </form>
             <div className="mt-6 text-center text-sm text-text-muted sm:mt-8">

@@ -18,16 +18,17 @@ class AppException(Exception):
         super().__init__(self.message)
 
     def to_dict(self) -> dict[str, object]:
-        from datetime import datetime
+        from datetime import UTC, datetime
 
         return {
             "success": False,
+            "status": self.status_code,
             "message": self.message,
             "errors": self.details
             if isinstance(self.details, dict) and self.details
             else None,
             "meta": {
-                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "timestamp": datetime.now(UTC).isoformat() + "Z",
                 "error_code": self.error_code,
             },
         }
@@ -55,7 +56,7 @@ class NotFoundException(AppException):
         super().__init__(
             message=message,
             status_code=404,
-            error_code="NOT_FOUND",
+            error_code="RESOURCE_NOT_FOUND",
         )
 
 
@@ -66,7 +67,7 @@ class UnauthorizedException(AppException):
         super().__init__(
             message=message,
             status_code=401,
-            error_code="UNAUTHORIZED",
+            error_code="INVALID_CREDENTIALS",
         )
 
 
@@ -77,7 +78,7 @@ class ForbiddenException(AppException):
         super().__init__(
             message=message,
             status_code=403,
-            error_code="FORBIDDEN",
+            error_code="FORBIDDEN_ACCESS",
         )
 
 

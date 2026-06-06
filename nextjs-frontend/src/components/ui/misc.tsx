@@ -1,27 +1,51 @@
 "use client";
 
-import React, { useRef } from "react";
-import { motion, useInView } from "motion/react";
 import { cn } from "@/lib/utils";
+import { motion, useInView } from "motion/react";
+import React, { useRef } from "react";
 
 export function RevealBlock({
   children,
   delay = 0,
   className = "",
+  direction = "up",
 }: {
   children: React.ReactNode;
   delay?: number;
   className?: string;
+  direction?: "up" | "down" | "left" | "right" | "none";
 }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: "-10%" });
+
+  const variants = {
+    hidden: {
+      opacity: 0,
+      y: direction === "up" ? 80 : direction === "down" ? -80 : 0,
+      x: direction === "left" ? 80 : direction === "right" ? -80 : 0,
+      scale: 0.9,
+      rotateX: 20,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      x: 0,
+      scale: 1,
+      rotateX: 0,
+      transition: {
+        duration: 1.2,
+        delay,
+      },
+    },
+  } as const;
+
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 50, scale: 0.98 }}
-      animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
-      transition={{ duration: 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
-      className={cn(className)}
+      initial="hidden"
+      animate={inView ? "visible" : {}}
+      variants={variants}
+      className={cn("will-change-transform origin-bottom", className)}
     >
       {children}
     </motion.div>

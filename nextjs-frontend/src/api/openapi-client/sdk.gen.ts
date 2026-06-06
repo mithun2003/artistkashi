@@ -2,7 +2,7 @@
 
 import { type Client, type Options as Options2, type TDataShape, urlSearchParamsBodySerializer } from './client';
 import { client } from './client.gen';
-import type { AuthJwtLoginData, AuthJwtLoginErrors, AuthJwtLoginResponses, AuthJwtLogoutData, AuthJwtLogoutErrors, AuthJwtLogoutResponses, CreateItemData, CreateItemErrors, CreateItemResponses, DeleteItemData, DeleteItemErrors, DeleteItemResponses, ReadItemData, ReadItemErrors, ReadItemResponses, RegisterRegisterData, RegisterRegisterErrors, RegisterRegisterResponses, ResetForgotPasswordData, ResetForgotPasswordErrors, ResetForgotPasswordResponses, ResetResetPasswordData, ResetResetPasswordErrors, ResetResetPasswordResponses, UsersCurrentUserData, UsersCurrentUserErrors, UsersCurrentUserResponses, UsersDeleteUserData, UsersDeleteUserErrors, UsersDeleteUserResponses, UsersPatchCurrentUserData, UsersPatchCurrentUserErrors, UsersPatchCurrentUserResponses, UsersPatchUserData, UsersPatchUserErrors, UsersPatchUserResponses, UsersUserData, UsersUserErrors, UsersUserResponses, VerifyRequestTokenData, VerifyRequestTokenErrors, VerifyRequestTokenResponses, VerifyVerifyData, VerifyVerifyErrors, VerifyVerifyResponses } from './types.gen';
+import type { AddToCartData, AddToCartErrors, AddToCartResponses, AddToWishlistData, AddToWishlistErrors, AddToWishlistResponses, AdminStatsData, AdminStatsResponses, AuthJwtLoginData, AuthJwtLoginErrors, AuthJwtLoginResponses, AuthJwtLogoutData, AuthJwtLogoutErrors, AuthJwtLogoutResponses, CreateAddressData, CreateAddressErrors, CreateAddressResponses, CreateReviewData, CreateReviewErrors, CreateReviewResponses, DeleteAddressData, DeleteAddressErrors, DeleteAddressResponses, DeleteReviewData, DeleteReviewErrors, DeleteReviewResponses, GetCourse2Data, GetCourse2Errors, GetCourse2Responses, GetCourseData, GetCourseErrors, GetCourseResponses, GetHomePageSettingsData, GetHomePageSettingsResponses, GetMyCartData, GetMyCartResponses, GetMyReviewsData, GetMyReviewsResponses, GetMyWishlistData, GetMyWishlistResponses, GetProduct2Data, GetProduct2Errors, GetProduct2Responses, GetProductData, GetProductErrors, GetProductResponses, GetReviewDetailData, GetReviewDetailErrors, GetReviewDetailResponses, GetUserData, GetUserErrors, GetUserResponses, HealthCheckData, HealthCheckDetailedData, HealthCheckDetailedResponses, HealthCheckResponses, ListAddressesData, ListAddressesResponses, ListAllReviewsData, ListAllReviewsErrors, ListAllReviewsResponses, ListCourses2Data, ListCourses2Errors, ListCourses2Responses, ListCoursesData, ListCoursesResponses, ListProducts2Data, ListProducts2Errors, ListProducts2Responses, ListProductsData, ListProductsResponses, ListProfilesData, ListProfilesErrors, ListProfilesResponses, ListReviewsData, ListReviewsErrors, ListReviewsResponses, ListUsersData, ListUsersResponses, OverviewData, OverviewResponses, ReadOwnProfileData, ReadOwnProfileResponses, RegisterRegisterData, RegisterRegisterErrors, RegisterRegisterResponses, RemoveFromCartData, RemoveFromCartErrors, RemoveFromCartResponses, RemoveFromWishlistData, RemoveFromWishlistErrors, RemoveFromWishlistResponses, ResetForgotPasswordData, ResetForgotPasswordErrors, ResetForgotPasswordResponses, ResetResetPasswordData, ResetResetPasswordErrors, ResetResetPasswordResponses, UpdateCartItemData, UpdateCartItemErrors, UpdateCartItemResponses, UpdateHomePageSettingsData, UpdateHomePageSettingsErrors, UpdateHomePageSettingsResponses, UpdateReviewData, UpdateReviewErrors, UpdateReviewResponses, UsersCurrentUserData, UsersCurrentUserErrors, UsersCurrentUserResponses, UsersDeleteUserData, UsersDeleteUserErrors, UsersDeleteUserResponses, UsersPatchCurrentUserData, UsersPatchCurrentUserErrors, UsersPatchCurrentUserResponses, UsersPatchUserData, UsersPatchUserErrors, UsersPatchUserResponses, UsersUserData, UsersUserErrors, UsersUserResponses, VerifyRequestTokenData, VerifyRequestTokenErrors, VerifyRequestTokenResponses, VerifyVerifyData, VerifyVerifyErrors, VerifyVerifyResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -24,7 +24,7 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 export const authJwtLogin = <ThrowOnError extends boolean = false>(options: Options<AuthJwtLoginData, ThrowOnError>) => (options.client ?? client).post<AuthJwtLoginResponses, AuthJwtLoginErrors, ThrowOnError>({
     ...urlSearchParamsBodySerializer,
     responseType: 'json',
-    url: '/auth/jwt/login',
+    url: '/api/auth/jwt/login',
     ...options,
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -38,7 +38,7 @@ export const authJwtLogin = <ThrowOnError extends boolean = false>(options: Opti
 export const authJwtLogout = <ThrowOnError extends boolean = false>(options?: Options<AuthJwtLogoutData, ThrowOnError>) => (options?.client ?? client).post<AuthJwtLogoutResponses, AuthJwtLogoutErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/auth/jwt/logout',
+    url: '/api/auth/jwt/logout',
     ...options
 });
 
@@ -47,7 +47,7 @@ export const authJwtLogout = <ThrowOnError extends boolean = false>(options?: Op
  */
 export const registerRegister = <ThrowOnError extends boolean = false>(options: Options<RegisterRegisterData, ThrowOnError>) => (options.client ?? client).post<RegisterRegisterResponses, RegisterRegisterErrors, ThrowOnError>({
     responseType: 'json',
-    url: '/auth/register',
+    url: '/api/auth/register',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ export const registerRegister = <ThrowOnError extends boolean = false>(options: 
  */
 export const resetForgotPassword = <ThrowOnError extends boolean = false>(options: Options<ResetForgotPasswordData, ThrowOnError>) => (options.client ?? client).post<ResetForgotPasswordResponses, ResetForgotPasswordErrors, ThrowOnError>({
     responseType: 'json',
-    url: '/auth/forgot-password',
+    url: '/api/auth/forgot-password',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ export const resetForgotPassword = <ThrowOnError extends boolean = false>(option
  */
 export const resetResetPassword = <ThrowOnError extends boolean = false>(options: Options<ResetResetPasswordData, ThrowOnError>) => (options.client ?? client).post<ResetResetPasswordResponses, ResetResetPasswordErrors, ThrowOnError>({
     responseType: 'json',
-    url: '/auth/reset-password',
+    url: '/api/auth/reset-password',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ export const resetResetPassword = <ThrowOnError extends boolean = false>(options
  */
 export const verifyRequestToken = <ThrowOnError extends boolean = false>(options: Options<VerifyRequestTokenData, ThrowOnError>) => (options.client ?? client).post<VerifyRequestTokenResponses, VerifyRequestTokenErrors, ThrowOnError>({
     responseType: 'json',
-    url: '/auth/request-verify-token',
+    url: '/api/auth/request-verify-token',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ export const verifyRequestToken = <ThrowOnError extends boolean = false>(options
  */
 export const verifyVerify = <ThrowOnError extends boolean = false>(options: Options<VerifyVerifyData, ThrowOnError>) => (options.client ?? client).post<VerifyVerifyResponses, VerifyVerifyErrors, ThrowOnError>({
     responseType: 'json',
-    url: '/auth/verify',
+    url: '/api/auth/verify',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ export const verifyVerify = <ThrowOnError extends boolean = false>(options: Opti
 export const usersCurrentUser = <ThrowOnError extends boolean = false>(options?: Options<UsersCurrentUserData, ThrowOnError>) => (options?.client ?? client).get<UsersCurrentUserResponses, UsersCurrentUserErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/users/me',
+    url: '/api/users/me',
     ...options
 });
 
@@ -123,7 +123,7 @@ export const usersCurrentUser = <ThrowOnError extends boolean = false>(options?:
 export const usersPatchCurrentUser = <ThrowOnError extends boolean = false>(options: Options<UsersPatchCurrentUserData, ThrowOnError>) => (options.client ?? client).patch<UsersPatchCurrentUserResponses, UsersPatchCurrentUserErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/users/me',
+    url: '/api/users/me',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -136,7 +136,7 @@ export const usersPatchCurrentUser = <ThrowOnError extends boolean = false>(opti
  */
 export const usersDeleteUser = <ThrowOnError extends boolean = false>(options: Options<UsersDeleteUserData, ThrowOnError>) => (options.client ?? client).delete<UsersDeleteUserResponses, UsersDeleteUserErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/users/{id}',
+    url: '/api/users/{id}',
     ...options
 });
 
@@ -146,7 +146,7 @@ export const usersDeleteUser = <ThrowOnError extends boolean = false>(options: O
 export const usersUser = <ThrowOnError extends boolean = false>(options: Options<UsersUserData, ThrowOnError>) => (options.client ?? client).get<UsersUserResponses, UsersUserErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/users/{id}',
+    url: '/api/users/{id}',
     ...options
 });
 
@@ -156,7 +156,7 @@ export const usersUser = <ThrowOnError extends boolean = false>(options: Options
 export const usersPatchUser = <ThrowOnError extends boolean = false>(options: Options<UsersPatchUserData, ThrowOnError>) => (options.client ?? client).patch<UsersPatchUserResponses, UsersPatchUserErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/users/{id}',
+    url: '/api/users/{id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -165,22 +165,71 @@ export const usersPatchUser = <ThrowOnError extends boolean = false>(options: Op
 });
 
 /**
- * Read Item
+ * Health check
+ *
+ * Health check endpoint.
  */
-export const readItem = <ThrowOnError extends boolean = false>(options?: Options<ReadItemData, ThrowOnError>) => (options?.client ?? client).get<ReadItemResponses, ReadItemErrors, ThrowOnError>({
+export const healthCheck = <ThrowOnError extends boolean = false>(options?: Options<HealthCheckData, ThrowOnError>) => (options?.client ?? client).get<HealthCheckResponses, unknown, ThrowOnError>({
     responseType: 'json',
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/items/',
+    url: '/api/health',
     ...options
 });
 
 /**
- * Create Item
+ * Detailed health check
+ *
+ * Detailed health check endpoint with all services.
  */
-export const createItem = <ThrowOnError extends boolean = false>(options: Options<CreateItemData, ThrowOnError>) => (options.client ?? client).post<CreateItemResponses, CreateItemErrors, ThrowOnError>({
+export const healthCheckDetailed = <ThrowOnError extends boolean = false>(options?: Options<HealthCheckDetailedData, ThrowOnError>) => (options?.client ?? client).get<HealthCheckDetailedResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    url: '/api/health/detailed',
+    ...options
+});
+
+/**
+ * Read Own Profile
+ *
+ * Example: returns the currently authenticated user's public profile.
+ */
+export const readOwnProfile = <ThrowOnError extends boolean = false>(options?: Options<ReadOwnProfileData, ThrowOnError>) => (options?.client ?? client).get<ReadOwnProfileResponses, unknown, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/items/',
+    url: '/api/profiles/me',
+    ...options
+});
+
+/**
+ * List Profiles
+ *
+ * Search for public profiles using FastCRUD.
+ */
+export const listProfiles = <ThrowOnError extends boolean = false>(options?: Options<ListProfilesData, ThrowOnError>) => (options?.client ?? client).get<ListProfilesResponses, ListProfilesErrors, ThrowOnError>({
+    responseType: 'json',
+    url: '/api/profiles',
+    ...options
+});
+
+/**
+ * List Addresses
+ *
+ * List addresses for current user using FastCRUD.
+ */
+export const listAddresses = <ThrowOnError extends boolean = false>(options?: Options<ListAddressesData, ThrowOnError>) => (options?.client ?? client).get<ListAddressesResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/addresses',
+    ...options
+});
+
+/**
+ * Create Address
+ *
+ * Create address for current user using FastCRUD.
+ */
+export const createAddress = <ThrowOnError extends boolean = false>(options: Options<CreateAddressData, ThrowOnError>) => (options.client ?? client).post<CreateAddressResponses, CreateAddressErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/addresses',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -189,11 +238,327 @@ export const createItem = <ThrowOnError extends boolean = false>(options: Option
 });
 
 /**
- * Delete Item
+ * Delete Address
+ *
+ * Delete address for current user using FastCRUD.
  */
-export const deleteItem = <ThrowOnError extends boolean = false>(options: Options<DeleteItemData, ThrowOnError>) => (options.client ?? client).delete<DeleteItemResponses, DeleteItemErrors, ThrowOnError>({
+export const deleteAddress = <ThrowOnError extends boolean = false>(options: Options<DeleteAddressData, ThrowOnError>) => (options.client ?? client).delete<DeleteAddressResponses, DeleteAddressErrors, ThrowOnError>({
     responseType: 'json',
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/items/{item_id}',
+    url: '/api/addresses/{address_id}',
+    ...options
+});
+
+/**
+ * List Reviews
+ *
+ * Get approved reviews (public endpoint).
+ */
+export const listReviews = <ThrowOnError extends boolean = false>(options?: Options<ListReviewsData, ThrowOnError>) => (options?.client ?? client).get<ListReviewsResponses, ListReviewsErrors, ThrowOnError>({
+    responseType: 'json',
+    url: '/api/reviews',
+    ...options
+});
+
+/**
+ * Create Review
+ *
+ * Create a new review (requires login).
+ */
+export const createReview = <ThrowOnError extends boolean = false>(options: Options<CreateReviewData, ThrowOnError>) => (options.client ?? client).post<CreateReviewResponses, CreateReviewErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/reviews',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get My Reviews
+ *
+ * Get current user's reviews.
+ */
+export const getMyReviews = <ThrowOnError extends boolean = false>(options?: Options<GetMyReviewsData, ThrowOnError>) => (options?.client ?? client).get<GetMyReviewsResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/reviews/user/my-reviews',
+    ...options
+});
+
+/**
+ * Admin Stats
+ *
+ * Simple admin-only endpoint.
+ */
+export const adminStats = <ThrowOnError extends boolean = false>(options?: Options<AdminStatsData, ThrowOnError>) => (options?.client ?? client).get<AdminStatsResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/stats',
+    ...options
+});
+
+/**
+ * List Users
+ */
+export const listUsers = <ThrowOnError extends boolean = false>(options?: Options<ListUsersData, ThrowOnError>) => (options?.client ?? client).get<ListUsersResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/users/',
+    ...options
+});
+
+/**
+ * Get User
+ */
+export const getUser = <ThrowOnError extends boolean = false>(options: Options<GetUserData, ThrowOnError>) => (options.client ?? client).get<GetUserResponses, GetUserErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/users/{user_id}',
+    ...options
+});
+
+/**
+ * List Courses
+ */
+export const listCourses = <ThrowOnError extends boolean = false>(options?: Options<ListCoursesData, ThrowOnError>) => (options?.client ?? client).get<ListCoursesResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/courses/',
+    ...options
+});
+
+/**
+ * Get Course
+ */
+export const getCourse = <ThrowOnError extends boolean = false>(options: Options<GetCourseData, ThrowOnError>) => (options.client ?? client).get<GetCourseResponses, GetCourseErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/courses/{course_id}',
+    ...options
+});
+
+/**
+ * List Products
+ */
+export const listProducts = <ThrowOnError extends boolean = false>(options?: Options<ListProductsData, ThrowOnError>) => (options?.client ?? client).get<ListProductsResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/products/',
+    ...options
+});
+
+/**
+ * Get Product
+ */
+export const getProduct = <ThrowOnError extends boolean = false>(options: Options<GetProductData, ThrowOnError>) => (options.client ?? client).get<GetProductResponses, GetProductErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/products/{product_id}',
+    ...options
+});
+
+/**
+ * Overview
+ */
+export const overview = <ThrowOnError extends boolean = false>(options?: Options<OverviewData, ThrowOnError>) => (options?.client ?? client).get<OverviewResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/dashboard/overview',
+    ...options
+});
+
+/**
+ * Get Home Page Settings
+ */
+export const getHomePageSettings = <ThrowOnError extends boolean = false>(options?: Options<GetHomePageSettingsData, ThrowOnError>) => (options?.client ?? client).get<GetHomePageSettingsResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    url: '/api/admin/config/home',
+    ...options
+});
+
+/**
+ * Update Home Page Settings
+ */
+export const updateHomePageSettings = <ThrowOnError extends boolean = false>(options: Options<UpdateHomePageSettingsData, ThrowOnError>) => (options.client ?? client).put<UpdateHomePageSettingsResponses, UpdateHomePageSettingsErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/config/home',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List All Reviews
+ *
+ * List all reviews (admin only).
+ */
+export const listAllReviews = <ThrowOnError extends boolean = false>(options?: Options<ListAllReviewsData, ThrowOnError>) => (options?.client ?? client).get<ListAllReviewsResponses, ListAllReviewsErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/reviews',
+    ...options
+});
+
+/**
+ * Delete Review
+ *
+ * Delete a review (admin only).
+ */
+export const deleteReview = <ThrowOnError extends boolean = false>(options: Options<DeleteReviewData, ThrowOnError>) => (options.client ?? client).delete<DeleteReviewResponses, DeleteReviewErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/reviews/{review_id}',
+    ...options
+});
+
+/**
+ * Get Review Detail
+ *
+ * Get a single review (admin only).
+ */
+export const getReviewDetail = <ThrowOnError extends boolean = false>(options: Options<GetReviewDetailData, ThrowOnError>) => (options.client ?? client).get<GetReviewDetailResponses, GetReviewDetailErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/reviews/{review_id}',
+    ...options
+});
+
+/**
+ * Update Review
+ *
+ * Update review status or content (admin only).
+ */
+export const updateReview = <ThrowOnError extends boolean = false>(options: Options<UpdateReviewData, ThrowOnError>) => (options.client ?? client).put<UpdateReviewResponses, UpdateReviewErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/reviews/{review_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * List Courses
+ */
+export const listCourses2 = <ThrowOnError extends boolean = false>(options?: Options<ListCourses2Data, ThrowOnError>) => (options?.client ?? client).get<ListCourses2Responses, ListCourses2Errors, ThrowOnError>({
+    responseType: 'json',
+    url: '/api/courses',
+    ...options
+});
+
+/**
+ * Get Course
+ */
+export const getCourse2 = <ThrowOnError extends boolean = false>(options: Options<GetCourse2Data, ThrowOnError>) => (options.client ?? client).get<GetCourse2Responses, GetCourse2Errors, ThrowOnError>({
+    responseType: 'json',
+    url: '/api/courses/{course_id}',
+    ...options
+});
+
+/**
+ * List Products
+ */
+export const listProducts2 = <ThrowOnError extends boolean = false>(options?: Options<ListProducts2Data, ThrowOnError>) => (options?.client ?? client).get<ListProducts2Responses, ListProducts2Errors, ThrowOnError>({
+    responseType: 'json',
+    url: '/api/products',
+    ...options
+});
+
+/**
+ * Get Product
+ */
+export const getProduct2 = <ThrowOnError extends boolean = false>(options: Options<GetProduct2Data, ThrowOnError>) => (options.client ?? client).get<GetProduct2Responses, GetProduct2Errors, ThrowOnError>({
+    responseType: 'json',
+    url: '/api/products/{product_id}',
+    ...options
+});
+
+/**
+ * Get My Cart
+ */
+export const getMyCart = <ThrowOnError extends boolean = false>(options?: Options<GetMyCartData, ThrowOnError>) => (options?.client ?? client).get<GetMyCartResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/cart',
+    ...options
+});
+
+/**
+ * Add To Cart
+ */
+export const addToCart = <ThrowOnError extends boolean = false>(options: Options<AddToCartData, ThrowOnError>) => (options.client ?? client).post<AddToCartResponses, AddToCartErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/cart',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Remove From Cart
+ */
+export const removeFromCart = <ThrowOnError extends boolean = false>(options: Options<RemoveFromCartData, ThrowOnError>) => (options.client ?? client).delete<RemoveFromCartResponses, RemoveFromCartErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/cart/{item_id}',
+    ...options
+});
+
+/**
+ * Update Cart Item
+ */
+export const updateCartItem = <ThrowOnError extends boolean = false>(options: Options<UpdateCartItemData, ThrowOnError>) => (options.client ?? client).patch<UpdateCartItemResponses, UpdateCartItemErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/cart/{item_id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Get My Wishlist
+ */
+export const getMyWishlist = <ThrowOnError extends boolean = false>(options?: Options<GetMyWishlistData, ThrowOnError>) => (options?.client ?? client).get<GetMyWishlistResponses, unknown, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/wishlist',
+    ...options
+});
+
+/**
+ * Add To Wishlist
+ */
+export const addToWishlist = <ThrowOnError extends boolean = false>(options: Options<AddToWishlistData, ThrowOnError>) => (options.client ?? client).post<AddToWishlistResponses, AddToWishlistErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/wishlist',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Remove From Wishlist
+ */
+export const removeFromWishlist = <ThrowOnError extends boolean = false>(options: Options<RemoveFromWishlistData, ThrowOnError>) => (options.client ?? client).delete<RemoveFromWishlistResponses, RemoveFromWishlistErrors, ThrowOnError>({
+    responseType: 'json',
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/wishlist/{item_id}',
     ...options
 });

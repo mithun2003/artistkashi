@@ -1,25 +1,40 @@
-from datetime import datetime
-from typing import TypeVar
+from datetime import UTC, datetime
+from typing import Any, TypeVar
 
+from fastcrud import PaginatedListResponse
 from pydantic import BaseModel, Field
 from pydantic.generics import GenericModel
 
 T = TypeVar("T")
 
 
-class MetaModel(BaseModel):
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+class Meta(BaseModel):
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    error_code: str | None = None
 
 
-class ResponseModel[T](GenericModel):
+class Pagination(BaseModel):
+    page: int
+    page_size: int
+    total_items: int
+    total_pages: int
+
+
+class SuccessResponse[T](GenericModel):
     success: bool = True
+    status: int = 200
     message: str
     data: T | None = None
-    meta: MetaModel = Field(default_factory=MetaModel)
+    meta: Meta = Field(default_factory=Meta)
 
 
-class ErrorResponseModel(BaseModel):
+class PaginatedResponse[T](PaginatedListResponse[T]):
+    pass
+
+
+class ErrorResponse(BaseModel):
     success: bool = False
+    status: int
     message: str
-    errors: dict[str, list[str]] | None = None
-    meta: MetaModel = Field(default_factory=MetaModel)
+    errors: dict[str, Any] | None = None
+    meta: Meta = Field(default_factory=Meta)

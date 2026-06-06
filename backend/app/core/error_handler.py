@@ -2,7 +2,6 @@
 
 import logging
 from collections.abc import Awaitable, Callable
-from datetime import datetime
 
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
@@ -10,7 +9,7 @@ from fastapi.responses import JSONResponse
 from starlette.responses import Response
 
 from app.core.exceptions import AppException
-from app.schemas.responses import ErrorResponseModel, MetaModel
+from app.schemas.responses import ErrorResponse, Meta
 
 logger = logging.getLogger(__name__)
 
@@ -50,17 +49,13 @@ def setup_exception_handlers(app: FastAPI) -> None:
                 errors[loc] = []
             errors[loc].append(error["msg"])
 
-        response_content = ErrorResponseModel(
+        response_content = ErrorResponse(
             success=False,
-            message="Validation error",
+            status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            message="Validation failed",
             errors=errors,
-            meta=MetaModel(timestamp=datetime.utcnow()),
-        ).model_dump()
-
-        # Ensure timestamp is string for JSON
-        response_content["meta"]["timestamp"] = (
-            response_content["meta"]["timestamp"].isoformat() + "Z"
-        )
+            meta=Meta(error_code="VALIDATION_ERROR"),
+        ).model_dump(mode="json")
 
         return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -72,15 +67,13 @@ def setup_exception_handlers(app: FastAPI) -> None:
         """Handle standard HTTP exceptions."""
         return JSONResponse(
             status_code=exc.status_code,
-            content={
-                "success": False,
-                "message": exc.detail,
-                "errors": None,
-                "meta": {
-                    "timestamp": datetime.utcnow().isoformat() + "Z",
-                    "error_code": "HTTP_ERROR",
-                },
-            },
+            content=ErrorResponse(
+                success=False,
+                status=exc.status_code,
+                message=exc.detail,
+                errors=None,
+                meta=Meta(error_code="HTTP_ERROR"),
+            ).model_dump(mode="json"),
         )
 
     @app.exception_handler(Exception)
@@ -97,15 +90,13 @@ def setup_exception_handlers(app: FastAPI) -> None:
         )
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content={
-                "success": False,
-                "message": "An unexpected error occurred",
-                "errors": None,
-                "meta": {
-                    "timestamp": datetime.utcnow().isoformat() + "Z",
-                    "error_code": "INTERNAL_SERVER_ERROR",
-                },
-            },
+            content=ErrorResponse(
+                success=False,
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                message="An unexpected error occurred",
+                errors=None,
+                meta=Meta(error_code="INTERNAL_SERVER_ERROR"),
+            ).model_dump(mode="json"),
         )
 
 

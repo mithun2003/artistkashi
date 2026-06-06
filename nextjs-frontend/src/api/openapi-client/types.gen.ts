@@ -5,6 +5,134 @@ export type ClientOptions = {
 };
 
 /**
+ * AboutSection
+ */
+export type AboutSection = {
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Description1
+     */
+    description1: string;
+    /**
+     * Description2
+     */
+    description2: string;
+    /**
+     * Description3
+     */
+    description3: string;
+    /**
+     * Instructorname
+     */
+    instructorName: string;
+    /**
+     * Instructorrole
+     */
+    instructorRole: string;
+    /**
+     * Image
+     */
+    image: string;
+    /**
+     * Stats
+     */
+    stats?: Array<AboutStat>;
+};
+
+/**
+ * AboutStat
+ */
+export type AboutStat = {
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Value
+     */
+    value: string;
+};
+
+/**
+ * AddressCreate
+ */
+export type AddressCreate = {
+    /**
+     * Line1
+     */
+    line1: string;
+    /**
+     * Line2
+     */
+    line2?: string | null;
+    /**
+     * City
+     */
+    city?: string | null;
+    /**
+     * State
+     */
+    state?: string | null;
+    /**
+     * Postal Code
+     */
+    postal_code?: string | null;
+    /**
+     * Country
+     */
+    country?: string | null;
+    /**
+     * Phone
+     */
+    phone?: string | null;
+    /**
+     * Is Default
+     */
+    is_default?: boolean;
+};
+
+/**
+ * BannerSection
+ */
+export type BannerSection = {
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Primarybtntext
+     */
+    primaryBtnText: string;
+    /**
+     * Primarybtnlink
+     */
+    primaryBtnLink?: string;
+    /**
+     * Ghostbtntext
+     */
+    ghostBtnText: string;
+    /**
+     * Ghostbtnlink
+     */
+    ghostBtnLink?: string;
+};
+
+/**
  * BearerResponse
  */
 export type BearerResponse = {
@@ -63,6 +191,130 @@ export type BodyAuthVerifyVerify = {
 };
 
 /**
+ * CartItemCreate
+ */
+export type CartItemCreate = {
+    /**
+     * Product Id
+     */
+    product_id?: number | null;
+    /**
+     * Course Id
+     */
+    course_id?: number | null;
+    /**
+     * Quantity
+     */
+    quantity?: number;
+};
+
+/**
+ * CartItemRead
+ */
+export type CartItemRead = {
+    /**
+     * Product Id
+     */
+    product_id?: number | null;
+    /**
+     * Course Id
+     */
+    course_id?: number | null;
+    /**
+     * Quantity
+     */
+    quantity?: number;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * User Id
+     */
+    user_id: string;
+    product?: ProductRead | null;
+    course?: CourseRead | null;
+};
+
+/**
+ * CartItemUpdate
+ */
+export type CartItemUpdate = {
+    /**
+     * Quantity
+     */
+    quantity: number;
+};
+
+/**
+ * CommunitySection
+ */
+export type CommunitySection = {
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Items
+     */
+    items?: Array<TestimonialItem>;
+};
+
+/**
+ * CourseRead
+ */
+export type CourseRead = {
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Instructor
+     */
+    instructor: string;
+    /**
+     * Duration
+     */
+    duration?: string | null;
+    /**
+     * Image Url
+     */
+    image_url?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Price
+     */
+    price: number;
+    /**
+     * Category
+     */
+    category?: string | null;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Rating
+     */
+    rating: number;
+    /**
+     * Students Count
+     */
+    students_count: number;
+};
+
+/**
  * ErrorModel
  */
 export type ErrorModel = {
@@ -72,6 +324,62 @@ export type ErrorModel = {
     detail: string | {
         [key: string]: string;
     };
+};
+
+/**
+ * FaqItem
+ */
+export type FaqItem = {
+    /**
+     * Question
+     */
+    question: string;
+    /**
+     * Answer
+     */
+    answer: string;
+};
+
+/**
+ * FaqSection
+ */
+export type FaqSection = {
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Description
+     */
+    description: string;
+    /**
+     * Items
+     */
+    items?: Array<FaqItem>;
+};
+
+/**
+ * FeaturedSection
+ */
+export type FeaturedSection = {
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Items
+     *
+     * IDs of featured entities
+     */
+    items?: Array<number>;
 };
 
 /**
@@ -85,39 +393,612 @@ export type HttpValidationError = {
 };
 
 /**
- * ItemCreate
+ * HeroSection
  */
-export type ItemCreate = {
+export type HeroSection = {
     /**
-     * Name
+     * Title
      */
-    name: string;
+    title: string;
     /**
-     * Description
+     * Subtitle
      */
-    description?: string | null;
+    subtitle: string;
     /**
-     * Quantity
+     * Primarybtntext
      */
-    quantity?: number | null;
+    primaryBtnText: string;
+    /**
+     * Primarybtnlink
+     */
+    primaryBtnLink?: string;
+    /**
+     * Ghostbtntext
+     */
+    ghostBtnText: string;
+    /**
+     * Ghostbtnlink
+     */
+    ghostBtnLink?: string;
+    /**
+     * Mediatype
+     */
+    mediaType?: 'image' | 'video';
+    /**
+     * Mediaurl
+     */
+    mediaUrl: string;
+    /**
+     * Stats
+     */
+    stats?: Array<HeroStat>;
 };
 
 /**
- * ItemRead
+ * HeroStat
  */
-export type ItemRead = {
+export type HeroStat = {
     /**
-     * Name
+     * Label
      */
-    name: string;
+    label: string;
+    /**
+     * Value
+     */
+    value: string;
+};
+
+/**
+ * HomePageConfig
+ */
+export type HomePageConfig = {
+    hero: HeroSection;
+    featuredPaintings: FeaturedSection;
+    featuredCourses: FeaturedSection;
+    collection: FeaturedSection;
+    bestSellers: FeaturedSection;
+    about: AboutSection;
+    videoCta: VideoCtaSection;
+    faq: FaqSection;
+    community: CommunitySection;
+    banner: BannerSection;
+};
+
+/**
+ * MetaModel
+ */
+export type MetaModel = {
+    /**
+     * Timestamp
+     */
+    timestamp?: string;
+    /**
+     * Error Code
+     */
+    error_code?: string | null;
+};
+
+/**
+ * ProductRead
+ */
+export type ProductRead = {
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Artist
+     */
+    artist: string;
+    /**
+     * Price
+     */
+    price: number;
+    /**
+     * Image Url
+     */
+    image_url?: string | null;
+    /**
+     * Category
+     */
+    category?: string | null;
     /**
      * Description
      */
     description?: string | null;
     /**
-     * Quantity
+     * Stock Quantity
      */
-    quantity?: number | null;
+    stock_quantity?: number;
+    /**
+     * Id
+     */
+    id: number;
+};
+
+/**
+ * ResponseModel
+ *
+ * Standard API response used across the app.
+ *
+ * Fields kept for backwards compatibility:
+ * - status: HTTP status code (int)
+ * - success: bool (kept to avoid breaking callers that read it)
+ * - message, data, meta
+ */
+export type ResponseModel = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: unknown | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[AddressRead]
+ */
+export type ResponseModelAddressRead = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    data?: AppSchemasAddressAddressRead | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[Any]
+ */
+export type ResponseModelAny = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: unknown;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[CartItemRead]
+ */
+export type ResponseModelCartItemRead = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    data?: CartItemRead | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[CourseRead]
+ */
+export type ResponseModelCourseRead = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    data?: CourseRead | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[HomePageConfig]
+ */
+export type ResponseModelHomePageConfig = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    data?: HomePageConfig | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[ProductRead]
+ */
+export type ResponseModelProductRead = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    data?: ProductRead | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[ReviewRead]
+ */
+export type ResponseModelReviewRead = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    data?: ReviewRead | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[UserRead]
+ */
+export type ResponseModelUserRead = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    data?: UserRead | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[WishlistRead]
+ */
+export type ResponseModelWishlistRead = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    data?: WishlistRead | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[dict]
+ */
+export type ResponseModelDict = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: {
+        [key: string]: unknown;
+    } | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[list[AddressRead]]
+ */
+export type ResponseModelListAddressRead = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<AppSchemasAddressAddressRead> | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[list[CartItemRead]]
+ */
+export type ResponseModelListCartItemRead = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<CartItemRead> | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[list[CourseRead]]
+ */
+export type ResponseModelListCourseRead = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<CourseRead> | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[list[ProductRead]]
+ */
+export type ResponseModelListProductRead = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<ProductRead> | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[list[ReviewReadPublic]]
+ */
+export type ResponseModelListReviewReadPublic = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<ReviewReadPublic> | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[list[ReviewRead]]
+ */
+export type ResponseModelListReviewRead = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<ReviewRead> | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[list[UserRead]]
+ */
+export type ResponseModelListUserRead = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<UserRead> | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[list[WishlistRead]]
+ */
+export type ResponseModelListWishlistRead = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<WishlistRead> | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ResponseModel[list[dict]]
+ */
+export type ResponseModelListDict = {
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<{
+        [key: string]: unknown;
+    }> | null;
+    meta?: MetaModel;
+};
+
+/**
+ * ReviewCreate
+ */
+export type ReviewCreate = {
+    type: ReviewType;
+    /**
+     * Entity Id
+     */
+    entity_id?: number | null;
+    /**
+     * Rating
+     */
+    rating: number;
+    /**
+     * Text
+     */
+    text: string;
+};
+
+/**
+ * ReviewRead
+ */
+export type ReviewRead = {
+    type: ReviewType;
+    /**
+     * Entity Id
+     */
+    entity_id?: number | null;
+    /**
+     * Rating
+     */
+    rating: number;
+    /**
+     * Text
+     */
+    text: string;
     /**
      * Id
      */
@@ -126,32 +1007,96 @@ export type ItemRead = {
      * User Id
      */
     user_id: string;
+    status: ReviewStatus;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
 };
 
 /**
- * Page[ItemRead]
+ * ReviewReadPublic
+ *
+ * Public version without sensitive info
  */
-export type PageItemRead = {
+export type ReviewReadPublic = {
+    type: ReviewType;
     /**
-     * Items
+     * Entity Id
      */
-    items: Array<ItemRead>;
+    entity_id?: number | null;
     /**
-     * Total
+     * Rating
      */
-    total?: number | null;
+    rating: number;
     /**
-     * Page
+     * Text
      */
-    page: number | null;
+    text: string;
     /**
-     * Size
+     * Id
      */
-    size: number | null;
+    id: string;
+    status: ReviewStatus;
     /**
-     * Pages
+     * Created At
      */
-    pages?: number | null;
+    created_at: string;
+};
+
+/**
+ * ReviewStatus
+ */
+export type ReviewStatus = 'pending' | 'approved' | 'blocked';
+
+/**
+ * ReviewType
+ */
+export type ReviewType = 'site' | 'product' | 'painting';
+
+/**
+ * ReviewUpdate
+ */
+export type ReviewUpdate = {
+    status?: ReviewStatus | null;
+    /**
+     * Rating
+     */
+    rating?: number | null;
+    /**
+     * Text
+     */
+    text?: string | null;
+};
+
+/**
+ * TestimonialItem
+ */
+export type TestimonialItem = {
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Role
+     */
+    role: string;
+    /**
+     * Text
+     */
+    text: string;
+    /**
+     * Rating
+     */
+    rating?: number;
+    /**
+     * Avatar
+     */
+    avatar: string;
 };
 
 /**
@@ -228,6 +1173,10 @@ export type UserRead = {
      * Role
      */
     role?: string | null;
+    /**
+     * Addresses
+     */
+    addresses?: Array<AppSchemasUserAddressRead> | null;
 };
 
 /**
@@ -284,6 +1233,160 @@ export type ValidationError = {
      * Error Type
      */
     type: string;
+    /**
+     * Input
+     */
+    input?: unknown;
+    /**
+     * Context
+     */
+    ctx?: {
+        [key: string]: unknown;
+    };
+};
+
+/**
+ * VideoCtaSection
+ */
+export type VideoCtaSection = {
+    /**
+     * Label
+     */
+    label: string;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Bgimage
+     */
+    bgImage: string;
+    /**
+     * Videourl
+     */
+    videoUrl: string;
+};
+
+/**
+ * WishlistCreate
+ */
+export type WishlistCreate = {
+    /**
+     * Product Id
+     */
+    product_id?: number | null;
+    /**
+     * Course Id
+     */
+    course_id?: number | null;
+};
+
+/**
+ * WishlistRead
+ */
+export type WishlistRead = {
+    /**
+     * Product Id
+     */
+    product_id?: number | null;
+    /**
+     * Course Id
+     */
+    course_id?: number | null;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * User Id
+     */
+    user_id: string;
+    product?: ProductRead | null;
+    course?: CourseRead | null;
+};
+
+/**
+ * AddressRead
+ */
+export type AppSchemasAddressAddressRead = {
+    /**
+     * Line1
+     */
+    line1: string;
+    /**
+     * Line2
+     */
+    line2?: string | null;
+    /**
+     * City
+     */
+    city?: string | null;
+    /**
+     * State
+     */
+    state?: string | null;
+    /**
+     * Postal Code
+     */
+    postal_code?: string | null;
+    /**
+     * Country
+     */
+    country?: string | null;
+    /**
+     * Phone
+     */
+    phone?: string | null;
+    /**
+     * Is Default
+     */
+    is_default?: boolean;
+    /**
+     * Id
+     */
+    id: number;
+};
+
+/**
+ * AddressRead
+ */
+export type AppSchemasUserAddressRead = {
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Line1
+     */
+    line1: string;
+    /**
+     * Line2
+     */
+    line2?: string | null;
+    /**
+     * City
+     */
+    city?: string | null;
+    /**
+     * State
+     */
+    state?: string | null;
+    /**
+     * Postal Code
+     */
+    postal_code?: string | null;
+    /**
+     * Country
+     */
+    country?: string | null;
+    /**
+     * Phone
+     */
+    phone?: string | null;
+    /**
+     * Is Default
+     */
+    is_default?: boolean;
 };
 
 /**
@@ -316,22 +1419,44 @@ export type Login = {
     client_secret?: string | null;
 };
 
+/**
+ * ApiMeta
+ */
+export type ApiMeta = {
+    timestamp: string;
+    error_code?: string;
+};
+
+/**
+ * ApiResponse
+ */
+export type ApiResponse = {
+    status: number;
+    message: string;
+    data?: unknown;
+    meta: ApiMeta;
+};
+
 export type AuthJwtLoginData = {
     body: Login;
     path?: never;
     query?: never;
-    url: '/auth/jwt/login';
+    url: '/api/auth/jwt/login';
 };
 
 export type AuthJwtLoginErrors = {
     /**
      * Bad Request
      */
-    400: ErrorModel;
+    400: ApiResponse & {
+        data?: ErrorModel;
+    };
     /**
      * Validation Error
      */
-    422: HttpValidationError;
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
 };
 
 export type AuthJwtLoginError = AuthJwtLoginErrors[keyof AuthJwtLoginErrors];
@@ -340,7 +1465,9 @@ export type AuthJwtLoginResponses = {
     /**
      * Successful Response
      */
-    200: BearerResponse;
+    200: ApiResponse & {
+        data?: BearerResponse;
+    };
 };
 
 export type AuthJwtLoginResponse = AuthJwtLoginResponses[keyof AuthJwtLoginResponses];
@@ -349,7 +1476,7 @@ export type AuthJwtLogoutData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/auth/jwt/logout';
+    url: '/api/auth/jwt/logout';
 };
 
 export type AuthJwtLogoutErrors = {
@@ -363,25 +1490,33 @@ export type AuthJwtLogoutResponses = {
     /**
      * Successful Response
      */
-    200: unknown;
+    200: ApiResponse & {
+        data?: unknown;
+    };
 };
+
+export type AuthJwtLogoutResponse = AuthJwtLogoutResponses[keyof AuthJwtLogoutResponses];
 
 export type RegisterRegisterData = {
     body: UserCreate;
     path?: never;
     query?: never;
-    url: '/auth/register';
+    url: '/api/auth/register';
 };
 
 export type RegisterRegisterErrors = {
     /**
      * Bad Request
      */
-    400: ErrorModel;
+    400: ApiResponse & {
+        data?: ErrorModel;
+    };
     /**
      * Validation Error
      */
-    422: HttpValidationError;
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
 };
 
 export type RegisterRegisterError = RegisterRegisterErrors[keyof RegisterRegisterErrors];
@@ -390,7 +1525,9 @@ export type RegisterRegisterResponses = {
     /**
      * Successful Response
      */
-    201: UserRead;
+    201: ApiResponse & {
+        data?: UserRead;
+    };
 };
 
 export type RegisterRegisterResponse = RegisterRegisterResponses[keyof RegisterRegisterResponses];
@@ -399,14 +1536,16 @@ export type ResetForgotPasswordData = {
     body: BodyAuthResetForgotPassword;
     path?: never;
     query?: never;
-    url: '/auth/forgot-password';
+    url: '/api/auth/forgot-password';
 };
 
 export type ResetForgotPasswordErrors = {
     /**
      * Validation Error
      */
-    422: HttpValidationError;
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
 };
 
 export type ResetForgotPasswordError = ResetForgotPasswordErrors[keyof ResetForgotPasswordErrors];
@@ -415,25 +1554,33 @@ export type ResetForgotPasswordResponses = {
     /**
      * Successful Response
      */
-    202: unknown;
+    202: ApiResponse & {
+        data?: unknown;
+    };
 };
+
+export type ResetForgotPasswordResponse = ResetForgotPasswordResponses[keyof ResetForgotPasswordResponses];
 
 export type ResetResetPasswordData = {
     body: BodyAuthResetResetPassword;
     path?: never;
     query?: never;
-    url: '/auth/reset-password';
+    url: '/api/auth/reset-password';
 };
 
 export type ResetResetPasswordErrors = {
     /**
      * Bad Request
      */
-    400: ErrorModel;
+    400: ApiResponse & {
+        data?: ErrorModel;
+    };
     /**
      * Validation Error
      */
-    422: HttpValidationError;
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
 };
 
 export type ResetResetPasswordError = ResetResetPasswordErrors[keyof ResetResetPasswordErrors];
@@ -442,21 +1589,27 @@ export type ResetResetPasswordResponses = {
     /**
      * Successful Response
      */
-    200: unknown;
+    200: ApiResponse & {
+        data?: unknown;
+    };
 };
+
+export type ResetResetPasswordResponse = ResetResetPasswordResponses[keyof ResetResetPasswordResponses];
 
 export type VerifyRequestTokenData = {
     body: BodyAuthVerifyRequestToken;
     path?: never;
     query?: never;
-    url: '/auth/request-verify-token';
+    url: '/api/auth/request-verify-token';
 };
 
 export type VerifyRequestTokenErrors = {
     /**
      * Validation Error
      */
-    422: HttpValidationError;
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
 };
 
 export type VerifyRequestTokenError = VerifyRequestTokenErrors[keyof VerifyRequestTokenErrors];
@@ -465,25 +1618,33 @@ export type VerifyRequestTokenResponses = {
     /**
      * Successful Response
      */
-    202: unknown;
+    202: ApiResponse & {
+        data?: unknown;
+    };
 };
+
+export type VerifyRequestTokenResponse = VerifyRequestTokenResponses[keyof VerifyRequestTokenResponses];
 
 export type VerifyVerifyData = {
     body: BodyAuthVerifyVerify;
     path?: never;
     query?: never;
-    url: '/auth/verify';
+    url: '/api/auth/verify';
 };
 
 export type VerifyVerifyErrors = {
     /**
      * Bad Request
      */
-    400: ErrorModel;
+    400: ApiResponse & {
+        data?: ErrorModel;
+    };
     /**
      * Validation Error
      */
-    422: HttpValidationError;
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
 };
 
 export type VerifyVerifyError = VerifyVerifyErrors[keyof VerifyVerifyErrors];
@@ -492,7 +1653,9 @@ export type VerifyVerifyResponses = {
     /**
      * Successful Response
      */
-    200: UserRead;
+    200: ApiResponse & {
+        data?: UserRead;
+    };
 };
 
 export type VerifyVerifyResponse = VerifyVerifyResponses[keyof VerifyVerifyResponses];
@@ -501,7 +1664,7 @@ export type UsersCurrentUserData = {
     body?: never;
     path?: never;
     query?: never;
-    url: '/users/me';
+    url: '/api/users/me';
 };
 
 export type UsersCurrentUserErrors = {
@@ -515,7 +1678,9 @@ export type UsersCurrentUserResponses = {
     /**
      * Successful Response
      */
-    200: UserRead;
+    200: ApiResponse & {
+        data?: UserRead;
+    };
 };
 
 export type UsersCurrentUserResponse = UsersCurrentUserResponses[keyof UsersCurrentUserResponses];
@@ -524,14 +1689,16 @@ export type UsersPatchCurrentUserData = {
     body: UserUpdate;
     path?: never;
     query?: never;
-    url: '/users/me';
+    url: '/api/users/me';
 };
 
 export type UsersPatchCurrentUserErrors = {
     /**
      * Bad Request
      */
-    400: ErrorModel;
+    400: ApiResponse & {
+        data?: ErrorModel;
+    };
     /**
      * Missing token or inactive user.
      */
@@ -539,7 +1706,9 @@ export type UsersPatchCurrentUserErrors = {
     /**
      * Validation Error
      */
-    422: HttpValidationError;
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
 };
 
 export type UsersPatchCurrentUserError = UsersPatchCurrentUserErrors[keyof UsersPatchCurrentUserErrors];
@@ -548,7 +1717,9 @@ export type UsersPatchCurrentUserResponses = {
     /**
      * Successful Response
      */
-    200: UserRead;
+    200: ApiResponse & {
+        data?: UserRead;
+    };
 };
 
 export type UsersPatchCurrentUserResponse = UsersPatchCurrentUserResponses[keyof UsersPatchCurrentUserResponses];
@@ -562,7 +1733,7 @@ export type UsersDeleteUserData = {
         id: string;
     };
     query?: never;
-    url: '/users/{id}';
+    url: '/api/users/{id}';
 };
 
 export type UsersDeleteUserErrors = {
@@ -581,7 +1752,9 @@ export type UsersDeleteUserErrors = {
     /**
      * Validation Error
      */
-    422: HttpValidationError;
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
 };
 
 export type UsersDeleteUserError = UsersDeleteUserErrors[keyof UsersDeleteUserErrors];
@@ -604,7 +1777,7 @@ export type UsersUserData = {
         id: string;
     };
     query?: never;
-    url: '/users/{id}';
+    url: '/api/users/{id}';
 };
 
 export type UsersUserErrors = {
@@ -623,7 +1796,9 @@ export type UsersUserErrors = {
     /**
      * Validation Error
      */
-    422: HttpValidationError;
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
 };
 
 export type UsersUserError = UsersUserErrors[keyof UsersUserErrors];
@@ -632,7 +1807,9 @@ export type UsersUserResponses = {
     /**
      * Successful Response
      */
-    200: UserRead;
+    200: ApiResponse & {
+        data?: UserRead;
+    };
 };
 
 export type UsersUserResponse = UsersUserResponses[keyof UsersUserResponses];
@@ -646,14 +1823,16 @@ export type UsersPatchUserData = {
         id: string;
     };
     query?: never;
-    url: '/users/{id}';
+    url: '/api/users/{id}';
 };
 
 export type UsersPatchUserErrors = {
     /**
      * Bad Request
      */
-    400: ErrorModel;
+    400: ApiResponse & {
+        data?: ErrorModel;
+    };
     /**
      * Missing token or inactive user.
      */
@@ -669,7 +1848,9 @@ export type UsersPatchUserErrors = {
     /**
      * Validation Error
      */
-    422: HttpValidationError;
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
 };
 
 export type UsersPatchUserError = UsersPatchUserErrors[keyof UsersPatchUserErrors];
@@ -678,98 +1859,1002 @@ export type UsersPatchUserResponses = {
     /**
      * Successful Response
      */
-    200: UserRead;
+    200: ApiResponse & {
+        data?: UserRead;
+    };
 };
 
 export type UsersPatchUserResponse = UsersPatchUserResponses[keyof UsersPatchUserResponses];
 
-export type ReadItemData = {
+export type HealthCheckData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/health';
+};
+
+export type HealthCheckResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelAny;
+    };
+};
+
+export type HealthCheckResponse = HealthCheckResponses[keyof HealthCheckResponses];
+
+export type HealthCheckDetailedData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/health/detailed';
+};
+
+export type HealthCheckDetailedResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelAny;
+    };
+};
+
+export type HealthCheckDetailedResponse = HealthCheckDetailedResponses[keyof HealthCheckDetailedResponses];
+
+export type ReadOwnProfileData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/profiles/me';
+};
+
+export type ReadOwnProfileResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelUserRead;
+    };
+};
+
+export type ReadOwnProfileResponse = ReadOwnProfileResponses[keyof ReadOwnProfileResponses];
+
+export type ListProfilesData = {
     body?: never;
     path?: never;
     query?: {
         /**
-         * Page
-         *
-         * Page number
+         * Q
          */
-        page?: number;
-        /**
-         * Size
-         *
-         * Page size
-         */
-        size?: number;
+        q?: string | null;
     };
-    url: '/items/';
+    url: '/api/profiles';
 };
 
-export type ReadItemErrors = {
+export type ListProfilesErrors = {
     /**
      * Validation Error
      */
-    422: HttpValidationError;
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
 };
 
-export type ReadItemError = ReadItemErrors[keyof ReadItemErrors];
+export type ListProfilesError = ListProfilesErrors[keyof ListProfilesErrors];
 
-export type ReadItemResponses = {
+export type ListProfilesResponses = {
     /**
      * Successful Response
      */
-    200: PageItemRead;
+    200: ApiResponse & {
+        data?: ResponseModelListUserRead;
+    };
 };
 
-export type ReadItemResponse = ReadItemResponses[keyof ReadItemResponses];
+export type ListProfilesResponse = ListProfilesResponses[keyof ListProfilesResponses];
 
-export type CreateItemData = {
-    body: ItemCreate;
+export type ListAddressesData = {
+    body?: never;
     path?: never;
     query?: never;
-    url: '/items/';
+    url: '/api/addresses';
 };
 
-export type CreateItemErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type CreateItemError = CreateItemErrors[keyof CreateItemErrors];
-
-export type CreateItemResponses = {
+export type ListAddressesResponses = {
     /**
      * Successful Response
      */
-    200: ItemRead;
+    200: ApiResponse & {
+        data?: ResponseModelListAddressRead;
+    };
 };
 
-export type CreateItemResponse = CreateItemResponses[keyof CreateItemResponses];
+export type ListAddressesResponse = ListAddressesResponses[keyof ListAddressesResponses];
 
-export type DeleteItemData = {
+export type CreateAddressData = {
+    body: AddressCreate;
+    path?: never;
+    query?: never;
+    url: '/api/addresses';
+};
+
+export type CreateAddressErrors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type CreateAddressError = CreateAddressErrors[keyof CreateAddressErrors];
+
+export type CreateAddressResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelAddressRead;
+    };
+};
+
+export type CreateAddressResponse = CreateAddressResponses[keyof CreateAddressResponses];
+
+export type DeleteAddressData = {
+    body?: never;
+    path: {
+        /**
+         * Address Id
+         */
+        address_id: number;
+    };
+    query?: never;
+    url: '/api/addresses/{address_id}';
+};
+
+export type DeleteAddressErrors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type DeleteAddressError = DeleteAddressErrors[keyof DeleteAddressErrors];
+
+export type DeleteAddressResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelDict;
+    };
+};
+
+export type DeleteAddressResponse = DeleteAddressResponses[keyof DeleteAddressResponses];
+
+export type ListReviewsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Review Type
+         */
+        review_type?: ReviewType | null;
+        /**
+         * Entity Id
+         */
+        entity_id?: number | null;
+        /**
+         * Skip
+         */
+        skip?: number;
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/api/reviews';
+};
+
+export type ListReviewsErrors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type ListReviewsError = ListReviewsErrors[keyof ListReviewsErrors];
+
+export type ListReviewsResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelListReviewReadPublic;
+    };
+};
+
+export type ListReviewsResponse = ListReviewsResponses[keyof ListReviewsResponses];
+
+export type CreateReviewData = {
+    body: ReviewCreate;
+    path?: never;
+    query?: never;
+    url: '/api/reviews';
+};
+
+export type CreateReviewErrors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type CreateReviewError = CreateReviewErrors[keyof CreateReviewErrors];
+
+export type CreateReviewResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelReviewRead;
+    };
+};
+
+export type CreateReviewResponse = CreateReviewResponses[keyof CreateReviewResponses];
+
+export type GetMyReviewsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/reviews/user/my-reviews';
+};
+
+export type GetMyReviewsResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelListReviewRead;
+    };
+};
+
+export type GetMyReviewsResponse = GetMyReviewsResponses[keyof GetMyReviewsResponses];
+
+export type AdminStatsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/stats';
+};
+
+export type AdminStatsResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: unknown;
+    };
+};
+
+export type AdminStatsResponse = AdminStatsResponses[keyof AdminStatsResponses];
+
+export type ListUsersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/users/';
+};
+
+export type ListUsersResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelListDict;
+    };
+};
+
+export type ListUsersResponse = ListUsersResponses[keyof ListUsersResponses];
+
+export type GetUserData = {
+    body?: never;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/admin/users/{user_id}';
+};
+
+export type GetUserErrors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type GetUserError = GetUserErrors[keyof GetUserErrors];
+
+export type GetUserResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelDict;
+    };
+};
+
+export type GetUserResponse = GetUserResponses[keyof GetUserResponses];
+
+export type ListCoursesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/courses/';
+};
+
+export type ListCoursesResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: unknown;
+    };
+};
+
+export type ListCoursesResponse = ListCoursesResponses[keyof ListCoursesResponses];
+
+export type GetCourseData = {
+    body?: never;
+    path: {
+        /**
+         * Course Id
+         */
+        course_id: string;
+    };
+    query?: never;
+    url: '/api/admin/courses/{course_id}';
+};
+
+export type GetCourseErrors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type GetCourseError = GetCourseErrors[keyof GetCourseErrors];
+
+export type GetCourseResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: unknown;
+    };
+};
+
+export type GetCourseResponse = GetCourseResponses[keyof GetCourseResponses];
+
+export type ListProductsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/products/';
+};
+
+export type ListProductsResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: unknown;
+    };
+};
+
+export type ListProductsResponse = ListProductsResponses[keyof ListProductsResponses];
+
+export type GetProductData = {
+    body?: never;
+    path: {
+        /**
+         * Product Id
+         */
+        product_id: string;
+    };
+    query?: never;
+    url: '/api/admin/products/{product_id}';
+};
+
+export type GetProductErrors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type GetProductError = GetProductErrors[keyof GetProductErrors];
+
+export type GetProductResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: unknown;
+    };
+};
+
+export type GetProductResponse = GetProductResponses[keyof GetProductResponses];
+
+export type OverviewData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/dashboard/overview';
+};
+
+export type OverviewResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: unknown;
+    };
+};
+
+export type OverviewResponse = OverviewResponses[keyof OverviewResponses];
+
+export type GetHomePageSettingsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/config/home';
+};
+
+export type GetHomePageSettingsResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelHomePageConfig;
+    };
+};
+
+export type GetHomePageSettingsResponse = GetHomePageSettingsResponses[keyof GetHomePageSettingsResponses];
+
+export type UpdateHomePageSettingsData = {
+    body: HomePageConfig;
+    path?: never;
+    query?: never;
+    url: '/api/admin/config/home';
+};
+
+export type UpdateHomePageSettingsErrors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type UpdateHomePageSettingsError = UpdateHomePageSettingsErrors[keyof UpdateHomePageSettingsErrors];
+
+export type UpdateHomePageSettingsResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelHomePageConfig;
+    };
+};
+
+export type UpdateHomePageSettingsResponse = UpdateHomePageSettingsResponses[keyof UpdateHomePageSettingsResponses];
+
+export type ListAllReviewsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Review Type
+         */
+        review_type?: ReviewType | null;
+        /**
+         * Entity Id
+         */
+        entity_id?: number | null;
+        /**
+         * Status
+         */
+        status?: ReviewStatus | null;
+        /**
+         * Skip
+         */
+        skip?: number;
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/api/admin/reviews';
+};
+
+export type ListAllReviewsErrors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type ListAllReviewsError = ListAllReviewsErrors[keyof ListAllReviewsErrors];
+
+export type ListAllReviewsResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelListReviewRead;
+    };
+};
+
+export type ListAllReviewsResponse = ListAllReviewsResponses[keyof ListAllReviewsResponses];
+
+export type DeleteReviewData = {
+    body?: never;
+    path: {
+        /**
+         * Review Id
+         */
+        review_id: string;
+    };
+    query?: never;
+    url: '/api/admin/reviews/{review_id}';
+};
+
+export type DeleteReviewErrors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type DeleteReviewError = DeleteReviewErrors[keyof DeleteReviewErrors];
+
+export type DeleteReviewResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelDict;
+    };
+};
+
+export type DeleteReviewResponse = DeleteReviewResponses[keyof DeleteReviewResponses];
+
+export type GetReviewDetailData = {
+    body?: never;
+    path: {
+        /**
+         * Review Id
+         */
+        review_id: string;
+    };
+    query?: never;
+    url: '/api/admin/reviews/{review_id}';
+};
+
+export type GetReviewDetailErrors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type GetReviewDetailError = GetReviewDetailErrors[keyof GetReviewDetailErrors];
+
+export type GetReviewDetailResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelReviewRead;
+    };
+};
+
+export type GetReviewDetailResponse = GetReviewDetailResponses[keyof GetReviewDetailResponses];
+
+export type UpdateReviewData = {
+    body: ReviewUpdate;
+    path: {
+        /**
+         * Review Id
+         */
+        review_id: string;
+    };
+    query?: never;
+    url: '/api/admin/reviews/{review_id}';
+};
+
+export type UpdateReviewErrors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type UpdateReviewError = UpdateReviewErrors[keyof UpdateReviewErrors];
+
+export type UpdateReviewResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelReviewRead;
+    };
+};
+
+export type UpdateReviewResponse = UpdateReviewResponses[keyof UpdateReviewResponses];
+
+export type ListCourses2Data = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Skip
+         */
+        skip?: number;
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/api/courses';
+};
+
+export type ListCourses2Errors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type ListCourses2Error = ListCourses2Errors[keyof ListCourses2Errors];
+
+export type ListCourses2Responses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelListCourseRead;
+    };
+};
+
+export type ListCourses2Response = ListCourses2Responses[keyof ListCourses2Responses];
+
+export type GetCourse2Data = {
+    body?: never;
+    path: {
+        /**
+         * Course Id
+         */
+        course_id: number;
+    };
+    query?: never;
+    url: '/api/courses/{course_id}';
+};
+
+export type GetCourse2Errors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type GetCourse2Error = GetCourse2Errors[keyof GetCourse2Errors];
+
+export type GetCourse2Responses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelCourseRead;
+    };
+};
+
+export type GetCourse2Response = GetCourse2Responses[keyof GetCourse2Responses];
+
+export type ListProducts2Data = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Skip
+         */
+        skip?: number;
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/api/products';
+};
+
+export type ListProducts2Errors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type ListProducts2Error = ListProducts2Errors[keyof ListProducts2Errors];
+
+export type ListProducts2Responses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelListProductRead;
+    };
+};
+
+export type ListProducts2Response = ListProducts2Responses[keyof ListProducts2Responses];
+
+export type GetProduct2Data = {
+    body?: never;
+    path: {
+        /**
+         * Product Id
+         */
+        product_id: number;
+    };
+    query?: never;
+    url: '/api/products/{product_id}';
+};
+
+export type GetProduct2Errors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type GetProduct2Error = GetProduct2Errors[keyof GetProduct2Errors];
+
+export type GetProduct2Responses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelProductRead;
+    };
+};
+
+export type GetProduct2Response = GetProduct2Responses[keyof GetProduct2Responses];
+
+export type GetMyCartData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/cart';
+};
+
+export type GetMyCartResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelListCartItemRead;
+    };
+};
+
+export type GetMyCartResponse = GetMyCartResponses[keyof GetMyCartResponses];
+
+export type AddToCartData = {
+    body: CartItemCreate;
+    path?: never;
+    query?: never;
+    url: '/api/cart';
+};
+
+export type AddToCartErrors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type AddToCartError = AddToCartErrors[keyof AddToCartErrors];
+
+export type AddToCartResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelCartItemRead;
+    };
+};
+
+export type AddToCartResponse = AddToCartResponses[keyof AddToCartResponses];
+
+export type RemoveFromCartData = {
     body?: never;
     path: {
         /**
          * Item Id
          */
-        item_id: string;
+        item_id: number;
     };
     query?: never;
-    url: '/items/{item_id}';
+    url: '/api/cart/{item_id}';
 };
 
-export type DeleteItemErrors = {
+export type RemoveFromCartErrors = {
     /**
      * Validation Error
      */
-    422: HttpValidationError;
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
 };
 
-export type DeleteItemError = DeleteItemErrors[keyof DeleteItemErrors];
+export type RemoveFromCartError = RemoveFromCartErrors[keyof RemoveFromCartErrors];
 
-export type DeleteItemResponses = {
+export type RemoveFromCartResponses = {
     /**
      * Successful Response
      */
-    200: unknown;
+    200: ApiResponse & {
+        data?: ResponseModel;
+    };
 };
+
+export type RemoveFromCartResponse = RemoveFromCartResponses[keyof RemoveFromCartResponses];
+
+export type UpdateCartItemData = {
+    body: CartItemUpdate;
+    path: {
+        /**
+         * Item Id
+         */
+        item_id: number;
+    };
+    query?: never;
+    url: '/api/cart/{item_id}';
+};
+
+export type UpdateCartItemErrors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type UpdateCartItemError = UpdateCartItemErrors[keyof UpdateCartItemErrors];
+
+export type UpdateCartItemResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelCartItemRead;
+    };
+};
+
+export type UpdateCartItemResponse = UpdateCartItemResponses[keyof UpdateCartItemResponses];
+
+export type GetMyWishlistData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/wishlist';
+};
+
+export type GetMyWishlistResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelListWishlistRead;
+    };
+};
+
+export type GetMyWishlistResponse = GetMyWishlistResponses[keyof GetMyWishlistResponses];
+
+export type AddToWishlistData = {
+    body: WishlistCreate;
+    path?: never;
+    query?: never;
+    url: '/api/wishlist';
+};
+
+export type AddToWishlistErrors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type AddToWishlistError = AddToWishlistErrors[keyof AddToWishlistErrors];
+
+export type AddToWishlistResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModelWishlistRead;
+    };
+};
+
+export type AddToWishlistResponse = AddToWishlistResponses[keyof AddToWishlistResponses];
+
+export type RemoveFromWishlistData = {
+    body?: never;
+    path: {
+        /**
+         * Item Id
+         */
+        item_id: number;
+    };
+    query?: never;
+    url: '/api/wishlist/{item_id}';
+};
+
+export type RemoveFromWishlistErrors = {
+    /**
+     * Validation Error
+     */
+    422: ApiResponse & {
+        data?: HttpValidationError;
+    };
+};
+
+export type RemoveFromWishlistError = RemoveFromWishlistErrors[keyof RemoveFromWishlistErrors];
+
+export type RemoveFromWishlistResponses = {
+    /**
+     * Successful Response
+     */
+    200: ApiResponse & {
+        data?: ResponseModel;
+    };
+};
+
+export type RemoveFromWishlistResponse = RemoveFromWishlistResponses[keyof RemoveFromWishlistResponses];

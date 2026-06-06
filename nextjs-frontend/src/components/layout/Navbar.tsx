@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, Menu, X, User } from "lucide-react";
+import { Search, Menu, X, User, Heart, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-store";
 import { getSafeReturnTo } from "@/api/auth-api";
@@ -68,12 +68,32 @@ export function Navbar() {
             ))}
           </div>
 
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-6">
             <Link
               href="/search"
               className="text-text-muted hover:text-text-main transition-colors"
             >
               <Search size={20} />
+            </Link>
+
+            <Link
+              href="/wishlist"
+              className={cn(
+                "text-text-muted hover:text-text-main transition-colors",
+                pathname === "/wishlist" && "text-gold"
+              )}
+            >
+              <Heart size={20} />
+            </Link>
+
+            <Link
+              href="/cart"
+              className={cn(
+                "text-text-muted hover:text-text-main transition-colors",
+                pathname === "/cart" && "text-gold"
+              )}
+            >
+              <ShoppingBag size={20} />
             </Link>
 
             {user ? (
@@ -87,7 +107,7 @@ export function Navbar() {
               <>
                 <Link
                   href={loginHref}
-                  className="text-text-muted hover:text-text-main transition-colors text-[13px] tracking-widest uppercase font-medium mr-2"
+                  className="text-text-muted hover:text-text-main transition-colors text-[13px] tracking-widest uppercase font-medium"
                 >
                   Login
                 </Link>
@@ -141,6 +161,20 @@ export function Navbar() {
                 className="text-4xl font-extrabold tracking-tight text-text-main text-left hover:text-gold transition-colors"
               >
                 Search
+              </Link>
+              <Link
+                href="/wishlist"
+                onClick={() => setMenuOpen(false)}
+                className="text-4xl font-extrabold tracking-tight text-text-main text-left hover:text-gold transition-colors"
+              >
+                Wishlist
+              </Link>
+              <Link
+                href="/cart"
+                onClick={() => setMenuOpen(false)}
+                className="text-4xl font-extrabold tracking-tight text-text-main text-left hover:text-gold transition-colors"
+              >
+                Cart
               </Link>
               {!user && (
                 <Link
