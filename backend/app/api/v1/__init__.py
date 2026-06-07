@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.core.auth.users import AUTH_URL_PATH, auth_backend, fastapi_users
+from app.core.config import settings
 from app.schemas.user import UserCreate, UserRead, UserUpdate
 
 from .addresses import router as addresses_router
@@ -13,7 +14,7 @@ from .reviews import router as reviews_router
 from .users import router as users_router
 from .wishlist import router as wishlist_router
 
-router = APIRouter(prefix="/api")
+router = APIRouter(prefix=settings.API_V1_PREFIX)
 
 router.include_router(
     fastapi_users.get_auth_router(auth_backend),

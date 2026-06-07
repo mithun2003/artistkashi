@@ -1,6 +1,6 @@
 import enum
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlalchemy import (
     Column,
@@ -45,8 +45,8 @@ class Review(Base):
     rating = Column(Integer, nullable=False)  # 1-5
     text = Column(Text, nullable=False)
     status = Column(Enum(ReviewStatus), default=ReviewStatus.pending, index=True)
-    created_at = Column(DateTime, default=datetime.utcnow, index=True)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now(UTC), index=True)
+    updated_at = Column(DateTime, default=datetime.now(UTC), onupdate=datetime.now(UTC))
 
     # Relationships
     user = relationship("User", backref="reviews")

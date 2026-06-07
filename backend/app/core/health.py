@@ -48,7 +48,7 @@ async def get_health_detailed() -> DetailedHealthData:
 
     overall_status = (
         "healthy"
-        if db_status["status"] == "healthy" and redis_status["status"] == "healthy"
+        if db_status.status == "healthy" and redis_status.status == "healthy"
         else "unhealthy"
     )
 

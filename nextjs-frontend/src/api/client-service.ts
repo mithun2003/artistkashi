@@ -61,10 +61,7 @@ export async function wrapSdkCall<T>(
         if ("success" in p) {
           return {
             ...(payload as ApiResponse<T>),
-            status:
-              typeof p.status === "number"
-                ? p.status
-                : responseStatus,
+            status: typeof p.status === "number" ? p.status : responseStatus,
           } as ApiResponse<T>;
         }
 
@@ -87,11 +84,9 @@ export async function wrapSdkCall<T>(
             status,
             success: false,
             message: (p.message as string) ?? "Request failed",
+            error_code: (p.error_code as string) ?? "HTTP_ERROR",
             errors: (p.errors as Record<string, string[]>) ?? undefined,
-            meta: (p.meta as ApiResponseMeta) ?? {
-              ...nowMeta(),
-              error_code: "HTTP_ERROR",
-            },
+            meta: (p.meta as ApiResponseMeta) ?? nowMeta(),
           } as ApiResponseError;
         }
 
@@ -115,6 +110,7 @@ export async function wrapSdkCall<T>(
           status: responseStatus,
           success: false,
           message: (err.message as string) ?? "Request failed",
+          error_code: (err.error_code as string) ?? "HTTP_ERROR",
           errors: (err.errors as Record<string, string[]>) ?? undefined,
           meta: nowMeta(),
         } as ApiResponseError;
@@ -154,13 +150,19 @@ export async function wrapSdkCall<T>(
     }
 
     return {
-      status: typeof error === "object" && error && "response" in error && typeof (error as { response?: { status?: number } }).response?.status === "number"
-        ? (error as { response?: { status?: number } }).response?.status
-        : undefined,
+      status:
+        typeof error === "object" &&
+        error &&
+        "response" in error &&
+        typeof (error as { response?: { status?: number } }).response
+          ?.status === "number"
+          ? (error as { response?: { status?: number } }).response?.status
+          : undefined,
       success: false,
       message,
+      error_code,
       errors,
-      meta: { ...nowMeta(), error_code },
+      meta: nowMeta(),
     } as ApiResponseError;
   }
 }

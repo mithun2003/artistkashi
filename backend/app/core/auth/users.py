@@ -20,7 +20,7 @@ from app.core.config import settings
 from app.core.db import get_user_db
 from app.models.user import User
 from app.schemas.user import UserCreate
-from app.services.email import send_reset_password_email
+from app.services.email.email import send_reset_password_email
 
 get_user_db_dep = Depends(get_user_db)
 logger = logging.getLogger(__name__)
@@ -68,7 +68,7 @@ bearer_transport = BearerTransport(tokenUrl=f"{AUTH_URL_PATH}/jwt/login")
 def get_jwt_strategy() -> JWTStrategy:
     return JWTStrategy(
         secret=settings.ACCESS_SECRET_KEY,
-        lifetime_seconds=settings.ACCESS_TOKEN_EXPIRE_SECONDS,
+        lifetime_seconds=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
     )
 
 

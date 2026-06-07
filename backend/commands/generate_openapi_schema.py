@@ -65,7 +65,6 @@ def wrap_response_schemas(schema):
             "type": "object",
             "properties": {
                 "timestamp": {"type": "string"},
-                "error_code": {"type": "string", "nullable": True},
             },
             "required": ["timestamp"],
         },
@@ -82,6 +81,8 @@ def wrap_response_schemas(schema):
                 "success": {"type": "boolean"},
                 "message": {"type": "string"},
                 "data": {},
+                "error_code": {"type": "string", "nullable": True},
+                "errors": {"type": "object", "nullable": True},
                 "meta": {"$ref": "#/components/schemas/ApiMeta"},
             },
             "required": ["status", "success", "message", "meta"],
@@ -89,12 +90,12 @@ def wrap_response_schemas(schema):
     )
 
     paths = schema.get("paths", {})
-    for path, path_item in paths.items():
-        for method, operation in list(path_item.items()):
+    for _path, path_item in paths.items():
+        for _method, operation in list(path_item.items()):
             if not isinstance(operation, dict):
                 continue
             responses = operation.get("responses", {})
-            for status_code, resp in list(responses.items()):
+            for _status_code, resp in list(responses.items()):
                 content = resp.get("content", {})
                 app_json = content.get("application/json")
                 if not app_json or "schema" not in app_json:

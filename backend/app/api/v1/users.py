@@ -1,11 +1,15 @@
-from fastapi import APIRouter, Depends
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, Query
+from fastcrud import compute_offset
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.dependencies import CurrentUserDep
 from app.core.db import get_async_session
+from app.core.pagination import build_paginated_response
 from app.crud.user import crud_user
-from app.schemas.responses import SuccessResponse
-from app.schemas.user import UserRead
+from app.schemas.responses import PaginatedResponse, SuccessResponse
+from app.schemas.user import PublicUserRead, UserRead
 
 get_async_session_dep = Depends(get_async_session)
 
@@ -18,18 +22,26 @@ async def read_own_profile(user: CurrentUserDep):
     return SuccessResponse(message="Profile retrieved successfully", data=user)
 
 
-@router.get("/profiles", response_model=SuccessResponse[list[UserRead]])
+@router.get("/profiles", response_model=PaginatedResponse[PublicUserRead])
 async def list_profiles(
-    q: str | None = None, session: AsyncSession = get_async_session_dep
+    q: str | None = None,
+    page: Annotated[int, Query(ge=1)] = 1,
+    page_size: Annotated[int, Query(ge=1, le=100)] = 20,
+    session: AsyncSession = get_async_session_dep,
 ):
-    """Search for public profiles using FastCRUD."""
-    if q:
-        # Example search by email
-        users = await crud_user.get_multi(db=session, email=q)
-    else:
-        users = await crud_user.get_multi(db=session)
+    filters = {"email": q} if q else {}
 
-    return SuccessResponse(
-        message="Profiles retrieved successfully",
-        data=users["data"] if isinstance(users, dict) and "data" in users else users,
+    users_data = await crud_user.get_multi(
+        db=session,
+        offset=compute_offset(page, page_size),
+        limit=page_size,
+        return_total_count=True,
+        **filters,
+    )
+    print(users_data)
+    return build_paginated_response(
+        result=users_data,
+        page=page,
+        page_size=page_size,
+        message="Users retrieved successfully",
     )

@@ -55,7 +55,9 @@ async def create_review(
     )
 
 
-@router.get("/reviews/user/my-reviews", response_model=SuccessResponse[list[ReviewRead]])
+@router.get(
+    "/reviews/user/my-reviews", response_model=SuccessResponse[list[ReviewRead]]
+)
 async def get_my_reviews(
     user: CurrentUserDep,
     db: DatabaseDep,

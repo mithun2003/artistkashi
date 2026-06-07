@@ -58,7 +58,6 @@ export interface CurriculumSection {
  */
 export interface ApiResponseMeta {
   timestamp: string;
-  error_code?: string;
 }
 
 export interface ApiResponseSuccess<T> {
@@ -73,6 +72,7 @@ export interface ApiResponseError {
   status?: number;
   success: false;
   message: string;
+  error_code: string;
   errors?: Record<string, string[]>;
   meta: ApiResponseMeta;
 }

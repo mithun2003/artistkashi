@@ -1,5 +1,45 @@
 """Custom exception classes for the application."""
 
+from datetime import UTC, datetime
+from enum import StrEnum
+
+type ErrorDetails = dict[str, object]
+
+
+class ErrorCode(StrEnum):
+    """Application error codes."""
+
+    # Generic
+    INTERNAL_ERROR = "INTERNAL_ERROR"
+    VALIDATION_ERROR = "VALIDATION_ERROR"
+    RESOURCE_NOT_FOUND = "RESOURCE_NOT_FOUND"
+    CONFLICT = "CONFLICT"
+
+    # Auth
+    INVALID_CREDENTIALS = "INVALID_CREDENTIALS"
+    EMAIL_NOT_VERIFIED = "EMAIL_NOT_VERIFIED"
+    FORBIDDEN_ACCESS = "FORBIDDEN_ACCESS"
+
+    # Infrastructure
+    DATABASE_ERROR = "DATABASE_ERROR"
+    SERVICE_ERROR = "SERVICE_ERROR"
+    RATE_LIMIT_EXCEEDED = "RATE_LIMIT_EXCEEDED"
+
+    # User
+    USER_NOT_FOUND = "USER_NOT_FOUND"
+    USER_ALREADY_EXISTS = "USER_ALREADY_EXISTS"
+
+    # Address
+    ADDRESS_NOT_FOUND = "ADDRESS_NOT_FOUND"
+    ADDRESS_ALREADY_EXISTS = "ADDRESS_ALREADY_EXISTS"
+
+    # Course
+    COURSE_NOT_FOUND = "COURSE_NOT_FOUND"
+
+    # Review
+    REVIEW_NOT_FOUND = "REVIEW_NOT_FOUND"
+    REVIEW_ALREADY_EXISTS = "REVIEW_ALREADY_EXISTS"
+
 
 class AppException(Exception):
     """Base application exception."""
@@ -8,28 +48,27 @@ class AppException(Exception):
         self,
         message: str,
         status_code: int = 400,
-        error_code: str | None = None,
-        details: dict[str, object] | None = None,
+        error_code: ErrorCode | str | None = None,
+        details: ErrorDetails | None = None,
     ) -> None:
         self.message = message
         self.status_code = status_code
-        self.error_code = error_code or "INTERNAL_ERROR"
+        self.error_code = str(error_code or ErrorCode.INTERNAL_ERROR)
         self.details = details or {}
-        super().__init__(self.message)
+
+        super().__init__(message)
 
     def to_dict(self) -> dict[str, object]:
-        from datetime import UTC, datetime
+        """Convert exception to API response payload."""
 
         return {
             "success": False,
             "status": self.status_code,
             "message": self.message,
-            "errors": self.details
-            if isinstance(self.details, dict) and self.details
-            else None,
+            "error_code": self.error_code,
+            "errors": self.details or None,
             "meta": {
-                "timestamp": datetime.now(UTC).isoformat() + "Z",
-                "error_code": self.error_code,
+                "timestamp": datetime.now(UTC).isoformat(),
             },
         }
 
@@ -37,11 +76,15 @@ class AppException(Exception):
 class ValidationException(AppException):
     """Raised when validation fails."""
 
-    def __init__(self, message: str, details: dict[str, object] | None = None) -> None:
+    def __init__(
+        self,
+        message: str,
+        details: ErrorDetails | None = None,
+    ) -> None:
         super().__init__(
             message=message,
             status_code=422,
-            error_code="VALIDATION_ERROR",
+            error_code=ErrorCode.VALIDATION_ERROR,
             details=details,
         )
 
@@ -49,80 +92,109 @@ class ValidationException(AppException):
 class NotFoundException(AppException):
     """Raised when a resource is not found."""
 
-    def __init__(self, resource: str, identifier: str | int | None = None) -> None:
+    def __init__(
+        self,
+        resource: str,
+        identifier: str | int | None = None,
+        error_code: ErrorCode | str = ErrorCode.RESOURCE_NOT_FOUND,
+    ) -> None:
         message = f"{resource} not found"
-        if identifier:
+
+        if identifier is not None:
             message += f" (ID: {identifier})"
+
         super().__init__(
             message=message,
             status_code=404,
-            error_code="RESOURCE_NOT_FOUND",
+            error_code=error_code,
         )
 
 
 class UnauthorizedException(AppException):
     """Raised when authentication fails."""
 
-    def __init__(self, message: str = "Unauthorized") -> None:
+    def __init__(
+        self,
+        message: str = "Unauthorized",
+    ) -> None:
         super().__init__(
             message=message,
             status_code=401,
-            error_code="INVALID_CREDENTIALS",
+            error_code=ErrorCode.INVALID_CREDENTIALS,
         )
 
 
 class ForbiddenException(AppException):
-    """Raised when user lacks permissions."""
+    """Raised when the user lacks permission."""
 
-    def __init__(self, message: str = "Forbidden") -> None:
+    def __init__(
+        self,
+        message: str = "Forbidden",
+    ) -> None:
         super().__init__(
             message=message,
             status_code=403,
-            error_code="FORBIDDEN_ACCESS",
+            error_code=ErrorCode.FORBIDDEN_ACCESS,
         )
 
 
 class ConflictException(AppException):
     """Raised when a resource already exists."""
 
-    def __init__(self, message: str, details: dict[str, object] | None = None) -> None:
+    def __init__(
+        self,
+        message: str,
+        error_code: ErrorCode | str = ErrorCode.CONFLICT,
+        details: ErrorDetails | None = None,
+    ) -> None:
         super().__init__(
             message=message,
             status_code=409,
-            error_code="CONFLICT",
+            error_code=error_code,
             details=details,
         )
 
 
 class RateLimitException(AppException):
-    """Raised when rate limit is exceeded."""
+    """Raised when rate limits are exceeded."""
 
-    def __init__(self, message: str = "Rate limit exceeded") -> None:
+    def __init__(
+        self,
+        message: str = "Rate limit exceeded",
+    ) -> None:
         super().__init__(
             message=message,
             status_code=429,
-            error_code="RATE_LIMIT_EXCEEDED",
+            error_code=ErrorCode.RATE_LIMIT_EXCEEDED,
         )
 
 
 class DatabaseException(AppException):
-    """Raised when database operation fails."""
+    """Raised when database operations fail."""
 
-    def __init__(self, message: str, details: dict[str, object] | None = None) -> None:
+    def __init__(
+        self,
+        message: str,
+        details: ErrorDetails | None = None,
+    ) -> None:
         super().__init__(
             message=message,
             status_code=500,
-            error_code="DATABASE_ERROR",
+            error_code=ErrorCode.DATABASE_ERROR,
             details=details,
         )
 
 
 class ServiceException(AppException):
-    """Raised when external service fails."""
+    """Raised when an external service fails."""
 
-    def __init__(self, service: str, message: str) -> None:
+    def __init__(
+        self,
+        service: str,
+        message: str,
+    ) -> None:
         super().__init__(
             message=f"{service} service error: {message}",
             status_code=502,
-            error_code="SERVICE_ERROR",
+            error_code=ErrorCode.SERVICE_ERROR,
         )
