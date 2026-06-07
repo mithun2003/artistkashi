@@ -6,8 +6,8 @@ from app.core.logger import configure_logging
 from app.core.routing import simple_generate_unique_route_id
 from app.core.setup import create_application
 
-# Configure logging
 configure_logging()
+
 logger = logging.getLogger(__name__)
 
 app = create_application(
@@ -18,4 +18,8 @@ app = create_application(
     enable_queue=True,
 )
 
-logger.info("🚀 ArtistKashi FastAPI Backend initialized")
+logger.info(
+    "🚀 %s v%s initialized",
+    settings.APP_NAME,
+    settings.APP_VERSION,
+)

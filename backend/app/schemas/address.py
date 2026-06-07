@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -13,7 +15,11 @@ class AddressBase(BaseModel):
 
 
 class AddressCreate(AddressBase):
-    pass
+    model_config = ConfigDict(extra="forbid")
+
+
+class AddressCreateDB(AddressCreate):
+    user_id: UUID
 
 
 class AddressUpdate(BaseModel):
@@ -26,7 +32,10 @@ class AddressUpdate(BaseModel):
     phone: str | None = None
     is_default: bool | None = None
 
+    model_config = ConfigDict(extra="forbid")
+
 
 class AddressRead(AddressBase):
     id: int
+
     model_config = ConfigDict(from_attributes=True)

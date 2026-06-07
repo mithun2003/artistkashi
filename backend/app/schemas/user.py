@@ -3,17 +3,7 @@ import uuid
 from fastapi_users import schemas
 from pydantic import BaseModel
 
-
-class AddressRead(BaseModel):
-    id: int
-    line1: str
-    line2: str | None = None
-    city: str | None = None
-    state: str | None = None
-    postal_code: str | None = None
-    country: str | None = None
-    phone: str | None = None
-    is_default: bool = False
+from app.schemas.address import AddressRead
 
 
 class UserRead(schemas.BaseUser[uuid.UUID]):
@@ -21,6 +11,13 @@ class UserRead(schemas.BaseUser[uuid.UUID]):
     phone: str | None = None
     role: str | None = None
     addresses: list[AddressRead] | None = None
+
+
+class PublicUserRead(BaseModel):
+    id: uuid.UUID
+    email: str
+    full_name: str | None = None
+    role: str | None = None
 
 
 class UserCreate(schemas.BaseUserCreate):

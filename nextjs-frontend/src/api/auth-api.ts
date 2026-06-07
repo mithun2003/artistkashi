@@ -7,7 +7,10 @@ import {
 } from "@/api/client-service";
 import type { UserRead } from "@/api/openapi-client/types.gen";
 import { STORAGE_KEYS } from "@/lib/storage";
-import type { ApiResponse as AppApiResponse, ApiResponseSuccess } from "@/types";
+import type {
+  ApiResponse as AppApiResponse,
+  ApiResponseSuccess,
+} from "@/types";
 import type { ApiResponseError } from "@/types";
 import type { AxiosError } from "axios";
 
@@ -59,6 +62,7 @@ const AUTH_ERROR_MESSAGES: Record<string, string> = {
 
 type ApiErrorPayload = {
   message?: string;
+  error_code?: string;
   errors?: Record<string, string | string[]>;
   meta?: unknown;
   status?: number;
@@ -120,6 +124,10 @@ export const getAuthErrorMessage = (error: AuthErrorInput): string => {
 
   if (error instanceof Error) {
     const payload = extractPayload(error as AxiosError<ApiErrorPayload>);
+
+    if (payload?.error_code && AUTH_ERROR_MESSAGES[payload.error_code]) {
+      return AUTH_ERROR_MESSAGES[payload.error_code];
+    }
 
     if (payload?.message) {
       return AUTH_ERROR_MESSAGES[payload.message] ?? payload.message;
