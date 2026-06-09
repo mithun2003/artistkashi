@@ -1,19 +1,64 @@
-from sqlalchemy import Column, Float, Integer, String, Text
+from __future__ import annotations
 
-from app.models.base import Base
+from sqlalchemy import Boolean, Float, Integer, String, Text
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.models.base import Base, SoftDeleteMixin, TimestampMixin
 
 
-class Product(Base):
+class Product(Base, TimestampMixin, SoftDeleteMixin):
     __tablename__ = "products"
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(255), nullable=False)
-    artist = Column(String(255), nullable=False)
-    price = Column(Float, nullable=False)
-    image_url = Column(String(512), nullable=True)
-    category = Column(String(100), nullable=True)
-    description = Column(Text, nullable=True)
-    stock_quantity = Column(Integer, default=1)  # For original art, usually 1
+    id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+    )
 
-    # Relationships can be added here
-    # reviews = relationship("Review", back_populates="product")
+    title: Mapped[str] = mapped_column(
+        String(255),
+        nullable=False,
+    )
+    slug: Mapped[str] = mapped_column(
+        String(255),
+        unique=True,
+        index=True,
+    )
+    artist: Mapped[str] = mapped_column(
+        String(255),
+        nullable=False,
+        default="ArtistKashi",
+    )
+    price: Mapped[float] = mapped_column(
+        Float,
+        nullable=False,
+    )
+    category: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+    description: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+    image_url: Mapped[str | None] = mapped_column(
+        String(500),
+        nullable=True,
+    )
+    stock_quantity: Mapped[int] = mapped_column(
+        Integer,
+        default=1,
+    )
+    featured: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+    )
+    is_active: Mapped[bool] = mapped_column(
+        Boolean,
+        default=True,
+    )
+
+    # reviews = relationship(
+    #     "Review",
+    #     cascade="all, delete-orphan",
+    # )

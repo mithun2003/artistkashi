@@ -1,23 +1,97 @@
 import enum
+import uuid
+from typing import TYPE_CHECKING
 
-from fastapi_users.db import SQLAlchemyBaseUserTableUUID
-from sqlalchemy import Column, Enum, String
-from sqlalchemy.orm import relationship
+from sqlalchemy import Boolean, Enum, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.models.base import Base
+from app.models.base import Base, SoftDeleteMixin, TimestampMixin
+
+if TYPE_CHECKING:
+    from app.models.address import Address
+    from app.models.cart import CartItem
+    from app.models.review import Review
+    from app.models.user_session import UserSession
+    from app.models.wishlist import Wishlist
 
 
 class Role(enum.StrEnum):
-    user = "user"
-    admin = "admin"
+    USER = "user"
+    ADMIN = "admin"
 
 
-class User(SQLAlchemyBaseUserTableUUID, Base):
-    # Additional user profile fields
-    full_name = Column(String(length=255), nullable=True)
-    phone = Column(String(length=32), nullable=True)
-    role = Column(Enum(Role), nullable=False, server_default=Role.user.value)
-    # Note: addresses are a separate table linked by foreign key (see Address model)
-    addresses = relationship(
-        "Address", back_populates="user", lazy="selectin", cascade="all, delete-orphan"
+class User(Base, TimestampMixin, SoftDeleteMixin):
+    __tablename__ = "users"
+
+    id: Mapped[uuid.UUID] = mapped_column(default=uuid.uuid4, primary_key=True)
+
+    email: Mapped[str] = mapped_column(
+        String(100),
+        unique=True,
+        nullable=False,
+        index=True,
+    )
+
+    hashed_password: Mapped[str] = mapped_column(String(255))
+
+    full_name: Mapped[str] = mapped_column(String(255))
+
+    phone: Mapped[str | None] = mapped_column(
+        String(32),
+        nullable=True,
+    )
+
+    profile_picture: Mapped[str | None] = mapped_column(
+        String(500),
+        nullable=True,
+    )
+
+    role: Mapped[Role] = mapped_column(
+        Enum(Role),
+        default=Role.USER,
+        nullable=False,
+    )
+    is_active: Mapped[bool] = mapped_column(
+        Boolean,
+        default=True,
+    )
+
+    is_verified: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+    )
+
+    is_superuser: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+    )
+
+    addresses: Mapped[list["Address"]] = relationship(
+        "Address",
+        back_populates="user",
+        lazy="selectin",
+        cascade="all, delete-orphan",
+    )
+
+    sessions: Mapped[list["UserSession"]] = relationship(
+        "UserSession",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
+    reviews: Mapped[list["Review"]] = relationship(
+        "Review",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    cart_items: Mapped[list["CartItem"]] = relationship(
+        "CartItem",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
+    wishlist_items: Mapped[list["Wishlist"]] = relationship(
+        "Wishlist",
+        back_populates="user",
+        cascade="all, delete-orphan",
     )

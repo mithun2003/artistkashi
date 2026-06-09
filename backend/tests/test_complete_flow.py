@@ -5,10 +5,9 @@ Tests: Signup → Login → Database Save → Protected Routes
 """
 
 import asyncio
-import httpx
-import json
-from typing import Optional
 from datetime import datetime
+
+import httpx
 
 API_URL = "http://localhost:8000"
 TEST_USER_EMAIL = f"test_{datetime.now().strftime('%Y%m%d_%H%M%S')}@artistkashi.com"
@@ -68,8 +67,8 @@ class AuthTester:
         try:
             response = await self.client.get("/test/auth-status")
             if response.status_code == 200:
-                data = response.json()
-                self.print_success(f"Auth system is ready")
+                _data = response.json()
+                self.print_success("Auth system is ready")
                 return True
             else:
                 self.print_error(f"Auth status check failed: {response.status_code}")
@@ -80,7 +79,7 @@ class AuthTester:
 
     async def test_signup(self) -> bool:
         """Test user signup"""
-        print(f"\n=== 3️⃣ Testing Signup ===")
+        print("\n=== 3️⃣ Testing Signup ===")
         print(f"   Email: {TEST_USER_EMAIL}")
         try:
             response = await self.client.post(
@@ -111,7 +110,7 @@ class AuthTester:
 
     async def test_login(self) -> bool:
         """Test user login"""
-        print(f"\n=== 4️⃣ Testing Login ===")
+        print("\n=== 4️⃣ Testing Login ===")
         print(f"   Email: {TEST_USER_EMAIL}")
         try:
             data = {
@@ -129,7 +128,9 @@ class AuthTester:
                 token_type = response_data.get("token_type")
                 self.print_success("Login successful")
                 self.print_info(f"   Token Type: {token_type}")
-                self.print_info(f"   Token (first 50 chars): {self.access_token[:50]}...")
+                self.print_info(
+                    f"   Token (first 50 chars): {self.access_token[:50]}..."
+                )
                 return True
             elif response.status_code == 401:
                 self.print_error("Invalid credentials")
@@ -144,7 +145,7 @@ class AuthTester:
 
     async def test_get_current_user(self) -> bool:
         """Test getting current user with token"""
-        print(f"\n=== 5️⃣ Testing Get Current User (Protected Route) ===")
+        print("\n=== 5️⃣ Testing Get Current User (Protected Route) ===")
         if not self.access_token:
             self.print_error("No access token available")
             return False
@@ -178,7 +179,7 @@ class AuthTester:
 
     async def test_get_users_list(self) -> bool:
         """Test getting users list"""
-        print(f"\n=== 6️⃣ Testing List All Users ===")
+        print("\n=== 6️⃣ Testing List All Users ===")
         try:
             response = await self.client.get("/users")
 
@@ -200,12 +201,14 @@ class AuthTester:
 
     async def test_unauthorized_access(self) -> bool:
         """Test that protected routes reject requests without token"""
-        print(f"\n=== 7️⃣ Testing Unauthorized Access (Should Fail) ===")
+        print("\n=== 7️⃣ Testing Unauthorized Access (Should Fail) ===")
         try:
             response = await self.client.get("/users/me")
 
             if response.status_code == 403:
-                self.print_success("Protected route correctly rejected unauthorized request")
+                self.print_success(
+                    "Protected route correctly rejected unauthorized request"
+                )
                 return True
             else:
                 self.print_error(f"Expected 403, got {response.status_code}")

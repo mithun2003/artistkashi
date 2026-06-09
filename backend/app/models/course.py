@@ -1,21 +1,83 @@
-from sqlalchemy import Column, Float, Integer, String, Text
+from __future__ import annotations
 
-from app.models.base import Base
+from sqlalchemy import Boolean, Float, Integer, String, Text
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.models.base import Base, SoftDeleteMixin, TimestampMixin
 
 
-class Course(Base):
+class Course(Base, TimestampMixin, SoftDeleteMixin):
     __tablename__ = "courses"
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(255), nullable=False)
-    instructor = Column(String(255), nullable=False)
-    duration = Column(String(100), nullable=True)
-    rating = Column(Float, default=0.0)
-    students_count = Column(Integer, default=0)
-    image_url = Column(String(512), nullable=True)
-    description = Column(Text, nullable=True)
-    price = Column(Float, nullable=False)
-    category = Column(String(100), nullable=True)
+    id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+    )
 
-    # Relationships can be added here (e.g., reviews, students)
-    # reviews = relationship("Review", back_populates="course")
+    title: Mapped[str] = mapped_column(
+        String(255),
+        nullable=False,
+    )
+
+    slug: Mapped[str] = mapped_column(
+        String(255),
+        unique=True,
+        index=True,
+    )
+
+    instructor: Mapped[str] = mapped_column(
+        String(255),
+        nullable=False,
+        default="ArtistKashi",
+    )
+
+    description: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+
+    category: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
+    duration: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
+    image_url: Mapped[str | None] = mapped_column(
+        String(500),
+        nullable=True,
+    )
+
+    price: Mapped[float] = mapped_column(
+        Float,
+        nullable=False,
+    )
+
+    rating: Mapped[float] = mapped_column(
+        Float,
+        default=0,
+    )
+
+    students_count: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+    )
+
+    featured: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+    )
+
+    is_active: Mapped[bool] = mapped_column(
+        Boolean,
+        default=True,
+    )
+
+    # reviews = relationship(
+    #     "Review",
+    #     cascade="all, delete-orphan",
+    # )

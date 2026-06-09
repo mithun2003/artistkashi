@@ -23,9 +23,9 @@ dependencies = [
     "greenlet>=2.0.2",
     
     # Auth & security
-    "fastapi-users[sqlalchemy]>=15.0.5",
     "python-jose>=3.3.0",
-    "bcrypt>=4.1.1",
+    "passlib[bcrypt]>=1.7.4",
+    "bcrypt==4.0.1",
     "python-multipart>=0.0.9",
     
     # Config & validation
@@ -37,9 +37,8 @@ dependencies = [
     "fastapi-pagination>=0.15.13",
     "python-dotenv>=1.2.2",
     
-    # CRUD & Admin
+    # CRUD
     "fastcrud>=0.21.0",
-    "crudadmin>=0.4.2",
     
     # Cache & background jobs
     "redis>=5.0.1",

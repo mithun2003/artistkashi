@@ -40,3 +40,51 @@ async def send_reset_password_email(user: User, token: str):
 
     fm = FastMail(conf)
     await fm.send_message(message, template_name="password_reset.html")
+
+
+async def send_verification_email(
+    user: User,
+    token: str,
+):
+    conf = get_email_config()
+
+    link = f"{settings.FRONTEND_URL}/verify?token={token}"
+
+    message = MessageSchema(
+        subject="Verify your email",
+        recipients=[user.email],
+        template_body={
+            "username": user.full_name or user.email,
+            "link": link,
+        },
+        subtype=MessageType.html,
+    )
+
+    fm = FastMail(conf)
+
+    await fm.send_message(
+        message,
+        template_name="verify_email.html",
+    )
+
+
+async def send_welcome_email(
+    user: User,
+):
+    conf = get_email_config()
+
+    message = MessageSchema(
+        subject="Welcome to ArtistKashi",
+        recipients=[user.email],
+        template_body={
+            "username": user.full_name or user.email,
+        },
+        subtype=MessageType.html,
+    )
+
+    fm = FastMail(conf)
+
+    await fm.send_message(
+        message,
+        template_name="welcome.html",
+    )

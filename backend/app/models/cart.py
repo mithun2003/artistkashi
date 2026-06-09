@@ -1,27 +1,77 @@
-from sqlalchemy import Column, ForeignKey, Integer
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+from __future__ import annotations
 
-from app.models.base import Base
+from uuid import UUID
+
+from sqlalchemy import CheckConstraint, ForeignKey, Integer
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.models.base import Base, TimestampMixin
 
 
-class CartItem(Base):
+class CartItem(Base, TimestampMixin):
     __tablename__ = "cart_items"
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(
-        UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"), nullable=False
+    __table_args__ = (
+        CheckConstraint(
+            """
+            (
+                product_id IS NOT NULL
+                AND course_id IS NULL
+            )
+            OR
+            (
+                product_id IS NULL
+                AND course_id IS NOT NULL
+            )
+            """,
+            name="cartitem_one_item_only",
+        ),
     )
 
-    product_id = Column(
-        Integer, ForeignKey("products.id", ondelete="CASCADE"), nullable=True
-    )
-    course_id = Column(
-        Integer, ForeignKey("courses.id", ondelete="CASCADE"), nullable=True
+    id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+        autoincrement=True,
     )
 
-    quantity = Column(Integer, default=1)
+    user_id: Mapped[UUID] = mapped_column(
+        ForeignKey(
+            "users.id",
+            ondelete="CASCADE",
+        ),
+        index=True,
+    )
 
-    user = relationship("User", backref="cart_items")
-    product = relationship("Product")
-    course = relationship("Course")
+    product_id: Mapped[int | None] = mapped_column(
+        ForeignKey(
+            "products.id",
+            ondelete="CASCADE",
+        ),
+        nullable=True,
+    )
+
+    course_id: Mapped[int | None] = mapped_column(
+        ForeignKey(
+            "courses.id",
+            ondelete="CASCADE",
+        ),
+        nullable=True,
+    )
+
+    quantity: Mapped[int] = mapped_column(
+        Integer,
+        default=1,
+    )
+
+    user = relationship(
+        "User",
+        back_populates="cart_items",
+    )
+
+    product = relationship(
+        "Product",
+    )
+
+    course = relationship(
+        "Course",
+    )

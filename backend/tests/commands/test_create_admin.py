@@ -1,7 +1,10 @@
 import pytest
-from fastapi_users.password import PasswordHelper
 from sqlalchemy import select
 
+from app.core.auth.security import (
+    hash_password,
+    verify_password,
+)
 from app.models import User
 from commands.create_admin import upsert_admin_user
 
@@ -15,7 +18,9 @@ async def test_create_admin_user(db_session):
         full_name="Admin User",
     )
 
-    stored = await db_session.execute(select(User).where(User.email == "admin@example.com"))
+    stored = await db_session.execute(
+        select(User).where(User.email == "admin@example.com")
+    )
     persisted = stored.scalar_one()
 
     assert status == "created"
@@ -24,12 +29,15 @@ async def test_create_admin_user(db_session):
     assert user.is_active is True
     assert user.is_verified is True
     assert persisted.full_name == "Admin User"
-    assert PasswordHelper().verify("StrongPass1!", persisted.hashed_password)
+    assert verify_password(
+        "StrongPass1!",
+        persisted.hashed_password,
+    )
 
 
 @pytest.mark.asyncio(loop_scope="function")
 async def test_promote_existing_user_without_resetting_password(db_session):
-    original_hash = PasswordHelper().hash("UserPass1!")
+    original_hash = hash_password("UserPass1!")
     user = User(
         email="existing@example.com",
         hashed_password=original_hash,

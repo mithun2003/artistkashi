@@ -1,53 +1,65 @@
-# app/models/user_session.py
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING
+import uuid
 
-
-from sqlalchemy import (
-    Boolean,
-    Column,
-    DateTime,
-    ForeignKey,
-    String,
-)
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+from sqlalchemy import Boolean, DateTime, ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base
+
+if TYPE_CHECKING:
+    from app.models.user import User
 
 
 class UserSession(Base):
     __tablename__ = "user_sessions"
 
-    id = Column(UUID(as_uuid=True), primary_key=True)
+    id: Mapped[int] = mapped_column(
+        primary_key=True,
+        autoincrement=True,
+    )
 
-    user_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("user.id"),
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
 
-    refresh_token_hash = Column(
-        String,
+    refresh_token_jti: Mapped[str] = mapped_column(
+        String(255),
+        unique=True,
         nullable=False,
+        index=True,
     )
 
-    device_name = Column(String(255))
-    ip_address = Column(String(100))
+    user_agent: Mapped[str | None] = mapped_column(
+        String(500),
+        nullable=True,
+    )
 
-    is_active = Column(
+    ip_address: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
+    revoked: Mapped[bool] = mapped_column(
         Boolean,
-        default=True,
+        default=False,
         nullable=False,
     )
 
-    expires_at = Column(
+    expires_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
     )
 
-    last_used_at = Column(
+    last_activity: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
         nullable=False,
     )
 
-    user = relationship("User")
+    user: Mapped["User"] = relationship(
+        "User",
+        back_populates="sessions",
+    )

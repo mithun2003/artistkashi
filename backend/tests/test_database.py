@@ -1,14 +1,15 @@
 import pytest
-from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine
-from fastapi_users.db import SQLAlchemyUserDatabase
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+)
 
 from app.core.db import (
     async_session_maker,
     create_db_and_tables,
     get_async_session,
-    get_user_db,
 )
-from app.models import Base, User
+from app.models import Base
 
 
 @pytest.fixture
@@ -29,80 +30,78 @@ async def mock_engine(mocker):
 
 
 @pytest.fixture
-async def mock_session(mocker):
-    # Create a mock session
-    mock_session = mocker.AsyncMock(spec=AsyncSession)
+async def mock_session(
+    mocker,
+):
+    session = mocker.AsyncMock(
+        spec=AsyncSession,
+    )
 
-    # Mock the session context manager
-    mock_session.__aenter__.return_value = mock_session
-    mock_session.__aexit__.return_value = None
-
-    # Mock the session maker
     mock_session_maker = mocker.patch("app.core.db.async_session_maker")
-    mock_session_maker.return_value = mock_session
 
-    return mock_session
+    mock_session_maker.return_value.__aenter__.return_value = session
+
+    return session
 
 
 @pytest.mark.asyncio
-async def test_create_db_and_tables(mock_engine, mocker):
-    # Replace the real engine with our mock
-    mocker.patch("app.core.db.engine", mock_engine)
+async def test_create_db_and_tables(
+    mock_engine,
+    mocker,
+):
+    mocker.patch(
+        "app.core.db.engine",
+        mock_engine,
+    )
 
     await create_db_and_tables()
 
-    # Verify that begin was called
     mock_engine.begin.assert_called_once()
 
-    # Verify that create_all was called
     mock_conn = mock_engine.begin.return_value.__aenter__.return_value
-    mock_conn.run_sync.assert_called_once_with(Base.metadata.create_all)
+
+    mock_conn.run_sync.assert_called_once_with(
+        Base.metadata.create_all,
+    )
 
 
 @pytest.mark.asyncio
-async def test_get_async_session(mock_session):
-    # Test the session generator
-    session_generator = get_async_session()
-    session = await session_generator.__anext__()
+async def test_get_async_session(
+    mock_session,
+):
+    generator = get_async_session()
 
-    # Verify we got the mock session
+    session = await generator.__anext__()
+
     assert session == mock_session
 
-    # Verify the session was created with the expected context
-    mock_session.__aenter__.assert_called_once()
 
-
-@pytest.mark.asyncio
-async def test_get_user_db(mock_session):
-    # Test the user db generator
-    user_db_generator = get_user_db(mock_session)
-    user_db = await user_db_generator.__anext__()
-
-    # Verify we got a SQLAlchemyUserDatabase instance
-    assert isinstance(user_db, SQLAlchemyUserDatabase)
-    assert user_db.session == mock_session
-    # Verify the model class is correct
-    assert user_db.user_table == User
-
-
-def test_engine_creation(mocker):
-    # Mock settings
+def test_engine_creation(
+    mocker,
+):
     mock_settings = mocker.patch("app.core.db.settings")
+
     mock_settings.DATABASE_URL = "sqlite+aiosqlite:///./test.db"
+
     mock_settings.EXPIRE_ON_COMMIT = False
 
-    # Import engine to trigger creation with mocked settings
-    from app.core.db import engine, async_session_maker
+    from app.core.db import (
+        async_session_maker,
+        engine,
+    )
 
-    # Verify engine is created
-    assert isinstance(engine, AsyncEngine)
+    assert isinstance(
+        engine,
+        AsyncEngine,
+    )
 
-    # Verify session maker is configured
     assert async_session_maker.kw["expire_on_commit"] is False
 
 
 @pytest.mark.asyncio
 async def test_session_maker_configuration():
-    # Create a test session
     async with async_session_maker() as session:
-        assert isinstance(session, AsyncSession)
+        assert isinstance(
+            session,
+            AsyncSession,
+        )

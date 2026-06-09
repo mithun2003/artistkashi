@@ -2,8 +2,11 @@
 
 from datetime import UTC, datetime
 from enum import StrEnum
+from http import HTTPStatus
 
-type ErrorDetails = dict[str, object]
+from fastapi import status
+
+type ErrorDetails = dict[str, object] | str
 
 
 class ErrorCode(StrEnum):
@@ -18,6 +21,7 @@ class ErrorCode(StrEnum):
     # Auth
     INVALID_CREDENTIALS = "INVALID_CREDENTIALS"
     EMAIL_NOT_VERIFIED = "EMAIL_NOT_VERIFIED"
+    EMAIL_ALREADY_VERIFIED = "EMAIL_ALREADY_VERIFIED"
     FORBIDDEN_ACCESS = "FORBIDDEN_ACCESS"
 
     # Infrastructure
@@ -54,7 +58,7 @@ class AppException(Exception):
         self.message = message
         self.status_code = status_code
         self.error_code = str(error_code or ErrorCode.INTERNAL_ERROR)
-        self.details = details or {}
+        self.details = details or HTTPStatus(status_code).description
 
         super().__init__(message)
 
@@ -116,11 +120,12 @@ class UnauthorizedException(AppException):
     def __init__(
         self,
         message: str = "Unauthorized",
+        error_code: ErrorCode = ErrorCode.INVALID_CREDENTIALS,
     ) -> None:
         super().__init__(
             message=message,
             status_code=401,
-            error_code=ErrorCode.INVALID_CREDENTIALS,
+            error_code=error_code,
         )
 
 
@@ -130,11 +135,12 @@ class ForbiddenException(AppException):
     def __init__(
         self,
         message: str = "Forbidden",
+        error_code: ErrorCode = ErrorCode.FORBIDDEN_ACCESS,
     ) -> None:
         super().__init__(
             message=message,
-            status_code=403,
-            error_code=ErrorCode.FORBIDDEN_ACCESS,
+            status_code=status.HTTP_403_FORBIDDEN,
+            error_code=error_code,
         )
 
 

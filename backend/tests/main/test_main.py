@@ -1,7 +1,8 @@
 import pytest
 from fastapi import status
-from fastapi_users.router import ErrorCode
 from sqlalchemy import select
+
+from app.core.exceptions import ErrorCode
 from app.models import User
 
 

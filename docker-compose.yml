@@ -20,6 +20,8 @@ services:
 
     volumes:
       - ./backend/app:/app/app
+      - ./backend/alembic_migrations:/app/alembic_migrations
+      - ./backend/alembic.ini:/app/alembic.ini
       - ./local-shared-data:/app/shared-data
 
     depends_on:

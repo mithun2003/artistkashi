@@ -27,6 +27,7 @@ class Settings(BaseSettings):
     # ==================== SECURITY ====================
 
     ACCESS_SECRET_KEY: str
+    REFRESH_SECRET_KEY: str
     RESET_PASSWORD_SECRET_KEY: str
     VERIFICATION_SECRET_KEY: str
 
@@ -76,7 +77,7 @@ class Settings(BaseSettings):
     USE_CREDENTIALS: bool = True
     VALIDATE_CERTS: bool = True
 
-    TEMPLATE_DIR: str = "email_templates"
+    TEMPLATE_DIR: str = "templates"
 
     # ==================== ADMIN BOOTSTRAP ====================
 

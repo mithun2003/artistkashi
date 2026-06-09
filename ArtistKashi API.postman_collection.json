@@ -1,9 +1,10 @@
 {
   "info": {
-    "_postman_id": "ec6b4007-d8b0-49c9-8f67-62956b0111ac",
+    "_postman_id": "2f9142ad-eae6-49c9-8e48-f4b76876c0fc",
     "name": "ArtistKashi API",
     "description": "Postman collection for the current ArtistKashi FastAPI backend. Run Login first to populate ACCESS_TOKEN. Set ADMIN_TOKEN for admin routes.",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "25369645"
   },
   "item": [
     {
@@ -11,7 +12,6 @@
       "item": [
         {
           "name": "Health Check",
-          "id": "52b02ada-d234-4447-86ab-5f1a7cb6a4fc",
           "request": {
             "auth": {
               "type": "noauth"
@@ -32,7 +32,6 @@
         },
         {
           "name": "Detailed Health Check",
-          "id": "7e26c234-3c36-47bb-a644-a2d6a20af4c8",
           "request": {
             "auth": {
               "type": "noauth"
@@ -52,15 +51,13 @@
           },
           "response": []
         }
-      ],
-      "id": "14a71665-e48c-49e1-839e-bde0728d9c4e"
+      ]
     },
     {
       "name": "Authentication",
       "item": [
         {
           "name": "Register User",
-          "id": "95389ca0-ff54-4db4-8db6-e9f5465ab457",
           "request": {
             "auth": {
               "type": "noauth"
@@ -100,17 +97,34 @@
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
                 "exec": [
                   "const json = pm.response.json();",
-                  "const token = json.access_token || json.data?.access_token;",
-                  "pm.test(\"Access token returned\", function () { pm.expect(token).to.be.a(\"string\").and.not.empty; });",
-                  "if (token) pm.collectionVariables.set(\"ACCESS_TOKEN\", token);"
-                ]
+                  "",
+                  "const accessToken = json.access_token || json.data?.access_token;",
+                  "const refreshToken = json.refresh_token || json.data?.refresh_token;",
+                  "",
+                  "pm.test(\"Access token returned\", function () {",
+                  "    pm.expect(accessToken).to.be.a(\"string\").and.not.empty;",
+                  "});",
+                  "",
+                  "pm.test(\"Refresh token returned\", function () {",
+                  "    pm.expect(refreshToken).to.be.a(\"string\").and.not.empty;",
+                  "});",
+                  "",
+                  "if (accessToken) {",
+                  "    pm.collectionVariables.set(\"ACCESS_TOKEN\", accessToken);",
+                  "}",
+                  "",
+                  "if (refreshToken) {",
+                  "    pm.collectionVariables.set(\"REFRESH_TOKEN\", refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
-          "id": "0d6baee8-6741-42bd-9cac-af665dd36833",
           "request": {
             "auth": {
               "type": "noauth"
@@ -138,13 +152,12 @@
               ]
             },
             "url": {
-              "raw": "{{BASE_URL}}/auth/jwt/login",
+              "raw": "{{BASE_URL}}/auth/login",
               "host": [
                 "{{BASE_URL}}"
               ],
               "path": [
                 "auth",
-                "jwt",
                 "login"
               ]
             }
@@ -153,18 +166,34 @@
         },
         {
           "name": "Logout",
-          "id": "c2a339b8-5981-48f0-a4ef-53d04a51590c",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Logout successful\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.unset(\"ACCESS_TOKEN\");\r",
+                  "pm.collectionVariables.unset(\"REFRESH_TOKEN\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{BASE_URL}}/auth/jwt/logout",
+              "raw": "{{BASE_URL}}/auth/logout",
               "host": [
                 "{{BASE_URL}}"
               ],
               "path": [
                 "auth",
-                "jwt",
                 "logout"
               ]
             }
@@ -173,7 +202,6 @@
         },
         {
           "name": "Request Verification Token",
-          "id": "f1252462-be2e-4f8a-b48d-1c0599cb05ed",
           "request": {
             "auth": {
               "type": "noauth"
@@ -195,13 +223,13 @@
               }
             },
             "url": {
-              "raw": "{{BASE_URL}}/auth/request-verify-token",
+              "raw": "{{BASE_URL}}/auth/request-verification",
               "host": [
                 "{{BASE_URL}}"
               ],
               "path": [
                 "auth",
-                "request-verify-token"
+                "request-verification"
               ]
             }
           },
@@ -209,7 +237,6 @@
         },
         {
           "name": "Verify Email",
-          "id": "dcbaafb2-fa70-4b83-863c-ba6b9e553709",
           "request": {
             "auth": {
               "type": "noauth"
@@ -245,7 +272,6 @@
         },
         {
           "name": "Request Password Reset",
-          "id": "bc563b81-8f11-4a71-adb8-9222efcac87e",
           "request": {
             "auth": {
               "type": "noauth"
@@ -281,7 +307,6 @@
         },
         {
           "name": "Reset Password",
-          "id": "79d0c5c9-f614-40ec-844e-279ce2568476",
           "request": {
             "auth": {
               "type": "noauth"
@@ -314,13 +339,39 @@
             }
           },
           "response": []
-        }
-      ],
-      "id": "82815314-45e1-48ac-97fa-f7fc1235885b"
-    },
-    {
-      "name": "Users",
-      "item": [
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"current_password\": \"{{USER_PASSWORD}}\",\n    \"new_password\": \"Password123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/auth/change-password",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
+            }
+          },
+          "response": []
+        },
         {
           "name": "Get Current User",
           "event": [
@@ -336,7 +387,6 @@
               }
             }
           ],
-          "id": "c8c334b8-7a1c-4f84-9232-86472bd3906d",
           "request": {
             "method": "GET",
             "header": [],
@@ -352,10 +402,14 @@
             }
           },
           "response": []
-        },
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
         {
           "name": "Update Current User",
-          "id": "8878053e-6bf4-4a84-84bc-98e6d1ef9afe",
           "request": {
             "method": "PATCH",
             "header": [
@@ -388,7 +442,6 @@
         },
         {
           "name": "Get User by ID",
-          "id": "d9d2516b-0eff-4fca-87cd-c6fb9185ed08",
           "request": {
             "method": "GET",
             "header": [],
@@ -407,7 +460,6 @@
         },
         {
           "name": "Update User by ID",
-          "id": "62a520a3-4fa7-4ab2-851b-be0e4dfb0b49",
           "request": {
             "method": "PATCH",
             "header": [
@@ -440,7 +492,6 @@
         },
         {
           "name": "Delete User by ID",
-          "id": "d86aba8b-d4cc-40be-898a-e56ac62085d9",
           "request": {
             "method": "DELETE",
             "header": [],
@@ -459,7 +510,6 @@
         },
         {
           "name": "Get Current Profile",
-          "id": "8b23f4d4-206c-4cf9-bb4d-a89e5deae613",
           "request": {
             "method": "GET",
             "header": [],
@@ -478,7 +528,6 @@
         },
         {
           "name": "List Profiles",
-          "id": "424d8d86-4287-4db2-8ad6-e275dd4cda98",
           "request": {
             "auth": {
               "type": "noauth"
@@ -503,8 +552,7 @@
           },
           "response": []
         }
-      ],
-      "id": "01e72450-2dc8-44db-b67c-e373cf71f22b"
+      ]
     },
     {
       "name": "Addresses",
@@ -524,7 +572,6 @@
               }
             }
           ],
-          "id": "e91bfb3a-dbde-472e-a55e-35dd8da82383",
           "request": {
             "method": "POST",
             "header": [
@@ -556,7 +603,6 @@
         },
         {
           "name": "List Addresses",
-          "id": "7b660dc8-bcb6-4fb8-8725-f10854cf9a45",
           "request": {
             "method": "GET",
             "header": [],
@@ -584,7 +630,6 @@
         },
         {
           "name": "Delete Address",
-          "id": "f0c49d86-1ad4-4882-9463-1e0b4a75e850",
           "request": {
             "method": "DELETE",
             "header": [],
@@ -601,8 +646,7 @@
           },
           "response": []
         }
-      ],
-      "id": "cfeda13c-1e5a-40a8-8e33-8a92526d2fce"
+      ]
     },
     {
       "name": "Products",
@@ -622,7 +666,6 @@
               }
             }
           ],
-          "id": "e61e752a-2a4a-4424-afe0-e32e672409e2",
           "request": {
             "auth": {
               "type": "noauth"
@@ -653,7 +696,6 @@
         },
         {
           "name": "Get Product",
-          "id": "b0becc73-5fd6-4847-b9b8-7b840891bbc2",
           "request": {
             "auth": {
               "type": "noauth"
@@ -673,8 +715,7 @@
           },
           "response": []
         }
-      ],
-      "id": "d37e70e6-7a6e-464e-a44a-c11ee676c7f6"
+      ]
     },
     {
       "name": "Courses",
@@ -694,7 +735,6 @@
               }
             }
           ],
-          "id": "6acecf55-dcfb-4376-8777-05cf1fd549a2",
           "request": {
             "auth": {
               "type": "noauth"
@@ -725,7 +765,6 @@
         },
         {
           "name": "Get Course",
-          "id": "4f60009c-fd05-426a-9292-03d203813c3d",
           "request": {
             "auth": {
               "type": "noauth"
@@ -745,15 +784,13 @@
           },
           "response": []
         }
-      ],
-      "id": "1e52cd10-88d9-4bd9-8631-1ae2caff6002"
+      ]
     },
     {
       "name": "Cart",
       "item": [
         {
           "name": "Get My Cart",
-          "id": "c77bf783-2d9d-4426-8932-ade30a871909",
           "request": {
             "method": "GET",
             "header": [],
@@ -784,7 +821,6 @@
               }
             }
           ],
-          "id": "c6fcf038-eb18-4a2c-89c2-738f40d082e1",
           "request": {
             "method": "POST",
             "header": [
@@ -816,7 +852,6 @@
         },
         {
           "name": "Add Course to Cart",
-          "id": "f4b482b6-6b38-4175-bca2-f4047650db0b",
           "request": {
             "method": "POST",
             "header": [
@@ -848,7 +883,6 @@
         },
         {
           "name": "Update Cart Item",
-          "id": "71f33f2b-cbc6-4ad5-877e-7a471be80fa3",
           "request": {
             "method": "PATCH",
             "header": [
@@ -881,7 +915,6 @@
         },
         {
           "name": "Remove Cart Item",
-          "id": "faedb520-a59e-48e6-a5d0-9557d6595651",
           "request": {
             "method": "DELETE",
             "header": [],
@@ -898,15 +931,13 @@
           },
           "response": []
         }
-      ],
-      "id": "a122b43e-71be-40f9-ac73-08c7adc8f8c0"
+      ]
     },
     {
       "name": "Wishlist",
       "item": [
         {
           "name": "Get My Wishlist",
-          "id": "ce9421a0-ee7a-4d42-8cee-bad158535b11",
           "request": {
             "method": "GET",
             "header": [],
@@ -937,7 +968,6 @@
               }
             }
           ],
-          "id": "0736cbd3-ad52-4df1-a705-170877dcfd45",
           "request": {
             "method": "POST",
             "header": [
@@ -969,7 +999,6 @@
         },
         {
           "name": "Add Course to Wishlist",
-          "id": "281655af-5782-4d5e-b623-a58b7ec8e211",
           "request": {
             "method": "POST",
             "header": [
@@ -1001,7 +1030,6 @@
         },
         {
           "name": "Remove Wishlist Item",
-          "id": "c9cb6ab7-a91c-47bd-99f5-441b786573b4",
           "request": {
             "method": "DELETE",
             "header": [],
@@ -1018,15 +1046,13 @@
           },
           "response": []
         }
-      ],
-      "id": "b84aa25f-cb22-452e-b056-8fcaf24438d4"
+      ]
     },
     {
       "name": "Reviews",
       "item": [
         {
           "name": "List Public Reviews",
-          "id": "753f1cc0-6276-4ca8-93ba-6a3db76f7957",
           "request": {
             "auth": {
               "type": "noauth"
@@ -1078,7 +1104,6 @@
               }
             }
           ],
-          "id": "503c3463-88b9-4c4a-9966-6f347ecd92d1",
           "request": {
             "method": "POST",
             "header": [
@@ -1110,7 +1135,6 @@
         },
         {
           "name": "Get My Reviews",
-          "id": "ff1f0207-68ed-4a90-9cd7-9fc5bf7c78f4",
           "request": {
             "method": "GET",
             "header": [],
@@ -1128,15 +1152,13 @@
           },
           "response": []
         }
-      ],
-      "id": "db1d1d4c-5b3d-4c25-9a71-4dfdf9e289ab"
+      ]
     },
     {
       "name": "Admin",
       "item": [
         {
           "name": "Get Admin Stats",
-          "id": "40cbae5b-8014-424b-85ea-ef263a685e13",
           "request": {
             "method": "GET",
             "header": [],
@@ -1155,7 +1177,6 @@
         },
         {
           "name": "Dashboard Overview",
-          "id": "5b9351cd-dff9-41c9-b894-58cb7210a924",
           "request": {
             "method": "GET",
             "header": [],
@@ -1175,7 +1196,6 @@
         },
         {
           "name": "List Users",
-          "id": "ceefdeff-29b7-4601-a529-f2dece40d402",
           "request": {
             "method": "GET",
             "header": [],
@@ -1195,7 +1215,6 @@
         },
         {
           "name": "Get User",
-          "id": "44cf54f7-4353-45ba-82b3-e20a8d976576",
           "request": {
             "method": "GET",
             "header": [],
@@ -1215,7 +1234,6 @@
         },
         {
           "name": "List Admin Products",
-          "id": "7ade1426-d181-4d4f-8980-b7af4bfb2b1d",
           "request": {
             "method": "GET",
             "header": [],
@@ -1235,7 +1253,6 @@
         },
         {
           "name": "Get Admin Product",
-          "id": "9f450bd2-fa9f-434f-88f6-fbdb755ebe55",
           "request": {
             "method": "GET",
             "header": [],
@@ -1255,7 +1272,6 @@
         },
         {
           "name": "List Admin Courses",
-          "id": "408a9ecc-8040-4a87-ac3b-0aece98163fa",
           "request": {
             "method": "GET",
             "header": [],
@@ -1275,7 +1291,6 @@
         },
         {
           "name": "Get Admin Course",
-          "id": "a6ddf2cc-2e67-47d2-9070-1d5ef10b9f4b",
           "request": {
             "method": "GET",
             "header": [],
@@ -1308,7 +1323,6 @@
               }
             }
           ],
-          "id": "0b09d756-7672-4bc4-a537-cadb33a3083f",
           "request": {
             "auth": {
               "type": "noauth"
@@ -1331,7 +1345,6 @@
         },
         {
           "name": "Update Home Page Config",
-          "id": "ceb82ea5-f8da-4448-a292-7e0c7d4e4516",
           "request": {
             "method": "PUT",
             "header": [
@@ -1365,7 +1378,6 @@
         },
         {
           "name": "List Reviews",
-          "id": "54d7b90b-4f60-4b94-a860-be53f67158c0",
           "request": {
             "method": "GET",
             "header": [],
@@ -1402,7 +1414,6 @@
         },
         {
           "name": "Get Review",
-          "id": "87062896-ed0c-4ec1-af31-78f10ca80893",
           "request": {
             "method": "GET",
             "header": [],
@@ -1422,7 +1433,6 @@
         },
         {
           "name": "Update Review",
-          "id": "e7e4a02e-5cde-45b7-8dca-103430a29fc6",
           "request": {
             "method": "PUT",
             "header": [
@@ -1456,7 +1466,6 @@
         },
         {
           "name": "Delete Review",
-          "id": "a19f7c39-7545-4510-ae2e-1db84c0646a7",
           "request": {
             "method": "DELETE",
             "header": [],
@@ -1475,7 +1484,6 @@
           "response": []
         }
       ],
-      "id": "b605e788-fbdd-4392-ad04-0a4f095b7f3d",
       "auth": {
         "type": "bearer",
         "bearer": [
@@ -1500,9 +1508,21 @@
   },
   "event": [
     {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
       "listen": "test",
       "script": {
         "type": "text/javascript",
+        "requests": {},
         "exec": [
           "pm.test(\"Response status is below 500\", function () {",
           "  pm.expect(pm.response.code).to.be.below(500);",
@@ -1513,100 +1533,68 @@
   ],
   "variable": [
     {
-      "id": "e0ccbdf3-7681-45e0-80c7-7cf338bdd4cf",
       "key": "BASE_URL",
-      "value": "http://localhost:8000/api",
-      "type": "string"
+      "value": "http://localhost:8000/api"
     },
     {
-      "id": "e177e49d-922a-4513-bad5-4cbb4e276dd9",
       "key": "USER_EMAIL",
-      "value": "user@example.com",
-      "type": "string"
+      "value": "user@example.com"
     },
     {
-      "id": "5fbd67cf-d7e4-42c5-9aac-639585c6e595",
       "key": "USER_PASSWORD",
-      "value": "SecurePass123!",
-      "type": "string"
+      "value": "SecurePass123!"
     },
     {
-      "id": "ee9ed62f-1d73-4ba8-b6ab-adcdeb0240fa",
       "key": "ACCESS_TOKEN",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "b648598a-af4a-413b-812f-faeccf83aa04",
+      "key": "REFRESH_TOKEN",
+      "value": ""
+    },
+    {
       "key": "ADMIN_TOKEN",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "70008d68-2789-4dab-a321-e396e4b351a3",
       "key": "USER_ID",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "47dff679-147e-45dd-b797-de94d61dedea",
       "key": "ADMIN_USER_ID",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "64c3e62e-7ae2-4e4b-82c2-7ce2837b04ac",
       "key": "ADDRESS_ID",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "cace6925-8bf0-4a16-9109-9532bb37e959",
       "key": "REVIEW_ID",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "84adb70a-9afc-41cc-b7d9-69dae9e3f4b9",
       "key": "PRODUCT_ID",
-      "value": "1",
-      "type": "string"
+      "value": "1"
     },
     {
-      "id": "959fb755-5860-4c92-808e-91c204287d78",
       "key": "COURSE_ID",
-      "value": "1",
-      "type": "string"
+      "value": "1"
     },
     {
-      "id": "2fa39769-8ca5-421a-9fd6-0078e2f70279",
       "key": "CART_ITEM_ID",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "d70956c7-4c7e-4e35-a8fa-49be7c746e4c",
       "key": "WISHLIST_ITEM_ID",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "5f4f13c0-c179-4e19-a83d-4395de4557fe",
       "key": "VERIFY_TOKEN",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "605f5c61-0714-4013-b66c-0e09b570c116",
-      "key": "RESET_TOKEN",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "id": "8a73b2a0-4d49-4014-abc3-7b7fa2b70059",
       "key": "HOME_CONFIG_JSON",
-      "value": "{}",
-      "type": "string"
+      "value": "{}"
     }
   ]
 }

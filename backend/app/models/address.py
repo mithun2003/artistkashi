@@ -1,24 +1,67 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.models.base import Base
+from app.models.base import Base, TimestampMixin
 
 
-class Address(Base):
+class Address(Base, TimestampMixin):
     __tablename__ = "addresses"
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(
-        UUID(as_uuid=True), ForeignKey("user.id"), nullable=False, index=True
+    id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+        autoincrement=True,
     )
-    line1 = Column(String(length=255), nullable=False)
-    line2 = Column(String(length=255), nullable=True)
-    city = Column(String(length=128), nullable=True)
-    state = Column(String(length=128), nullable=True)
-    postal_code = Column(String(length=32), nullable=True)
-    country = Column(String(length=128), nullable=True)
-    phone = Column(String(length=32), nullable=True)
-    is_default = Column(Boolean, default=False)
 
-    user = relationship("User", back_populates="addresses")
+    user_id: Mapped[UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id"),
+        nullable=False,
+        index=True,
+    )
+
+    line1: Mapped[str] = mapped_column(
+        String(255),
+        nullable=False,
+    )
+
+    line2: Mapped[str | None] = mapped_column(
+        String(255),
+        nullable=True,
+    )
+
+    city: Mapped[str | None] = mapped_column(
+        String(128),
+        nullable=True,
+    )
+
+    state: Mapped[str | None] = mapped_column(
+        String(128),
+        nullable=True,
+    )
+
+    postal_code: Mapped[str | None] = mapped_column(
+        String(32),
+        nullable=True,
+    )
+
+    country: Mapped[str | None] = mapped_column(
+        String(128),
+        nullable=True,
+    )
+
+    phone: Mapped[str | None] = mapped_column(
+        String(32),
+        nullable=True,
+    )
+
+    is_default: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+        nullable=False,
+    )
+    user = relationship(
+        "User",
+        back_populates="addresses",
+    )

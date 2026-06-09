@@ -1,26 +1,55 @@
-from sqlalchemy import Column, ForeignKey, Integer
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
+from __future__ import annotations
 
-from app.models.base import Base
+from uuid import UUID
+
+from sqlalchemy import ForeignKey, Integer
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.models.base import Base, TimestampMixin
 
 
-class Wishlist(Base):
+class Wishlist(Base, TimestampMixin):
     __tablename__ = "wishlist"
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(
-        UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"), nullable=False
+    id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,
+        autoincrement=True,
     )
 
-    # We can have either a product or a course in the wishlist
-    product_id = Column(
-        Integer, ForeignKey("products.id", ondelete="CASCADE"), nullable=True
-    )
-    course_id = Column(
-        Integer, ForeignKey("courses.id", ondelete="CASCADE"), nullable=True
+    user_id: Mapped[UUID] = mapped_column(
+        ForeignKey(
+            "users.id",
+            ondelete="CASCADE",
+        ),
+        index=True,
     )
 
-    user = relationship("User", backref="wishlist_items")
-    product = relationship("Product")
-    course = relationship("Course")
+    product_id: Mapped[int | None] = mapped_column(
+        ForeignKey(
+            "products.id",
+            ondelete="CASCADE",
+        ),
+        nullable=True,
+    )
+
+    course_id: Mapped[int | None] = mapped_column(
+        ForeignKey(
+            "courses.id",
+            ondelete="CASCADE",
+        ),
+        nullable=True,
+    )
+
+    user = relationship(
+        "User",
+        back_populates="wishlist_items",
+    )
+
+    product = relationship(
+        "Product",
+    )
+
+    course = relationship(
+        "Course",
+    )

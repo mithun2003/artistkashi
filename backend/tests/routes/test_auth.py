@@ -10,9 +10,8 @@ This script tests the complete authentication flow:
 """
 
 import asyncio
+
 import httpx
-import json
-from typing import Optional
 
 # Configuration
 API_URL = "http://localhost:8000"
@@ -85,7 +84,7 @@ class AuthTester:
             if response.status_code in [200, 201]:
                 data = response.json()
                 self.user_id = data.get("id")
-                print(f"✅ Registration successful!")
+                print("✅ Registration successful!")
                 print(f"   User ID: {self.user_id}")
                 print(f"   Email: {data.get('email')}")
                 print(f"   Is Active: {data.get('is_active')}")
@@ -94,7 +93,7 @@ class AuthTester:
             elif response.status_code == 400:
                 error_data = response.json()
                 if "REGISTER_INVALID_PASSWORD" in str(error_data):
-                    print(f"⚠️  User already exists (trying to register again)")
+                    print("⚠️  User already exists (trying to register again)")
                     # Try to login instead
                     return await self.test_login()
                 else:
@@ -125,7 +124,7 @@ class AuthTester:
                 data = response.json()
                 self.access_token = data.get("access_token")
                 token_type = data.get("token_type")
-                print(f"✅ Login successful!")
+                print("✅ Login successful!")
                 print(f"   Token Type: {token_type}")
                 print(f"   Token: {self.access_token[:50]}...")
                 return True
@@ -143,14 +142,14 @@ class AuthTester:
             print("❌ No token available. Please login first.")
             return False
 
-        print(f"\n👥 Getting current user info...")
+        print("\n👥 Getting current user info...")
         try:
             headers = {"Authorization": f"Bearer {self.access_token}"}
             response = await self.client.get("/test/me", headers=headers)
 
             if response.status_code == 200:
                 data = response.json()
-                print(f"✅ Got current user info!")
+                print("✅ Got current user info!")
                 print(f"   ID: {data.get('id')}")
                 print(f"   Email: {data.get('email')}")
                 print(f"   Full Name: {data.get('full_name')}")
@@ -158,7 +157,7 @@ class AuthTester:
                 print(f"   Role: {data.get('role')}")
                 print(f"   Is Active: {data.get('is_active')}")
                 print(f"   Is Verified: {data.get('is_verified')}")
-                self.user_id = data.get('id')
+                self.user_id = data.get("id")
                 return True
             else:
                 print(f"❌ Failed to get user info: {response.status_code}")
@@ -170,7 +169,7 @@ class AuthTester:
 
     async def test_get_all_users(self) -> bool:
         """Get list of all users."""
-        print(f"\n📋 Getting all users...")
+        print("\n📋 Getting all users...")
         try:
             response = await self.client.get("/users")
 
@@ -178,7 +177,7 @@ class AuthTester:
                 data = response.json()
                 # data could be list or dict with 'items' key
                 users = data if isinstance(data, list) else data.get("items", [])
-                print(f"✅ Got users list!")
+                print("✅ Got users list!")
                 print(f"   Total users: {len(users)}")
                 for user in users[:5]:  # Show first 5
                     print(f"   - {user.get('email')} (ID: {user.get('id')})")
