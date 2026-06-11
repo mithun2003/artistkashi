@@ -1,4 +1,3 @@
-import uuid
 from typing import Annotated
 
 from pydantic import (
@@ -25,46 +24,56 @@ class UserBase(BaseModel):
 class User(UserBase, UUIDSchema, TimestampSchema):
     is_active: bool = True
     is_verified: bool = False
+    is_superuser: bool = False
     role: Role = Role.USER
+
     hashed_password: str
-
-
-class UserRead(UserBase):
-    id: uuid.UUID
-    is_active: bool
-    is_verified: bool
-    role: Role
-    addresses: list[AddressRead] = []
 
     model_config = ConfigDict(from_attributes=True)
 
 
-class PublicUserRead(BaseModel):
-    id: uuid.UUID
+class UserRead(UserBase, UUIDSchema, TimestampSchema):
+    is_active: bool
+    is_verified: bool
+    is_superuser: bool
+    role: Role
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class UserProfileRead(UserRead):
+    addresses: list[AddressRead] = Field(default_factory=list)
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class PublicUserRead(UUIDSchema, TimestampSchema):
     full_name: str | None = None
     profile_picture: str | None = None
-    role: Role
+
     model_config = ConfigDict(from_attributes=True)
 
 
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
-    full_name: str | None = None
+
+    full_name: str
     phone: str | None = None
 
 
 class UserCreateDB(BaseModel):
     email: EmailStr
     hashed_password: str
-    full_name: str | None = None
+
+    full_name: str
     phone: str | None = None
 
 
 class UserUpdate(BaseModel):
     full_name: str | None = None
     phone: str | None = None
-    profile_image_url: Annotated[
+    profile_picture: Annotated[
         str | None,
         Field(
             pattern=r"^(https?|ftp)://[^\s/$.?#].[^\s]*$",
@@ -114,7 +123,11 @@ class AdminUserUpdate(BaseModel):
     full_name: str | None = None
     phone: str | None = None
     profile_picture: str | None = None
+
     role: Role | None = None
+
     is_active: bool | None = None
     is_verified: bool | None = None
+    is_superuser: bool | None = None
+
     model_config = ConfigDict(extra="forbid")

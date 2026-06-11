@@ -10,6 +10,7 @@ from app.core.config import Settings
 from app.core.db import create_db_and_tables
 from app.core.error_handler import setup_exception_handlers
 from app.core.queue import close_queue, init_queue
+from app.middleware.performance import PerformanceMiddleware
 from app.middleware.request_id import RequestIDMiddleware
 from app.middleware.response import ResponseWrapperMiddleware
 
@@ -35,9 +36,7 @@ async def initialize_queue() -> None:
 
 
 def lifespan_factory(
-    settings: Settings,
-    enable_redis: bool = True,
-    enable_queue: bool = True,
+    settings: Settings, enable_redis: bool = True, enable_queue: bool = True
 ) -> Callable[[FastAPI], AsyncGenerator[None]]:
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncGenerator[None]:
@@ -104,23 +103,17 @@ def create_application(
 ) -> FastAPI:
     if lifespan is None:
         lifespan = lifespan_factory(
-            settings=settings,
-            enable_redis=enable_redis,
-            enable_queue=enable_queue,
+            settings=settings, enable_redis=enable_redis, enable_queue=enable_queue
         )
 
     kwargs.setdefault("title", settings.APP_NAME)
     kwargs.setdefault("description", settings.APP_DESCRIPTION)
     kwargs.setdefault("version", settings.APP_VERSION)
     kwargs.setdefault(
-        "openapi_url",
-        settings.OPENAPI_URL if settings.ENABLE_DOCS else None,
+        "openapi_url", settings.OPENAPI_URL if settings.ENABLE_DOCS else None
     )
 
-    app = FastAPI(
-        lifespan=lifespan,
-        **kwargs,
-    )
+    app = FastAPI(lifespan=lifespan, **kwargs, redirect_slashes=False)
 
     app.add_middleware(
         CORSMiddleware,
@@ -132,6 +125,7 @@ def create_application(
 
     app.add_middleware(RequestIDMiddleware)
     app.add_middleware(ResponseWrapperMiddleware)
+    app.add_middleware(PerformanceMiddleware)
 
     setup_exception_handlers(app)
 

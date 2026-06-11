@@ -11,66 +11,37 @@ class UserService:
         self,
         session: AsyncSession,
         user_id: UUID,
-        user_schema: UserRead | User = UserRead
+        user_schema: type[UserRead | User] = UserRead,
     ):
         return await crud_user.get(
-            db=session,
-            id=user_id,
-            return_as_model=True,
-            schema_to_select=user_schema,
+            db=session, id=user_id, return_as_model=True, schema_to_select=user_schema
         )
 
     async def get_by_email(
         self,
         session: AsyncSession,
         email: str,
-        user_schema: UserRead | User = UserRead
+        user_schema: type[UserRead | User] = UserRead,
     ):
         return await crud_user.get(
-            db=session,
-            email=email,
-            return_as_model=True,
-            schema_to_select=user_schema,
+            db=session, email=email, return_as_model=True, schema_to_select=user_schema
         )
 
-    async def verify_user(
-        self,
-        session: AsyncSession,
-        user_id: UUID,
-    ):
+    async def verify_user(self, session: AsyncSession, user_id: UUID):
         return await crud_user.update(
-            db=session,
-            id=user_id,
-            object={
-                "is_verified": True,
-            },
+            db=session, id=user_id, object={"is_verified": True}
         )
 
     async def update_password(
-        self,
-        session: AsyncSession,
-        user_id: UUID,
-        hashed_password: str,
+        self, session: AsyncSession, user_id: UUID, hashed_password: str
     ):
         return await crud_user.update(
-            db=session,
-            id=user_id,
-            object={
-                "hashed_password": hashed_password,
-            },
+            db=session, id=user_id, object={"hashed_password": hashed_password}
         )
 
-    async def deactivate_user(
-        self,
-        session: AsyncSession,
-        user_id: UUID,
-    ):
+    async def deactivate_user(self, session: AsyncSession, user_id: UUID):
         return await crud_user.update(
-            db=session,
-            id=user_id,
-            object={
-                "is_active": False,
-            },
+            db=session, id=user_id, object={"is_active": False}
         )
 
 

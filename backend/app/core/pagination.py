@@ -11,7 +11,7 @@ from app.schemas.responses import (
 def build_paginated_response[T](
     *,
     result: GetMultiResponseModel[T],
-    page: int,
+    page: int = 1,
     page_size: int,
     message: str,
 ) -> PaginatedResponse[T]:

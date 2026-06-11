@@ -3,6 +3,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
+from app.core.schema import TimestampSchema
 from app.models.review import ReviewStatus, ReviewType
 
 
@@ -23,12 +24,10 @@ class ReviewUpdate(BaseModel):
     text: str | None = Field(None, min_length=1, max_length=1000)
 
 
-class ReviewRead(ReviewBase):
+class ReviewRead(ReviewBase, TimestampSchema):
     id: UUID
     user_id: UUID
     status: ReviewStatus
-    created_at: datetime
-    updated_at: datetime
 
     class Config:
         from_attributes = True

@@ -47,7 +47,7 @@ class User(Base, TimestampMixin, SoftDeleteMixin):
     )
 
     role: Mapped[Role] = mapped_column(
-        Enum(Role),
+        Enum(Role, values_callable=lambda enum_cls: [e.value for e in enum_cls]),
         default=Role.USER,
         nullable=False,
     )

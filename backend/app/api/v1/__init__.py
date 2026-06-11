@@ -16,11 +16,14 @@ from .wishlist import router as wishlist_router
 router = APIRouter(prefix=settings.API_V1_PREFIX)
 
 router.include_router(health_router)
+
+router.include_router(admin_router)
+
+
 router.include_router(auth_router)
 router.include_router(users_router)
 router.include_router(addresses_router)
 router.include_router(reviews_router)
-router.include_router(admin_router)
 router.include_router(courses_router)
 router.include_router(products_router)
 router.include_router(cart_router)

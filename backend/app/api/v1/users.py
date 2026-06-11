@@ -1,33 +1,45 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Query
 from fastcrud import compute_offset
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.dependencies import CurrentUserDep
-from app.core.db import get_async_session
+from app.api.dependencies import CurrentUserDep, DatabaseDep
 from app.core.pagination import build_paginated_response
 from app.crud.user import crud_user
+from app.schemas.address import AddressRead
 from app.schemas.responses import PaginatedResponse, SuccessResponse
-from app.schemas.user import PublicUserRead, UserRead
-
-get_async_session_dep = Depends(get_async_session)
+from app.schemas.user import PublicUserRead, UserProfileRead
+from app.services.address_service import address_service
 
 router = APIRouter(tags=["users"])
 
 
-@router.get("/profiles/me", response_model=SuccessResponse[UserRead])
-async def read_own_profile(user: CurrentUserDep):
-    """Example: returns the currently authenticated user's public profile."""
+@router.get("/profiles/me", response_model=SuccessResponse[UserProfileRead])
+async def read_own_profile(user: CurrentUserDep, session: DatabaseDep):
+    user = await crud_user.get_with_relations(
+        db=session,
+        id=user.id,
+        relationships=["addresses"],
+        schema_to_select=UserProfileRead,
+    )
     return SuccessResponse(message="Profile retrieved successfully", data=user)
+
+
+@router.get("/profiles/me/addresses", response_model=SuccessResponse[list[AddressRead]])
+async def read_my_addresses(user: CurrentUserDep, session: DatabaseDep):
+    addresses = await address_service.list_user_addresses(
+        session=session, user_id=user.id
+    )
+
+    return SuccessResponse(message="Addresses retrieved successfully", data=addresses)
 
 
 @router.get("/profiles", response_model=PaginatedResponse[PublicUserRead])
 async def list_profiles(
+    session: DatabaseDep,
     q: str | None = None,
     page: Annotated[int, Query(ge=1)] = 1,
     page_size: Annotated[int, Query(ge=1, le=100)] = 20,
-    session: AsyncSession = get_async_session_dep,
 ):
     filters = {"email": q} if q else {}
 

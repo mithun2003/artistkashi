@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from fastcrud import compute_offset
 from fastcrud.types import GetMultiResponseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -103,7 +104,6 @@ class AddressService:
         page: int,
         page_size: int,
     ) -> GetMultiResponseModel[AddressRead]:
-        from fastcrud import compute_offset
 
         return await crud_address.get_multi(
             db=session,
@@ -199,3 +199,6 @@ class AddressService:
             db=session,
             id=address_id,
         )
+
+
+address_service = AddressService()

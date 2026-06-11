@@ -3,7 +3,7 @@ import uuid
 from pydantic import BaseModel, ConfigDict
 
 from app.schemas.course import CourseRead
-from app.schemas.product import ProductRead
+from app.schemas.product import ProductCardRead
 
 
 class WishlistBase(BaseModel):
@@ -18,7 +18,7 @@ class WishlistCreate(WishlistBase):
 class WishlistRead(WishlistBase):
     id: int
     user_id: uuid.UUID
-    product: ProductRead | None = None
+    product: ProductCardRead | None = None
     course: CourseRead | None = None
 
     model_config = ConfigDict(from_attributes=True)

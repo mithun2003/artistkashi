@@ -14,13 +14,13 @@ import asyncio
 import os
 import sys
 
-from fastapi_users.password import PasswordHelper
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.auth.password_policy import validate_password_rules
+from app.core.auth.security import hash_password
 from app.core.db import async_session
-from app.models.user import User
+from app.models.user import Role, User
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -59,9 +59,6 @@ async def upsert_admin_user(
     result = await session.execute(select(User).where(User.email == normalized_email))
     user = result.scalar_one_or_none()
 
-    password_helper = PasswordHelper()
-    password_hash = None
-
     if user is None:
         if not password:
             raise ValueError("ADMIN_PASSWORD is required when creating a new admin.")
@@ -70,7 +67,7 @@ async def upsert_admin_user(
         if errors:
             raise ValueError("; ".join(errors))
 
-        password_hash = password_helper.hash(password)
+        password_hash = hash_password(password)
         user = User(
             email=normalized_email,
             hashed_password=password_hash,
@@ -78,7 +75,7 @@ async def upsert_admin_user(
             is_superuser=True,
             is_verified=True,
             full_name=normalized_full_name,
-            role="admin",
+            role=Role.ADMIN,
         )
         session.add(user)
         await session.commit()
@@ -99,6 +96,10 @@ async def upsert_admin_user(
         user.is_verified = True
         changed = True
 
+    if user.role != Role.ADMIN:
+        user.role = Role.ADMIN
+        changed = True
+
     if normalized_full_name is not None and user.full_name != normalized_full_name:
         user.full_name = normalized_full_name
         changed = True
@@ -113,7 +114,7 @@ async def upsert_admin_user(
         if errors:
             raise ValueError("; ".join(errors))
 
-        password_hash = password_helper.hash(password)
+        password_hash = hash_password(password)
         if user.hashed_password != password_hash:
             user.hashed_password = password_hash
             changed = True

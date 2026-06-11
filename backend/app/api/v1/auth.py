@@ -147,7 +147,6 @@ async def change_password(
     user: CurrentUserDep,
     session: DatabaseDep,
 ):
-    print(user)
     await auth_service.change_password(
         session=session,
         user=user,

@@ -17,6 +17,7 @@ class ErrorCode(StrEnum):
     VALIDATION_ERROR = "VALIDATION_ERROR"
     RESOURCE_NOT_FOUND = "RESOURCE_NOT_FOUND"
     CONFLICT = "CONFLICT"
+    HTTP_ERROR = "HTTP_ERROR"
 
     # Auth
     INVALID_CREDENTIALS = "INVALID_CREDENTIALS"
@@ -44,6 +45,30 @@ class ErrorCode(StrEnum):
     REVIEW_NOT_FOUND = "REVIEW_NOT_FOUND"
     REVIEW_ALREADY_EXISTS = "REVIEW_ALREADY_EXISTS"
 
+    # Product
+    PRODUCT_NOT_FOUND = "PRODUCT_NOT_FOUND"
+    PRODUCT_ALREADY_EXISTS = "PRODUCT_ALREADY_EXISTS"
+
+    # Medium
+    PRODUCT_MEDIUM_NOT_FOUND = "PRODUCT_MEDIUM_NOT_FOUND"
+    PRODUCT_MEDIUM_ALREADY_EXISTS = "PRODUCT_MEDIUM_ALREADY_EXISTS"
+
+    # Variant Type
+    VARIANT_TYPE_NOT_FOUND = "VARIANT_TYPE_NOT_FOUND"
+    VARIANT_TYPE_ALREADY_EXISTS = "VARIANT_TYPE_ALREADY_EXISTS"
+
+    # Product Variant
+    PRODUCT_VARIANT_NOT_FOUND = "PRODUCT_VARIANT_NOT_FOUND"
+    PRODUCT_VARIANT_ALREADY_EXISTS = "PRODUCT_VARIANT_ALREADY_EXISTS"
+    PRODUCT_VARIANT_SKU_ALREADY_EXISTS = "PRODUCT_VARIANT_SKU_ALREADY_EXISTS"
+
+    # Product Image
+    PRODUCT_IMAGE_NOT_FOUND = "PRODUCT_IMAGE_NOT_FOUND"
+
+    # Category
+    PRODUCT_CATEGORY_NOT_FOUND = "PRODUCT_CATEGORY_NOT_FOUND"
+    PRODUCT_CATEGORY_ALREADY_EXISTS = "PRODUCT_CATEGORY_ALREADY_EXISTS"
+
 
 class AppException(Exception):
     """Base application exception."""
@@ -57,7 +82,7 @@ class AppException(Exception):
     ) -> None:
         self.message = message
         self.status_code = status_code
-        self.error_code = str(error_code or ErrorCode.INTERNAL_ERROR)
+        self.error_code = error_code or ErrorCode.INTERNAL_ERROR
         self.details = details or HTTPStatus(status_code).description
 
         super().__init__(message)
@@ -69,22 +94,16 @@ class AppException(Exception):
             "success": False,
             "status": self.status_code,
             "message": self.message,
-            "error_code": self.error_code,
-            "errors": self.details or None,
-            "meta": {
-                "timestamp": datetime.now(UTC).isoformat(),
-            },
+            "error_code": self.error_code.value,
+            "errors": (self.details if isinstance(self.details, dict) else None),
+            "meta": {"timestamp": datetime.now(UTC).isoformat()},
         }
 
 
 class ValidationException(AppException):
     """Raised when validation fails."""
 
-    def __init__(
-        self,
-        message: str,
-        details: ErrorDetails | None = None,
-    ) -> None:
+    def __init__(self, message: str, details: ErrorDetails | None = None) -> None:
         super().__init__(
             message=message,
             status_code=422,
@@ -107,11 +126,7 @@ class NotFoundException(AppException):
         if identifier is not None:
             message += f" (ID: {identifier})"
 
-        super().__init__(
-            message=message,
-            status_code=404,
-            error_code=error_code,
-        )
+        super().__init__(message=message, status_code=404, error_code=error_code)
 
 
 class UnauthorizedException(AppException):
@@ -122,11 +137,7 @@ class UnauthorizedException(AppException):
         message: str = "Unauthorized",
         error_code: ErrorCode = ErrorCode.INVALID_CREDENTIALS,
     ) -> None:
-        super().__init__(
-            message=message,
-            status_code=401,
-            error_code=error_code,
-        )
+        super().__init__(message=message, status_code=401, error_code=error_code)
 
 
 class ForbiddenException(AppException):
@@ -154,35 +165,23 @@ class ConflictException(AppException):
         details: ErrorDetails | None = None,
     ) -> None:
         super().__init__(
-            message=message,
-            status_code=409,
-            error_code=error_code,
-            details=details,
+            message=message, status_code=409, error_code=error_code, details=details
         )
 
 
 class RateLimitException(AppException):
     """Raised when rate limits are exceeded."""
 
-    def __init__(
-        self,
-        message: str = "Rate limit exceeded",
-    ) -> None:
+    def __init__(self, message: str = "Rate limit exceeded") -> None:
         super().__init__(
-            message=message,
-            status_code=429,
-            error_code=ErrorCode.RATE_LIMIT_EXCEEDED,
+            message=message, status_code=429, error_code=ErrorCode.RATE_LIMIT_EXCEEDED
         )
 
 
 class DatabaseException(AppException):
     """Raised when database operations fail."""
 
-    def __init__(
-        self,
-        message: str,
-        details: ErrorDetails | None = None,
-    ) -> None:
+    def __init__(self, message: str, details: ErrorDetails | None = None) -> None:
         super().__init__(
             message=message,
             status_code=500,
@@ -194,11 +193,7 @@ class DatabaseException(AppException):
 class ServiceException(AppException):
     """Raised when an external service fails."""
 
-    def __init__(
-        self,
-        service: str,
-        message: str,
-    ) -> None:
+    def __init__(self, service: str, message: str) -> None:
         super().__init__(
             message=f"{service} service error: {message}",
             status_code=502,

@@ -1,6 +1,5 @@
 import enum
 import uuid
-from typing import TYPE_CHECKING
 
 from sqlalchemy import CheckConstraint, Enum, ForeignKey, Integer, Text
 from sqlalchemy.dialects.postgresql import UUID
@@ -8,13 +7,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base, TimestampMixin
 
-if TYPE_CHECKING:
-    from app.models.user import User
-
 
 class ReviewType(enum.StrEnum):
     COURSE = "course"
-    PAINTING = "painting"
+    PRODUCT = "product"
 
 
 class ReviewStatus(enum.StrEnum):
@@ -67,9 +63,9 @@ class Review(Base, TimestampMixin):
         Enum(ReviewStatus),
         default=ReviewStatus.ACTIVE,
         nullable=False,
-        index=True,
     )
 
-    user: Mapped["User"] = relationship(
+    user = relationship(
+        "User",
         back_populates="reviews",
     )

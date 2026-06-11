@@ -66,7 +66,9 @@ type CurrentUserDep = Annotated[
 async def get_current_admin(
     current_user: CurrentUserDep,
 ) -> User:
-    if current_user.role != Role.ADMIN:
-        raise ForbiddenException("Admin access required")
+    if current_user.role != Role.ADMIN and not getattr(
+        current_user, "is_superuser", False
+    ):
+        raise ForbiddenException("Admin privileges required")
 
     return current_user

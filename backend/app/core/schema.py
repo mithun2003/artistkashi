@@ -3,20 +3,23 @@ import uuid
 from datetime import UTC, datetime
 from typing import Any
 
-from pydantic import BaseModel, Field, field_serializer
+from pydantic import BaseModel, ConfigDict, Field, field_serializer
 
 
 class UUIDSchema(BaseModel):
     id: uuid.UUID = Field(
         default_factory=uuid.uuid4,
     )
+    model_config = ConfigDict(from_attributes=True)
 
 
 class TimestampSchema(BaseModel):
     created_at: datetime = Field(
         default_factory=lambda: datetime.now(UTC).replace(tzinfo=None)
     )
-    updated_at: datetime = Field(default=None)
+    updated_at: datetime | None = Field(default=None)
+
+    model_config = ConfigDict(from_attributes=True)
 
     @field_serializer("created_at")
     def serialize_dt(self, created_at: datetime | None, _info: Any) -> str | None:

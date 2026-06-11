@@ -15,12 +15,28 @@ logger = logging.getLogger(__name__)
 
 
 HTTP_ERROR_MESSAGES = {
-    "LOGIN_BAD_CREDENTIALS": "Invalid email or password",
-    "LOGIN_USER_NOT_VERIFIED": "User is not verified",
-    "REGISTER_USER_ALREADY_EXISTS": "User already exists",
-    "REGISTER_INVALID_PASSWORD": "Invalid password",
-    "RESET_PASSWORD_BAD_TOKEN": "Invalid or expired password reset token",
-    "VERIFY_USER_BAD_TOKEN": "Invalid or expired verification token",
+    ErrorCode.INVALID_CREDENTIALS.value: "Invalid email or password",
+    ErrorCode.EMAIL_NOT_VERIFIED.value: "Please verify your email address",
+    ErrorCode.EMAIL_ALREADY_VERIFIED.value: "Email already verified",
+    ErrorCode.FORBIDDEN_ACCESS.value: "Access denied",
+    # ErrorCode.USER_NOT_FOUND.value: "User not found",
+    # ErrorCode.USER_ALREADY_EXISTS.value: "User already exists",
+    # ErrorCode.ADDRESS_NOT_FOUND.value: "Address not found",
+    # ErrorCode.ADDRESS_ALREADY_EXISTS.value: "Address already exists",
+    # ErrorCode.COURSE_NOT_FOUND.value: "Course not found",
+    # ErrorCode.REVIEW_NOT_FOUND.value: "Review not found",
+    # ErrorCode.REVIEW_ALREADY_EXISTS.value: "Review already exists",
+    # ErrorCode.PRODUCT_NOT_FOUND.value: "Product not found",
+    # ErrorCode.PRODUCT_ALREADY_EXISTS.value: "Product already exists",
+    # ErrorCode.PRODUCT_MEDIUM_NOT_FOUND.value: "Product medium not found",
+    # ErrorCode.PRODUCT_MEDIUM_ALREADY_EXISTS.value: "Product medium already exists",
+    # ErrorCode.VARIANT_TYPE_NOT_FOUND.value: "Variant type not found",
+    # ErrorCode.VARIANT_TYPE_ALREADY_EXISTS.value: "Variant type already exists",
+    # ErrorCode.PRODUCT_VARIANT_NOT_FOUND.value: "Product variant not found",
+    # ErrorCode.PRODUCT_VARIANT_ALREADY_EXISTS.value: "Product variant already exists",
+    # ErrorCode.PRODUCT_IMAGE_NOT_FOUND.value: "Product image not found",
+    # ErrorCode.PRODUCT_CATEGORY_NOT_FOUND.value: "Product category not found",
+    # ErrorCode.PRODUCT_CATEGORY_ALREADY_EXISTS.value: "Product category already exists"
 }
 
 
@@ -52,42 +68,46 @@ def _format_validation_message(error: dict) -> str:
 
 def _format_http_error(
     detail: object,
-) -> tuple[str, str, dict[str, object] | None]:
-    """Normalize HTTPException details."""
+) -> tuple[str, ErrorCode, dict[str, object] | None]:
 
     if isinstance(detail, dict):
-        raw_code = detail.get("code")
-        error_code = raw_code if isinstance(raw_code, str) else "HTTP_ERROR"
+        try:
+            error_code = ErrorCode(detail.get("code"))
+        except Exception:
+            error_code = ErrorCode.HTTP_ERROR
 
-        reasons = detail.get("reason")
+        errors = None
 
-        errors = {"password": reasons} if isinstance(reasons, list) else None
+        if isinstance(detail.get("reason"), list):
+            errors = {"password": detail["reason"]}
 
-        message = HTTP_ERROR_MESSAGES.get(
-            error_code,
-            str(detail.get("detail", detail)),
-        )
-
-        return message, error_code, errors
+        return (str(detail.get("detail", detail)), error_code, errors)
 
     if isinstance(detail, str):
-        if detail in HTTP_ERROR_MESSAGES:
-            return (
-                HTTP_ERROR_MESSAGES[detail],
-                detail,
-                None,
+        try:
+            error_code = ErrorCode(detail)
+
+            message = HTTP_ERROR_MESSAGES.get(
+                error_code.value,
+                error_code.value.replace("_", " ").title(),
             )
 
-        return detail, "HTTP_ERROR", None
+            return (
+                message,
+                error_code,
+                None,
+            )
+        except ValueError:
+            return (detail, ErrorCode.HTTP_ERROR, None)
 
-    return str(detail), "HTTP_ERROR", None
+    return (str(detail), ErrorCode.HTTP_ERROR, None)
 
 
 def build_error_response(
     *,
     status_code: int,
     message: str,
-    error_code: str,
+    error_code: ErrorCode,
     errors: dict[str, object] | None = None,
 ) -> ErrorResponse:
     """Create a consistent error response."""
