@@ -7,16 +7,12 @@ from pydantic import BaseModel, ConfigDict, Field, field_serializer
 
 
 class UUIDSchema(BaseModel):
-    id: uuid.UUID = Field(
-        default_factory=uuid.uuid4,
-    )
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
     model_config = ConfigDict(from_attributes=True)
 
 
 class TimestampSchema(BaseModel):
-    created_at: datetime = Field(
-        default_factory=lambda: datetime.now(UTC).replace(tzinfo=None)
-    )
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     updated_at: datetime | None = Field(default=None)
 
     model_config = ConfigDict(from_attributes=True)

@@ -2,8 +2,8 @@
 
 import { useState, useCallback } from "react";
 import { X, Star } from "lucide-react";
-import { submitReview } from "@/api/review";
-import { ReviewType } from "@/types/reviews";
+import { createReview, ReviewType } from "@/api/openapi-client";
+import { unwrap } from "@/api/client-service";
 
 interface ReviewSubmitModalProps {
   isOpen: boolean;
@@ -18,7 +18,7 @@ export function ReviewSubmitModal({
   isOpen,
   onClose,
   onSuccess,
-  reviewType = "site",
+  reviewType = "product",
   entityId,
   entityName,
 }: ReviewSubmitModalProps) {
@@ -34,21 +34,23 @@ export function ReviewSubmitModal({
       setLoading(true);
 
       try {
-        await submitReview({
-          type: reviewType,
-          entity_id: entityId,
-          rating,
-          text,
-        });
+        await unwrap(
+          createReview({
+            body: {
+              type: reviewType,
+              entity_id: entityId!,
+              rating,
+              text,
+            },
+          })
+        );
 
         setText("");
         setRating(5);
         onClose();
         onSuccess?.();
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to submit review"
-        );
+      } catch (err: unknown) {
+        setError((err as Error).message || "Failed to submit review");
       } finally {
         setLoading(false);
       }

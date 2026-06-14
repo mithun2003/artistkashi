@@ -10,9 +10,8 @@ from app.core.config import Settings
 from app.core.db import create_db_and_tables
 from app.core.error_handler import setup_exception_handlers
 from app.core.queue import close_queue, init_queue
-from app.middleware.performance import PerformanceMiddleware
-from app.middleware.request_id import RequestIDMiddleware
 from app.middleware.response import ResponseWrapperMiddleware
+from app.middleware.trailing_slash import TrailingSlashMiddleware
 
 logger = logging.getLogger(__name__)
 
@@ -113,7 +112,7 @@ def create_application(
         "openapi_url", settings.OPENAPI_URL if settings.ENABLE_DOCS else None
     )
 
-    app = FastAPI(lifespan=lifespan, **kwargs, redirect_slashes=False)
+    app = FastAPI(lifespan=lifespan, **kwargs)
 
     app.add_middleware(
         CORSMiddleware,
@@ -123,9 +122,8 @@ def create_application(
         allow_headers=["*"],
     )
 
-    app.add_middleware(RequestIDMiddleware)
+    app.add_middleware(TrailingSlashMiddleware)
     app.add_middleware(ResponseWrapperMiddleware)
-    app.add_middleware(PerformanceMiddleware)
 
     setup_exception_handlers(app)
 

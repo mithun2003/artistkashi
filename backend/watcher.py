@@ -1,13 +1,15 @@
-import time
+import os
 import re
 import subprocess
-import os
 import sys
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+import time
 from threading import Timer
 
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
+
 LOCK_FILE = "/tmp/watcher.lock"
+
 
 def check_single_instance():
     if os.path.exists(LOCK_FILE):
@@ -21,6 +23,7 @@ def check_single_instance():
             os.remove(LOCK_FILE)
     with open(LOCK_FILE, "w") as f:
         f.write(str(os.getpid()))
+
 
 # ← correct for YOUR project structure
 WATCHER_REGEX_PATTERN = re.compile(r"(main\.py|schemas/.*\.py|api/.*\.py)$")
@@ -53,16 +56,11 @@ class MyHandler(FileSystemEventHandler):
     def run_mypy_checks(self):
         print("Running mypy type checks...")
         result = subprocess.run(
-            ["uv", "run", "mypy", "app"],
-            capture_output=True,
-            text=True,
-            check=False,
+            ["uv", "run", "mypy", "app"], capture_output=True, text=True, check=False
         )
         print(result.stdout, result.stderr, sep="\n")
         print(
-            "Type errors detected!"
-            if result.returncode
-            else "No type errors detected."
+            "Type errors detected!" if result.returncode else "No type errors detected."
         )
 
     def run_openapi_schema_generation(self):

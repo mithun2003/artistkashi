@@ -1,7 +1,10 @@
 from fastapi import APIRouter
 
 from app.api.dependencies import DatabaseDep
-from app.schemas.responses import SuccessResponse
+from app.core.pagination import build_paginated_response
+from app.models.product import ProductStatus
+from app.schemas.product import ProductCardRead, ProductDetailRead
+from app.schemas.responses import PaginatedResponse, SuccessResponse
 from app.services.product_service import (
     product_service,
 )
@@ -9,15 +12,21 @@ from app.services.product_service import (
 router = APIRouter(prefix="/products", tags=["Products"])
 
 
-@router.get("")
-async def list_products(session: DatabaseDep):
-    products = await product_service.list_published_products(db=session)
+@router.get("", response_model=PaginatedResponse[ProductCardRead])
+async def list_products(session: DatabaseDep, page: int = 1, page_size: int = 20):
+    products = await product_service.list_published_products(
+        session=session, page=page, page_size=page_size
+    )
 
-    return SuccessResponse(message="Products retrieved", data=products)
+    return build_paginated_response(
+        result=products, page=page, page_size=page_size, message="Products retrieved"
+    )
 
 
-@router.get("/{slug}")
+@router.get("/{slug}", response_model=SuccessResponse[ProductDetailRead])
 async def get_product(slug: str, session: DatabaseDep):
-    product = await product_service.get_product_by_slug(db=session, slug=slug)
+    product = await product_service.get_product_detail(
+        session=session, slug=slug, status=ProductStatus.PUBLISHED, check=True
+    )
 
     return SuccessResponse(message="Product retrieved", data=product)

@@ -5,7 +5,7 @@ const backendUrl = (
 ).replace(/\/$/, "");
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["192.168.1.4"],
+  allowedDevOrigins: ["192.168.1.*"],
   async rewrites() {
     return [
       {
@@ -22,6 +22,18 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "example.com",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
+        protocol: "https",
+        hostname: "**",
       },
     ],
   },

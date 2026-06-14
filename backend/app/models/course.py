@@ -20,16 +20,20 @@ class Course(Base, TimestampMixin, SoftDeleteMixin):
         nullable=False,
     )
 
-    slug: Mapped[str] = mapped_column(
-        String(255),
-        unique=True,
-        index=True,
-    )
+    subtitle: Mapped[str | None] = mapped_column(String(500), nullable=True)
+
+    slug: Mapped[str] = mapped_column(String(255), unique=True, index=True)
 
     instructor: Mapped[str] = mapped_column(
         String(255),
         nullable=False,
         default="ArtistKashi",
+    )
+
+    level: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+        default="Beginner",
     )
 
     description: Mapped[str | None] = mapped_column(
@@ -45,6 +49,11 @@ class Course(Base, TimestampMixin, SoftDeleteMixin):
     duration: Mapped[str | None] = mapped_column(
         String(100),
         nullable=True,
+    )
+
+    lessons_count: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
     )
 
     image_url: Mapped[str | None] = mapped_column(

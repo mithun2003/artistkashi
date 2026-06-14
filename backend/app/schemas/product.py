@@ -8,13 +8,13 @@ from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
+    HttpUrl,
     computed_field,
-    field_validator,
     model_validator,
 )
 
 from app.core.schema import TimestampSchema
-from app.models.product import DimensionUnit, ProductStatus
+from app.models.product import DimensionUnit, ImageSourceType, ProductStatus
 
 # ─── Utility ──────────────────────────────────────────────────────────────────
 
@@ -92,28 +92,31 @@ class VariantTypeRead(TimestampSchema):
 # ─── ProductImage ─────────────────────────────────────────────────────────────
 
 
-class ProductImageCreate(BaseModel):
-    image_url: str = Field(..., max_length=500)
+class ProductImageInput(BaseModel):
+    """
+    Represents one external image URL submitted in the product form.
+    Uploaded files are handled separately as multipart file fields
+    and never go through this schema.
+    """
+
+    image_url: HttpUrl | None = None
     alt_text: str | None = Field(None, max_length=255)
     is_primary: bool = False
     sort_order: int = Field(0, ge=0)
 
-    @field_validator("image_url")
-    @classmethod
-    def must_be_https(cls, v: str) -> str:
-        if not v.startswith("https://"):
-            raise ValueError("Image URL must use HTTPS")
-        return v
+
+class ProductImageCreate(ProductImageInput):
+    product_id: int
+    source_type: ImageSourceType
 
 
 class ProductImageUpdate(BaseModel):
-    image_url: str | None = Field(None, max_length=500)
     alt_text: str | None = Field(None, max_length=255)
     is_primary: bool | None = None
     sort_order: int | None = Field(None, ge=0)
 
 
-class ProductImageRead(BaseModel):
+class ProductImageRead(TimestampSchema):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
@@ -123,6 +126,8 @@ class ProductImageRead(BaseModel):
     is_primary: bool
     sort_order: int
 
+    source_type: ImageSourceType
+
 
 # ─── ProductVariant ───────────────────────────────────────────────────────────
 
@@ -130,9 +135,10 @@ class ProductImageRead(BaseModel):
 class ProductVariantCreate(BaseModel):
     variant_type_id: int
 
-    width: Decimal = Field(..., gt=0, decimal_places=2, examples=[21.0])
-    height: Decimal = Field(..., gt=0, decimal_places=2, examples=[29.7])
-    dimension_unit: DimensionUnit = DimensionUnit.CM
+    width: Decimal | None = Field(None, gt=0, decimal_places=2)
+
+    height: Decimal | None = Field(None, gt=0, decimal_places=2)
+    dimension_unit: DimensionUnit | None = DimensionUnit.CM
 
     sku: str | None = Field(None, max_length=100)
     price: Decimal = Field(..., gt=0, decimal_places=2, examples=[799.00])
@@ -154,14 +160,23 @@ class ProductVariantCheckDB(BaseModel):
 
 
 class ProductVariantUpdate(BaseModel):
+    id: int | None = None
+
     variant_type_id: int | None = None
-    width: Decimal | None = Field(None, gt=0, decimal_places=2)
-    height: Decimal | None = Field(None, gt=0, decimal_places=2)
+
+    width: Decimal | None = None
+    height: Decimal | None = None
+
     dimension_unit: DimensionUnit | None = None
-    sku: str | None = Field(None, max_length=100)
-    price: Decimal | None = Field(None, gt=0, decimal_places=2)
-    stock_quantity: int | None = Field(None, ge=0)
+
+    sku: str | None = None
+
+    price: Decimal | None = None
+
+    stock_quantity: int | None = None
+
     is_default: bool | None = None
+
     is_available: bool | None = None
 
 
@@ -171,7 +186,8 @@ class ProductVariantRead(TimestampSchema):
     id: int
     product_id: int
     variant_type_id: int | None
-    variant_type: VariantTypeRead | None = None
+    variant_type_name: str | None = None
+    # variant_type: VariantTypeRead | None = None
     width: Decimal | None
     height: Decimal | None
     dimension_unit: DimensionUnit
@@ -199,8 +215,8 @@ class _ProductComputedMixin(BaseModel):
     Both ProductDetailRead and ProductListRead inherit this.
     """
 
-    images: list[ProductImageRead] = []
-    variants: list[ProductVariantRead] = []
+    images: list[ProductImageRead] = Field(default_factory=list)
+    variants: list[ProductVariantRead] = Field(default_factory=list)
 
     @computed_field
     @property
@@ -233,6 +249,22 @@ class _ProductComputedMixin(BaseModel):
 
 
 # ─── Product ──────────────────────────────────────────────────────────────────
+
+
+class ProductCreateRequest(BaseModel):
+    product: ProductCreate
+    variants: list[ProductVariantCreate] = Field(default_factory=list)
+    external_images: list[ProductImageInput] = Field(default_factory=list)
+
+
+class ProductUpdateRequest(BaseModel):
+    product: ProductUpdate
+    variants: list[ProductVariantUpdate] = Field(default_factory=list)
+    external_images: list[ProductImageInput] = Field(default_factory=list)
+    deleted_variant_ids: list[int] = Field(default_factory=list)
+    deleted_image_ids: list[int] = Field(default_factory=list)
+
+
 class ProductBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -240,9 +272,15 @@ class ProductBase(BaseModel):
     title: str
     slug: str
     short_description: str | None = None
+    is_original_available: bool = True
 
     medium: ProductMediumRead | None = None
     category: ProductCategoryRead | None = None
+
+    @computed_field
+    @property
+    def is_sold(self) -> bool:
+        return not self.is_original_available
 
 
 class ProductCreate(BaseModel):
@@ -377,8 +415,25 @@ class ProductCardRead(ProductBase):
 
 
 class ProductCardJoinRead(ProductBase):
-    variant: ProductVariantRead | None = None
-    image: ProductImageRead | None = None
+    variant: ProductVariantRead | None = Field(
+        default=None,
+        exclude=True,
+    )
+
+    image: ProductImageRead | None = Field(
+        default=None,
+        exclude=True,
+    )
+
+    @computed_field
+    @property
+    def price(self) -> Decimal:
+        return self.variant.price if self.variant else Decimal("0.00")
+
+    @computed_field
+    @property
+    def primary_image(self) -> str | None:
+        return self.image.image_url if self.image else None
 
 
 class ProductCategoryCreate(BaseModel):

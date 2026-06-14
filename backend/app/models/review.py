@@ -31,7 +31,7 @@ class Review(Base, TimestampMixin):
     )
 
     type: Mapped[ReviewType] = mapped_column(
-        Enum(ReviewType),
+        Enum(ReviewType, values_callable=lambda enum_cls: [e.value for e in enum_cls]),
         nullable=False,
         index=True,
     )
@@ -60,7 +60,10 @@ class Review(Base, TimestampMixin):
     )
 
     status: Mapped[ReviewStatus] = mapped_column(
-        Enum(ReviewStatus),
+        Enum(
+            ReviewStatus,
+            values_callable=lambda enum_cls: [e.value for e in enum_cls],
+        ),
         default=ReviewStatus.ACTIVE,
         nullable=False,
     )

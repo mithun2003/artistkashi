@@ -2,10 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { Star, Plus } from "lucide-react";
-import { fetchApprovedReviews } from "@/api/review";
-import { ReviewReadPublic, ReviewType } from "@/types/reviews";
+import {
+  listReviews,
+  ReviewReadPublic,
+  ReviewType,
+} from "@/api/openapi-client";
 import { ReviewSubmitModal } from "./ReviewSubmitModal";
 import { useAuth } from "@/lib/auth-store";
+import { unwrapPaginated } from "@/api/client-service";
 
 interface ReviewsDisplayProps {
   reviewType: ReviewType;
@@ -33,7 +37,15 @@ export function ReviewsDisplay({
     const loadReviews = async () => {
       try {
         setLoading(true);
-        const data = await fetchApprovedReviews(reviewType, entityId, 0, limit);
+        const { data } = await unwrapPaginated(
+          listReviews({
+            query: {
+              review_type: reviewType,
+              entity_id: entityId,
+              limit,
+            },
+          })
+        );
         setReviews(data);
       } catch (error) {
         console.error("Failed to load reviews:", error);
@@ -48,7 +60,15 @@ export function ReviewsDisplay({
   const handleReviewSubmitted = async () => {
     setShowModal(false);
     // Reload reviews after submission
-    const data = await fetchApprovedReviews(reviewType, entityId, 0, limit);
+    const { data } = await unwrapPaginated(
+      listReviews({
+        query: {
+          review_type: reviewType,
+          entity_id: entityId,
+          limit,
+        },
+      })
+    );
     setReviews(data);
     onReviewSubmitted?.();
   };

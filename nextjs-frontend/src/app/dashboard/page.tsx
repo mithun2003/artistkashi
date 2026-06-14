@@ -1,37 +1,34 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
-import {
-  LayoutDashboard,
-  BookOpen,
-  Package,
-  Settings,
-  LogOut,
-  Clock,
-  Check,
-  ShoppingBag,
-  ArrowUpRight,
-  ChevronRight,
-  Play,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { COURSES } from "@/data/constants";
-import Link from "next/link";
 import { PrimaryBtn } from "@/components/ui/buttons";
+import { COURSES } from "@/data/constants";
+import { cn } from "@/lib/utils";
+import {
+  ArrowUpRight,
+  BookOpen,
+  Check,
+  ChevronRight,
+  Clock,
+  LayoutDashboard,
+  LogOut,
+  Package,
+  Play,
+  Settings,
+  ShoppingBag,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 
+import { getRoleLabel } from "@/lib/auth-utils";
+import { getErrorMessage } from "@/lib/error-handler";
+import { AuthGuard } from "@/components/shared/AuthGuard";
 import { useAuth } from "@/lib/auth-store";
+import { profileSchema, type ProfileFormValues } from "@/lib/auth-validation";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { profileSchema, type ProfileFormValues } from "@/lib/auth-validation";
-import {
-  getAuthErrorMessage,
-  getRoleLabel,
-  type AuthErrorInput,
-} from "@/api/auth-api";
 import { toast } from "sonner";
-import { AuthGuard } from "@/components/shared/AuthGuard";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -47,7 +44,7 @@ export default function DashboardPage() {
     resolver: zodResolver(profileSchema),
     mode: "onBlur",
     defaultValues: {
-      fullName: user?.fullName || user?.name || "",
+      fullName: user?.full_name || user?.email || "",
       email: user?.email || "",
       phone: user?.phone || "",
     },
@@ -89,10 +86,16 @@ export default function DashboardPage() {
             <div className="lg:col-span-3">
               <div className="border border-border bg-muted-light p-6 mb-6">
                 <div className="w-14 h-14 bg-muted border border-border flex items-center justify-center text-gold font-bold text-xl mb-4">
-                  {user.name.substring(0, 2).toUpperCase()}
+                  {(user?.full_name ?? "Admin")
+                    .split(" ")
+                    .filter(Boolean)
+                    .map((word) => word[0])
+                    .slice(0, 2)
+                    .join("")
+                    .toUpperCase()}
                 </div>
                 <div className="text-text-main font-bold text-lg">
-                  {user.name}
+                  {user?.full_name}
                 </div>
                 <div className="text-text-muted text-sm font-mono">
                   {user.email}
@@ -149,7 +152,7 @@ export default function DashboardPage() {
                       await logout();
                       router.push("/");
                     } catch (error) {
-                      toast.error(getAuthErrorMessage(error as AuthErrorInput));
+                      toast.error(getErrorMessage(error));
                       router.push("/");
                     }
                   }}
@@ -169,7 +172,7 @@ export default function DashboardPage() {
                       Student Portal
                     </div>
                     <h1 className="text-h3 font-extrabold tracking-tight text-text-main">
-                      {greetingLabel}, {user.name}.
+                      {greetingLabel}, {user.full_name}.
                     </h1>
                   </div>
 
@@ -212,7 +215,7 @@ export default function DashboardPage() {
                     >
                       <div className="w-28 h-16 shrink-0 overflow-hidden relative bg-dark">
                         <Image
-                          src={COURSES[0].image}
+                          src={COURSES[0].image_url || ""}
                           alt={COURSES[0].title}
                           fill
                           sizes="112px"
@@ -259,7 +262,7 @@ export default function DashboardPage() {
                       >
                         <div className="w-20 h-14 shrink-0 overflow-hidden relative bg-dark">
                           <Image
-                            src={c.image}
+                            src={c.image_url || ""}
                             alt={c.title}
                             fill
                             sizes="80px"

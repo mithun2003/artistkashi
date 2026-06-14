@@ -42,13 +42,7 @@ export function AuthGuard({
   }, [user, isLoading, guestOnly, allowedRoles, router, pathname]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-dark">
-        <div className="text-gold font-mono animate-pulse">
-          VERIFYING ACCESS...
-        </div>
-      </div>
-    );
+    return null;
   }
 
   // Handle flash of content before redirect

@@ -1,6 +1,6 @@
-import React from "react";
 import type { Metadata } from "next";
-import { Inter_Tight, DM_Mono } from "next/font/google";
+import { DM_Mono, Inter_Tight } from "next/font/google";
+import React from "react";
 
 const inter = Inter_Tight({
   subsets: ["latin"],
@@ -13,11 +13,12 @@ const dmMono = DM_Mono({
   weight: ["300", "400", "500"],
 });
 
-import "./globals.css";
-import { AuthProvider } from "@/lib/auth-store";
+import "@/api/config";
 import { AppShell } from "@/components/layout/AppShell";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { AuthProvider } from "@/lib/auth-store";
 import { siteName, siteUrl } from "@/lib/seo";
+import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

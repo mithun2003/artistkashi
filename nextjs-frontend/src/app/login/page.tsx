@@ -2,24 +2,21 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowRight, Eye, EyeOff } from "lucide-react";
-import { RevealBlock } from "@/components/ui/misc";
+import { getSafeReturnTo } from "@/lib/auth-utils";
+import { getErrorMessage } from "@/lib/error-handler";
+import { AuthGuard } from "@/components/shared/AuthGuard";
 import { PrimaryBtn } from "@/components/ui/buttons";
-import { cn } from "@/lib/utils";
+import { RevealBlock } from "@/components/ui/misc";
 import { useAuth } from "@/lib/auth-store";
 import { loginSchema, type LoginFormValues } from "@/lib/auth-validation";
-import {
-  getAuthErrorMessage,
-  getSafeReturnTo,
-  type AuthErrorInput,
-} from "@/api/auth-api";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowRight, Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { AuthGuard } from "@/components/shared/AuthGuard";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -41,7 +38,7 @@ export default function LoginPage() {
     setIsSubmitting(true);
     try {
       const user = await login(data.email, data.password);
-      toast.success(`Welcome back, ${user.name}!`, {
+      toast.success(`Welcome back, ${user.full_name}!`, {
         description:
           user.role === "admin"
             ? "Logged in as Administrator"
@@ -55,7 +52,7 @@ export default function LoginPage() {
         router.push(returnTo ?? "/dashboard");
       }
     } catch (error) {
-      toast.error(getAuthErrorMessage(error as AuthErrorInput));
+      toast.error(getErrorMessage(error));
     } finally {
       setIsSubmitting(false);
     }
@@ -134,8 +131,18 @@ export default function LoginPage() {
                   </p>
                 )}
               </div>
-              <PrimaryBtn type="submit" className="w-full justify-center" disabled={isSubmitting}>
-                {isSubmitting ? "Signing in..." : <>Sign In <ArrowRight size={16} /></>}
+              <PrimaryBtn
+                type="submit"
+                className="w-full justify-center"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <div className="luxury-loader scale-75" />
+                ) : (
+                  <>
+                    Sign In <ArrowRight size={16} />
+                  </>
+                )}
               </PrimaryBtn>
             </form>
             <div className="mt-6 text-center text-sm text-text-muted sm:mt-8">

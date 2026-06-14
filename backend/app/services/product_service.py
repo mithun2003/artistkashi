@@ -1,5 +1,4 @@
-from decimal import Decimal
-
+from fastapi import UploadFile
 from fastcrud import compute_offset
 from fastcrud.types import GetMultiResponseModel
 from sqlalchemy.exc import IntegrityError
@@ -7,8 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import ConflictException, ErrorCode, NotFoundException
 from app.crud.product import (
+    PRODUCT_DETAIL_JOINS,
     PRODUCT_LIST_JOINS,
-    PRODUCT_RELATIONS,
     crud_product,
     crud_product_category,
     crud_product_image,
@@ -17,6 +16,7 @@ from app.crud.product import (
     crud_variant_type,
 )
 from app.models.product import (
+    ImageSourceType,
     ProductStatus,
 )
 from app.schemas.product import (
@@ -27,14 +27,17 @@ from app.schemas.product import (
     ProductCategoryRead,
     ProductCategoryUpdate,
     ProductCreate,
+    ProductCreateRequest,
     ProductDetailRead,
     ProductImageCreate,
+    ProductImageInput,
     ProductImageRead,
     ProductImageUpdate,
     ProductMediumCreate,
     ProductMediumRead,
     ProductMediumUpdate,
     ProductUpdate,
+    ProductUpdateRequest,
     ProductVariantCheckDB,
     ProductVariantCreate,
     ProductVariantCreateDB,
@@ -44,6 +47,7 @@ from app.schemas.product import (
     VariantTypeRead,
     VariantTypeUpdate,
 )
+from app.services.cloudflare_service import cloudflare_image_service
 
 
 class ProductService:
@@ -71,10 +75,7 @@ class ProductService:
         if status is not None:
             filters["status"] = status
         product = await crud_product.get(
-            db=session,
-            schema_to_select=product_schema,
-            return_as_model=True,
-            **filters,
+            db=session, schema_to_select=product_schema, return_as_model=True, **filters
         )
 
         if check and not product:
@@ -105,10 +106,12 @@ class ProductService:
         if status is not None:
             filters["status"] = status
 
-        product = await crud_product.get_with_relations(
+        product = await crud_product.get_joined(
             db=session,
             schema_to_select=ProductDetailRead,
-            relationships=PRODUCT_RELATIONS,
+            return_as_model=True,
+            nest_joins=True,
+            joins_config=PRODUCT_DETAIL_JOINS,
             **filters,
         )
 
@@ -126,16 +129,12 @@ class ProductService:
     ) -> ProductBase:
         if payload.medium_id:
             await product_medium_service.get_medium(
-                session=session,
-                medium_id=payload.medium_id,
-                check=True,
+                session=session, medium_id=payload.medium_id, check=True
             )
 
         if payload.category_id:
             await product_category_service.get_category(
-                session=session,
-                category_id=payload.category_id,
-                check=True,
+                session=session, category_id=payload.category_id, check=True
             )
         existing = await self.get_product(session=session, slug=payload.slug)
 
@@ -158,24 +157,16 @@ class ProductService:
         return product
 
     async def update_product(
-        self,
-        *,
-        session: AsyncSession,
-        product_id: int,
-        payload: ProductUpdate,
+        self, *, session: AsyncSession, product_id: int, payload: ProductUpdate
     ) -> ProductBase:
         if payload.medium_id is not None:
             await product_medium_service.get_medium(
-                session=session,
-                medium_id=payload.medium_id,
-                check=True,
+                session=session, medium_id=payload.medium_id, check=True
             )
 
         if payload.category_id is not None:
             await product_category_service.get_category(
-                session=session,
-                category_id=payload.category_id,
-                check=True,
+                session=session, category_id=payload.category_id, check=True
             )
 
         if payload.slug:
@@ -205,15 +196,6 @@ class ProductService:
         await self.get_product(session=session, product_id=product_id, check=True)
 
         await crud_product.delete(db=session, id=product_id)
-
-    async def get_product_by_slug(
-        self, *, session: AsyncSession, slug: str
-    ) -> ProductDetailRead:
-        product = await self.get_product(
-            session=session, slug=slug, status=ProductStatus.PUBLISHED, check=True
-        )
-
-        return product
 
     async def list_products(
         self,
@@ -257,8 +239,8 @@ class ProductService:
                 short_description=item.short_description,
                 medium=item.medium,
                 category=item.category,
-                price=item.variant.price if item.variant else Decimal("0.00"),
-                primary_image=item.image.image_url if item.image else None,
+                price=item.price,
+                primary_image=item.primary_image,
             )
             for item in result["data"]
         ]
@@ -304,9 +286,7 @@ class ProductService:
         page_size: int = 20,
     ):
         await product_category_service.get_category(
-            session=session,
-            category_id=category_id,
-            check=True,
+            session=session, category_id=category_id, check=True
         )
         return await self.list_products(
             session=session,
@@ -314,6 +294,146 @@ class ProductService:
             page=page,
             page_size=page_size,
             status=ProductStatus.PUBLISHED,
+        )
+
+    async def create_product_complete(
+        self,
+        *,
+        session: AsyncSession,
+        payload: ProductCreateRequest,
+        files: list[UploadFile] | None = None,
+    ) -> ProductDetailRead:
+        product = await self.create_product(session=session, payload=payload.product)
+
+        #
+        # Variants
+        #
+
+        for variant in payload.variants:
+            await product_variant_service.create_variant(
+                session=session, product_id=product.id, payload=variant
+            )
+
+        #
+        # External Images
+        #
+
+        for image in payload.external_images:
+            await crud_product_image.create(
+                db=session,
+                object=ProductImageCreate(
+                    product_id=product.id,
+                    image_url=image.image_url,
+                    alt_text=image.alt_text,
+                    is_primary=image.is_primary,
+                    sort_order=image.sort_order,
+                    source_type=ImageSourceType.EXTERNAL_URL,
+                ),
+            )
+
+        #
+        # Uploaded Images
+        #
+
+        if files:
+            image_urls = await cloudflare_image_service.upload_images(files)
+
+            for index, image_url in enumerate(image_urls):
+                await crud_product_image.create(
+                    db=session,
+                    object=ProductImageCreate(
+                        product_id=product.id,
+                        image_url=image_url,
+                        sort_order=index,
+                        source_type=ImageSourceType.UPLOAD,
+                    ),
+                )
+
+        return await self.get_product_detail(
+            session=session, product_id=product.id, check=True
+        )
+
+    async def update_product_complete(
+        self,
+        *,
+        session: AsyncSession,
+        product_id: int,
+        payload: ProductUpdateRequest,
+        files: list[UploadFile] | None = None,
+    ) -> ProductDetailRead:
+        await self.update_product(
+            session=session, product_id=product_id, payload=payload.product
+        )
+
+        #
+        # Delete variants
+        #
+
+        for variant_id in payload.deleted_variant_ids:
+            await product_variant_service.delete_variant(
+                session=session, variant_id=variant_id
+            )
+
+        #
+        # Delete images
+        #
+
+        for image_id in payload.deleted_image_ids:
+            await product_image_service.delete_image(session=session, image_id=image_id)
+
+        #
+        # Variants
+        #
+
+        for variant in payload.variants:
+            if getattr(variant, "id", None):
+                await product_variant_service.update_variant(
+                    session=session, variant_id=variant.id, payload=variant
+                )
+
+            else:
+                await product_variant_service.create_variant(
+                    session=session, product_id=product_id, payload=variant
+                )
+
+        #
+        # New External Images
+        #
+
+        for image in payload.external_images:
+            await crud_product_image.create(
+                db=session,
+                object=ProductImageCreate(
+                    product_id=product_id,
+                    image_url=image.image_url,
+                    alt_text=image.alt_text,
+                    is_primary=image.is_primary,
+                    sort_order=image.sort_order,
+                    source_type=ImageSourceType.EXTERNAL_URL,
+                ),
+            )
+
+        #
+        # New Uploaded Images
+        #
+
+        if files:
+            image_urls = await cloudflare_image_service.upload_images(files)
+
+            for image_url in image_urls:
+                await crud_product_image.create(
+                    db=session,
+                    object=ProductImageCreate(
+                        product_id=product_id,
+                        image_url=image_url,
+                        alt_text=None,
+                        is_primary=False,
+                        source_type=ImageSourceType.UPLOAD,
+                    ),
+                )
+
+        return await self.get_product_detail(
+            session=session, product_id=product_id, check=True
         )
 
 
@@ -336,10 +456,7 @@ class ProductMediumService:
             raise ValueError("Either medium_id or slug must be provided")
 
         medium = await crud_product_medium.get(
-            db=session,
-            schema_to_select=medium_schema,
-            return_as_model=True,
-            **filters,
+            db=session, schema_to_select=medium_schema, return_as_model=True, **filters
         )
 
         if check and not medium:
@@ -359,7 +476,7 @@ class ProductMediumService:
         if existing:
             raise ConflictException(
                 message="Medium already exists",
-                error_code=ErrorCode.MEDIUM_ALREADY_EXISTS,
+                error_code=ErrorCode.PRODUCT_MEDIUM_ALREADY_EXISTS,
             )
 
         medium = await crud_product_medium.create(
@@ -400,17 +517,13 @@ class ProductMediumService:
         if product_exist:
             raise ConflictException(
                 message="Medium is used by products",
-                error_code=ErrorCode.MEDIUM_IN_USE,
+                error_code=ErrorCode.PRODUCT_MEDIUM_IN_USE,
             )
 
         await crud_product_medium.delete(db=session, id=medium_id)
 
     async def list_mediums(
-        self,
-        *,
-        session: AsyncSession,
-        page: int = 1,
-        page_size: int = 20,
+        self, *, session: AsyncSession, page: int = 1, page_size: int = 20
     ):
         return await crud_product_medium.get_multi(
             db=session,
@@ -441,10 +554,7 @@ class VariantTypeService:
             raise ValueError("Either variant_type_id or slug must be provided")
 
         variant_type = await crud_variant_type.get(
-            db=session,
-            schema_to_select=variant_schema,
-            return_as_model=True,
-            **filters,
+            db=session, schema_to_select=variant_schema, return_as_model=True, **filters
         )
 
         if check and not variant_type:
@@ -486,10 +596,7 @@ class VariantTypeService:
             session=session, variant_type_id=variant_type_id, check=True
         )
         if payload.slug:
-            existing = await self.get_variant_type(
-                session=session,
-                slug=payload.slug,
-            )
+            existing = await self.get_variant_type(session=session, slug=payload.slug)
 
             if existing and existing.id != variant_type_id:
                 raise ConflictException(
@@ -524,11 +631,7 @@ class VariantTypeService:
         await crud_variant_type.delete(db=session, id=variant_type_id)
 
     async def list_variant_types(
-        self,
-        *,
-        session: AsyncSession,
-        page: int = 1,
-        page_size: int = 20,
+        self, *, session: AsyncSession, page: int = 1, page_size: int = 20
     ):
         return await crud_variant_type.get_multi(
             db=session,
@@ -599,10 +702,7 @@ class ProductVariantService:
             )
 
         if payload.sku:
-            sku_exists = await crud_product_variant.exists(
-                db=session,
-                sku=payload.sku,
-            )
+            sku_exists = await crud_product_variant.exists(db=session, sku=payload.sku)
 
             if sku_exists:
                 raise ConflictException(
@@ -618,18 +718,14 @@ class ProductVariantService:
             sku = base_sku
             counter = 1
 
-            while await crud_product_variant.exists(
-                db=session,
-                sku=sku,
-            ):
+            while await crud_product_variant.exists(db=session, sku=sku):
                 counter += 1
                 sku = f"{base_sku}-{counter}"
 
             payload.sku = sku
 
         variant_count = await crud_product_variant.count(
-            db=session,
-            product_id=product_id,
+            db=session, product_id=product_id
         )
 
         if variant_count == 0:
@@ -646,8 +742,7 @@ class ProductVariantService:
             variant = await crud_product_variant.create(
                 db=session,
                 object=ProductVariantCreateDB(
-                    product_id=product_id,
-                    **payload.model_dump(),
+                    product_id=product_id, **payload.model_dump()
                 ),
                 schema_to_select=ProductVariantRead,
                 return_as_model=True,
@@ -680,23 +775,15 @@ class ProductVariantService:
         return variant
 
     async def update_variant(
-        self,
-        *,
-        session: AsyncSession,
-        variant_id: int,
-        payload: ProductVariantUpdate,
+        self, *, session: AsyncSession, variant_id: int, payload: ProductVariantUpdate
     ) -> ProductVariantRead:
         variant = await self.get_product_variant(
-            session=session,
-            filter=ProductVariantCheckDB(id=variant_id),
-            check=True,
+            session=session, filter=ProductVariantCheckDB(id=variant_id), check=True
         )
 
         if payload.variant_type_id is not None:
             variant_type = await variant_type_service.get_variant_type(
-                session=session,
-                variant_type_id=payload.variant_type_id,
-                check=True,
+                session=session, variant_type_id=payload.variant_type_id, check=True
             )
 
         check_variant_type_id = (
@@ -741,9 +828,7 @@ class ProductVariantService:
                 id__ne=variant_id,
             )
         sku_exists = await crud_product_variant.exists(
-            db=session,
-            sku=payload.sku,
-            id__not=variant_id,
+            db=session, sku=payload.sku, id__not=variant_id
         )
         if sku_exists:
             raise ConflictException(
@@ -804,9 +889,7 @@ class ProductVariantService:
         page_size: int = 20,
     ):
         await product_service.get_product(
-            session=session,
-            product_id=product_id,
-            check=True,
+            session=session, product_id=product_id, check=True
         )
 
         return await crud_product_variant.get_multi(
@@ -842,7 +925,7 @@ class ProductImageService:
         return image
 
     async def add_image(
-        self, *, session: AsyncSession, product_id: int, payload: ProductImageCreate
+        self, *, session: AsyncSession, product_id: int, payload: ProductImageInput
     ):
         await product_service.get_product(
             session=session, product_id=product_id, check=True
@@ -859,10 +942,7 @@ class ProductImageService:
         data = payload.model_dump()
         data["product_id"] = product_id
 
-        image_count = await crud_product_image.count(
-            db=session,
-            product_id=product_id,
-        )
+        image_count = await crud_product_image.count(db=session, product_id=product_id)
 
         if image_count == 0:
             data["is_primary"] = True
@@ -911,12 +991,7 @@ class ProductImageService:
 
         return updated
 
-    async def delete_image(
-        self,
-        *,
-        session: AsyncSession,
-        image_id: int,
-    ):
+    async def delete_image(self, *, session: AsyncSession, image_id: int):
         image = await self.get_image(session=session, image_id=image_id, check=True)
 
         image_count = await crud_product_image.count(
@@ -991,15 +1066,9 @@ class ProductCategoryService:
         return category
 
     async def create_category(
-        self,
-        *,
-        session: AsyncSession,
-        payload: ProductCategoryCreate,
+        self, *, session: AsyncSession, payload: ProductCategoryCreate
     ):
-        existing = await self.get_category(
-            session=session,
-            slug=payload.slug,
-        )
+        existing = await self.get_category(session=session, slug=payload.slug)
 
         if existing:
             raise ConflictException(
@@ -1020,23 +1089,12 @@ class ProductCategoryService:
         return category
 
     async def update_category(
-        self,
-        *,
-        session: AsyncSession,
-        category_id: int,
-        payload: ProductCategoryUpdate,
+        self, *, session: AsyncSession, category_id: int, payload: ProductCategoryUpdate
     ):
-        await self.get_category(
-            session=session,
-            category_id=category_id,
-            check=True,
-        )
+        await self.get_category(session=session, category_id=category_id, check=True)
 
         if payload.slug:
-            existing = await self.get_category(
-                session=session,
-                slug=payload.slug,
-            )
+            existing = await self.get_category(session=session, slug=payload.slug)
 
             if existing and existing.id != category_id:
                 raise ConflictException(
@@ -1057,40 +1115,20 @@ class ProductCategoryService:
 
         return updated
 
-    async def delete_category(
-        self,
-        *,
-        session: AsyncSession,
-        category_id: int,
-    ):
-        await self.get_category(
-            session=session,
-            category_id=category_id,
-            check=True,
-        )
+    async def delete_category(self, *, session: AsyncSession, category_id: int):
+        await self.get_category(session=session, category_id=category_id, check=True)
 
-        product_exists = await crud_product.get(
-            db=session,
-            category_id=category_id,
-        )
+        product_exists = await crud_product.get(db=session, category_id=category_id)
 
         if product_exists:
             raise ConflictException(
-                message="Category is used by products",
-                error_code=ErrorCode.CONFLICT,
+                message="Category is used by products", error_code=ErrorCode.CONFLICT
             )
 
-        await crud_product_category.delete(
-            db=session,
-            id=category_id,
-        )
+        await crud_product_category.delete(db=session, id=category_id)
 
     async def list_categories(
-        self,
-        *,
-        session: AsyncSession,
-        page: int = 1,
-        page_size: int = 20,
+        self, *, session: AsyncSession, page: int = 1, page_size: int = 20
     ):
         return await crud_product_category.get_multi(
             db=session,

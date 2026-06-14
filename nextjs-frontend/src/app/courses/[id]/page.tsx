@@ -19,7 +19,7 @@ import { COURSES, CURRICULUM } from "@/data/constants";
 import Link from "next/link";
 import { notFound, usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-store";
-import { getSafeReturnTo } from "@/api/auth-api";
+import { getSafeReturnTo } from "@/lib/auth-utils";
 
 export default function CourseDetailPage({
   params,
@@ -52,7 +52,7 @@ export default function CourseDetailPage({
       {/* Banner */}
       <div className="relative h-[55vh] min-h-[400px] overflow-hidden">
         <ImageWithFallback
-          src={course.image}
+          src={course.image_url || ""}
           alt={course.title}
           className="w-full h-full object-cover grayscale opacity-50"
         />
@@ -64,7 +64,9 @@ export default function CourseDetailPage({
           <h1 className="text-h2 font-extrabold tracking-[-0.02em] text-text-main leading-tight max-w-2xl mb-4">
             {course.title}
           </h1>
-          <p className="text-text-muted max-w-md mb-6">{course.subtitle}</p>
+          <p className="text-text-muted max-w-md mb-6">
+            {course.subtitle ?? ""}
+          </p>
           <div className="flex items-center gap-6 text-sm font-mono text-text-muted">
             <span className="flex items-center gap-1.5">
               <Star size={12} fill="var(--color-gold)" className="text-gold" />
@@ -72,11 +74,11 @@ export default function CourseDetailPage({
             </span>
             <span className="flex items-center gap-1.5">
               <Users size={12} />
-              {course.students.toLocaleString()} students
+              {course.students_count.toLocaleString()} students
             </span>
             <span className="flex items-center gap-1.5">
               <BookOpen size={12} />
-              {course.lessons} lessons · {course.hours}
+              {course.lessons_count} lessons · {course.duration}
             </span>
           </div>
         </div>
@@ -93,7 +95,7 @@ export default function CourseDetailPage({
                 </h2>
                 <p className="text-text-muted leading-relaxed mb-4">
                   {course.title} is a comprehensive entry into the classical
-                  tradition of art. Over {course.lessons} lessons spanning
+                  tradition of art. Over {course.lessons_count} lessons spanning
                   studio practice, technique, and compositional thinking, you
                   will build a solid technical foundation alongside an
                   expressive personal voice.
@@ -188,7 +190,7 @@ export default function CourseDetailPage({
               <div className="p-8 border border-border bg-muted-light flex gap-6 mb-16">
                 <div className="w-20 h-20 bg-border shrink-0 overflow-hidden">
                   <ImageWithFallback
-                    src={course.image}
+                    src={course.image_url || ""}
                     alt={course.instructor}
                     className="w-full h-full object-cover grayscale"
                   />
@@ -214,7 +216,7 @@ export default function CourseDetailPage({
             <div className="sticky top-28 border border-border bg-muted-light">
               <div className="relative aspect-video overflow-hidden">
                 <ImageWithFallback
-                  src={course.image}
+                  src={course.image_url || ""}
                   alt={course.title}
                   className="w-full h-full object-cover grayscale"
                 />
@@ -254,8 +256,8 @@ export default function CourseDetailPage({
                 </GhostBtn>
                 <div className="mt-8 space-y-3">
                   {[
-                    `${course.lessons} video lessons`,
-                    course.hours + " of content",
+                    `${course.lessons_count} video lessons`,
+                    (course.duration || "Self-paced") + " of content",
                     "Downloadable reference PDFs",
                     "Private critique forum",
                     "Certificate of completion",

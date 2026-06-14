@@ -1,165 +1,97 @@
 import {
-  Painting,
-  Course,
-  Testimonial,
-  FAQItem,
-  CurriculumSection,
-} from "@/types";
+  ProductCardRead,
+  CourseRead,
+  TestimonialItem,
+  FaqItem,
+} from "@/api/openapi-client";
+import { CurriculumSection } from "@/types";
 
-export const PAINTINGS: Painting[] = [
+export const PAINTINGS: ProductCardRead[] = [
   {
     id: 1,
     title: "Solitude in Ochre",
-    medium: "Oil on linen, 120 × 90 cm",
-    price: 4800,
-    image:
+    slug: "solitude-in-ochre",
+    medium: {
+      id: 1,
+      name: "Oil on linen, 120 × 90 cm",
+      slug: "oil",
+      is_active: true,
+    },
+    price: "4800",
+    primary_image:
       "https://images.unsplash.com/photo-1541512416146-3cf58d6b27cc?w=600&h=750&fit=crop&auto=format",
-    sold: false,
+    is_sold: false,
   },
   {
     id: 2,
     title: "The Weight of Silence",
-    medium: "Oil on canvas, 100 × 80 cm",
-    price: 3600,
-    image:
+    slug: "the-weight-of-silence",
+    medium: {
+      id: 1,
+      name: "Oil on canvas, 100 × 80 cm",
+      slug: "oil",
+      is_active: true,
+    },
+    price: "3600",
+    primary_image:
       "https://images.unsplash.com/photo-1566410824233-a8011929225c?w=600&h=750&fit=crop&auto=format",
-    sold: false,
+    is_sold: false,
   },
   {
     id: 3,
     title: "Nocturne No. 7",
-    medium: "Acrylic on board, 60 × 80 cm",
-    price: 2200,
-    image:
+    slug: "nocturne-no-7",
+    medium: {
+      id: 2,
+      name: "Acrylic on board, 60 × 80 cm",
+      slug: "acrylic",
+      is_active: true,
+    },
+    price: "2200",
+    primary_image:
       "https://images.unsplash.com/photo-1556139930-c23fa4a4f934?w=600&h=750&fit=crop&auto=format",
-    sold: true,
-  },
-  {
-    id: 4,
-    title: "Cartography of Feeling",
-    medium: "Mixed media, 150 × 120 cm",
-    price: 6400,
-    image:
-      "https://images.unsplash.com/photo-1570475754561-4effe71c5084?w=600&h=750&fit=crop&auto=format",
-    sold: false,
-  },
-  {
-    id: 5,
-    title: "Ephemeral Dawn",
-    medium: "Oil on panel, 50 × 70 cm",
-    price: 1850,
-    image:
-      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&h=750&fit=crop&auto=format",
-    sold: false,
-  },
-  {
-    id: 6,
-    title: "Structure of Memory",
-    medium: "Mixed media on canvas, 120 × 120 cm",
-    price: 5200,
-    image:
-      "https://images.unsplash.com/photo-1549490349-8643362247b5?w=600&h=750&fit=crop&auto=format",
-    sold: false,
-  },
-  {
-    id: 7,
-    title: "The Quiet Hour",
-    medium: "Watercolor on paper, 40 × 60 cm",
-    price: 950,
-    image:
-      "https://images.unsplash.com/photo-1582721691120-d1db3852893e?w=600&h=750&fit=crop&auto=format",
-    sold: true,
-  },
-  {
-    id: 8,
-    title: "Resonance in Blue",
-    medium: "Acrylic on linen, 90 × 110 cm",
-    price: 3100,
-    image:
-      "https://images.unsplash.com/photo-1612733399020-e2194e3dbfda?w=600&h=750&fit=crop&auto=format",
-    sold: false,
+    is_sold: true,
   },
 ];
 
-export const COURSES: Course[] = [
+export const COURSES: CourseRead[] = [
   {
     id: 1,
     title: "Oil Painting Fundamentals",
     subtitle: "From blank canvas to confident composition",
     instructor: "Elena Marchetti",
-    level: "Beginner",
-    lessons: 42,
-    hours: "18h 30m",
-    students: 2847,
+    duration: "18h 30m",
+    students_count: 2847,
+    lessons_count: 42,
     rating: 4.9,
     price: 280,
-    image:
+    image_url:
       "https://images.unsplash.com/photo-1621975496579-6bd9e8c6ab65?w=700&h=420&fit=crop&auto=format",
-    tags: ["Oil", "Composition", "Color Theory"],
+    category: "Oil",
+    description: "Learn the fundamentals of oil painting.",
+    featured: true,
+    is_active: true,
   },
   {
     id: 2,
     title: "Advanced Portrait Mastery",
     subtitle: "Light, likeness, and emotional depth in portraiture",
     instructor: "James Okafor",
-    level: "Advanced",
-    lessons: 58,
-    hours: "26h 15m",
-    students: 1203,
+    duration: "26h 15m",
+    students_count: 1203,
+    lessons_count: 56,
     rating: 4.8,
     price: 420,
-    image:
+    image_url:
       "https://images.unsplash.com/photo-1774126512715-5a8858c579c9?w=700&h=420&fit=crop&auto=format",
-    tags: ["Portrait", "Oil", "Anatomy"],
-  },
-  {
-    id: 3,
-    title: "Abstract Expression Workshop",
-    subtitle: "Finding your visual language through abstraction",
-    instructor: "Sofia Reyes",
-    level: "Intermediate",
-    lessons: 31,
-    hours: "14h 00m",
-    students: 1876,
-    rating: 4.7,
-    price: 195,
-    image:
-      "https://images.unsplash.com/photo-1566410824233-a8011929225c?w=700&h=420&fit=crop&auto=format",
-    tags: ["Abstract", "Acrylic", "Texture"],
-  },
-  {
-    id: 4,
-    title: "The Art of Still Life",
-    subtitle: "Mastering light, shadow, and texture",
-    instructor: "Marcus Vane",
-    level: "Beginner",
-    lessons: 24,
-    hours: "10h 45m",
-    students: 3420,
-    rating: 4.9,
-    price: 150,
-    image:
-      "https://images.unsplash.com/photo-1579783901586-d88db74b4fe4?w=700&h=420&fit=crop&auto=format",
-    tags: ["Still Life", "Charcoal", "Light"],
-  },
-  {
-    id: 5,
-    title: "Color Theory for Modernists",
-    subtitle: "Unlocking the emotional power of palette",
-    instructor: "Sarah Jenkins",
-    level: "Intermediate",
-    lessons: 18,
-    hours: "8h 20m",
-    students: 5600,
-    rating: 5.0,
-    price: 120,
-    image:
-      "https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=700&h=420&fit=crop&auto=format",
-    tags: ["Color", "Theory", "History"],
+    category: "Portrait",
+    description: "Master the art of portraiture.",
+    featured: false,
+    is_active: true,
   },
 ];
 
-export const TESTIMONIALS: Testimonial[] = [
+export const TESTIMONIALS: TestimonialItem[] = [
   {
     name: "Amara Nwosu",
     role: "Emerging Artist, Lagos",
@@ -167,49 +99,13 @@ export const TESTIMONIALS: Testimonial[] = [
     rating: 5,
     avatar: "AN",
   },
-  {
-    name: "Hugo Delacroix",
-    role: "Gallery Collector, Paris",
-    text: "I purchased two original oils through the platform. The packaging was impeccable, the certificates of authenticity beautifully printed. This is what luxury art commerce should feel like.",
-    rating: 5,
-    avatar: "HD",
-  },
-  {
-    name: "Yuki Tanaka",
-    role: "Art Educator, Tokyo",
-    text: "As someone who teaches, I know quality curriculum. The oil painting fundamentals course rivals anything offered by traditional academies — at a fraction of the cost.",
-    rating: 5,
-    avatar: "YT",
-  },
-  {
-    name: "David Miller",
-    role: "Hobbyist, New York",
-    text: "The community support here is amazing. I got detailed feedback on my first abstract piece from the instructor within 48 hours.",
-    rating: 4,
-    avatar: "DM",
-  },
 ];
 
-export const FAQ_ITEMS: FAQItem[] = [
+export const FAQ_ITEMS: FaqItem[] = [
   {
-    q: "Do I own the artworks I purchase permanently?",
-    a: "Yes. Every purchase includes a certificate of provenance, full transfer of ownership, and lifetime access to digital documentation. Physical works ship within 7–14 days in bespoke archival packaging.",
-  },
-  {
-    q: "How long do I retain access to purchased courses?",
-    a: "Course access is lifetime. Once enrolled, the curriculum, all video lessons, downloadable resources, and community forums remain yours — including any future updates the instructor adds.",
-  },
-  {
-    q: "Can I commission a custom painting?",
-    a: "Yes. Submit a commission brief through the Custom Artwork Request form. We facilitate direct contact with the artist, agree on dimensions, medium, and timeline, and manage secure payment.",
-  },
-  {
-    q: "What format are the lesson videos?",
-    a: "All lessons are delivered in 4K where available, encoded for adaptive streaming. The player includes multi-speed playback, chapter markers, closed captions, and offline download for mobile.",
-  },
-  {
-    q: "Is there a student community?",
-    a: "Each course has a dedicated forum with critique threads, monthly live Q&A sessions with the instructor, and a curated showcase gallery for student work.",
+    question: "Do I own the artworks I purchase permanently?",
+    answer:
+      "Yes. Every purchase includes a certificate of provenance, full transfer of ownership, and lifetime access to digital documentation. Physical works ship within 7–14 days in bespoke archival packaging.",
   },
 ];
 
@@ -221,33 +117,6 @@ export const CURRICULUM: CurriculumSection[] = [
       "Understanding your materials",
       "Color theory for oil painters",
       "The value study system",
-    ],
-  },
-  {
-    section: "02. Composition",
-    lessons: [
-      "Dynamic vs static arrangements",
-      "The golden ratio in practice",
-      "Light as compositional force",
-      "Edge control",
-    ],
-  },
-  {
-    section: "03. Painting Process",
-    lessons: [
-      "Alla prima technique",
-      "Glazing and layering",
-      "Building texture and impasto",
-      "Wet-on-wet mastery",
-    ],
-  },
-  {
-    section: "04. The Finished Work",
-    lessons: [
-      "Varnishing and archival care",
-      "Photographing your paintings",
-      "Entering exhibitions",
-      "Pricing your work",
     ],
   },
 ];

@@ -114,8 +114,42 @@
   .transition-width {
     transition-property: width, min-width, max-width;
     transition-duration: 300ms;
-    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     will-change: width;
+  }
+
+  /* Semantic Spacing Classes */
+  .p-card {
+    @apply p-6;
+  }
+  .modal-pad {
+    @apply p-6 md:p-10;
+  }
+  .gap-stack {
+    @apply flex flex-col gap-6;
+  }
+  .gap-row {
+    @apply flex flex-row gap-6;
+  }
+
+  /* Semantic Radius Utilities */
+  .rounded-sm {
+    border-radius: var(--radius-sm);
+  }
+  .rounded-md {
+    border-radius: var(--radius-md);
+  }
+  .rounded-lg {
+    border-radius: var(--radius-lg);
+  }
+  .rounded-xl {
+    border-radius: var(--radius-xl);
+  }
+  .rounded-2xl {
+    border-radius: var(--radius-2xl);
+  }
+  .rounded-full {
+    border-radius: var(--radius-full);
   }
 }
 
@@ -140,4 +174,50 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-gold;
+}
+
+/* Custom Luxury Loader for ArtistKashi */
+.luxury-loader {
+  width: 15px;
+  aspect-ratio: 1;
+  position: relative;
+  animation: l9-0 1.5s infinite steps(2);
+}
+.luxury-loader::before,
+.luxury-loader::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #d4af37; /* Gold color */
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+}
+.luxury-loader::before {
+  box-shadow: 26px 0 #d4af37;
+  transform: translateX(-26px);
+  animation: l9-1 0.75s infinite linear alternate;
+}
+.luxury-loader::after {
+  transform: translateX(13px) rotate(0deg) translateX(13px);
+  animation: l9-2 0.75s infinite linear alternate;
+}
+@keyframes l9-0 {
+  0%,
+  49.9% {
+    transform: scale(1);
+  }
+  50%,
+  100% {
+    transform: scale(-1);
+  }
+}
+@keyframes l9-1 {
+  100% {
+    box-shadow: 52px 0 #d4af37;
+  }
+}
+@keyframes l9-2 {
+  100% {
+    transform: translateX(13px) rotate(-180deg) translateX(13px);
+  }
 }

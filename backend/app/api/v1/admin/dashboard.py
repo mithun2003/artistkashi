@@ -1,12 +1,13 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
-from app.api.dependencies import CurrentUserDep
+from app.schemas.responses import SuccessResponse
 
 router = APIRouter(prefix="/dashboard", tags=["admin-dashboard"])
 
 
-@router.get("/overview")
-async def overview(user: CurrentUserDep):
-    if not getattr(user, "is_superuser", False):
-        raise HTTPException(status_code=403, detail="Admin privileges required")
-    return {"users": 42, "courses": 7, "products": 13}
+@router.get("/overview", response_model=SuccessResponse[dict[str, int]])
+async def overview():
+    return SuccessResponse(
+        message="Admin overview retrieved successfully",
+        data={"users": 42, "courses": 7, "products": 13},
+    )

@@ -68,7 +68,7 @@ export default function CustomOrderPage() {
                   >
                     {s.label}
                   </h4>
-                  <p className="text-[8px] text-text-muted uppercase tracking-widest mt-1">
+                  <p className="text-2xs text-text-muted uppercase tracking-widest mt-1">
                     {s.desc}
                   </p>
                 </div>
@@ -107,16 +107,16 @@ export default function CustomOrderPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="p-8 border border-white/10 border-dashed flex flex-col items-center justify-center gap-4 hover:border-gold transition-colors cursor-pointer group">
                         <Upload className="w-8 h-8 text-text-muted group-hover:text-gold" />
-                        <span className="text-[8px] uppercase tracking-widest text-text-muted">
+                        <span className="text-2xs uppercase tracking-widest text-text-muted">
                           Upload Reference Visuals
                         </span>
                       </div>
                       <div className="p-8 border border-white/10 bg-white/1">
                         <div className="flex gap-2 items-start text-text-muted">
                           <Info className="w-4 h-4 text-gold shrink-0" />
-                          <p className="text-[8px] uppercase tracking-widest leading-loose">
-                            Providing architectural photos of the destination wall
-                            helps Kashi visualize the cinematic impact.
+                          <p className="text-2xs uppercase tracking-widest leading-loose">
+                            Providing architectural photos of the destination
+                            wall helps Kashi visualize the cinematic impact.
                           </p>
                         </div>
                       </div>
@@ -155,7 +155,7 @@ export default function CustomOrderPage() {
                         <h4 className="text-xs font-bold uppercase tracking-widest text-gold">
                           Global Shipping Included
                         </h4>
-                        <p className="text-[8px] text-text-muted uppercase tracking-widest">
+                        <p className="text-2xs text-text-muted uppercase tracking-widest">
                           Commissioned works include white-glove delivery and
                           professional installation consultation.
                         </p>

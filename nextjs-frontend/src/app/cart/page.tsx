@@ -8,7 +8,9 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function CartPage() {
-  const [activeTab, setActiveTab] = useState<"courses" | "paintings">("courses");
+  const [activeTab, setActiveTab] = useState<"courses" | "paintings">(
+    "courses"
+  );
   const [items, setItems] = useState([
     {
       id: 1,
@@ -59,7 +61,8 @@ export default function CartPage() {
                     : "text-text-muted hover:text-text-main"
                 )}
               >
-                Academy Courses ({items.filter((i) => i.type === "course").length})
+                Academy Courses (
+                {items.filter((i) => i.type === "course").length})
                 {activeTab === "courses" && (
                   <motion.div
                     layoutId="cartTab"
@@ -76,7 +79,8 @@ export default function CartPage() {
                     : "text-text-muted hover:text-text-main"
                 )}
               >
-                Original Art ({items.filter((i) => i.type === "painting").length})
+                Original Art (
+                {items.filter((i) => i.type === "painting").length})
                 {activeTab === "paintings" && (
                   <motion.div
                     layoutId="cartTab"
@@ -175,7 +179,7 @@ export default function CartPage() {
                 PROCEED TO BILLING <ArrowRight className="w-4 h-4" />
               </Link>
 
-              <div className="mt-8 flex items-center justify-center gap-3 text-[8px] text-text-muted uppercase tracking-widest">
+              <div className="mt-8 flex items-center justify-center gap-3 text-2xs text-text-muted uppercase tracking-widest">
                 <ShieldCheck className="w-4 h-4 text-gold" /> Secured Checkout
                 Environment
               </div>

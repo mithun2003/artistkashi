@@ -1,4 +1,7 @@
-from fastapi import APIRouter, Query
+from typing import Annotated
+
+from fastapi import APIRouter, File, Query, UploadFile
+from fastapi.params import Body
 
 from app.api.dependencies import DatabaseDep
 from app.core.pagination import build_paginated_response
@@ -6,9 +9,10 @@ from app.models.product import ProductStatus
 from app.schemas.product import (
     ProductBase,
     ProductCardRead,
-    ProductCreate,
+    ProductCreateRequest,
     ProductDetailRead,
     ProductUpdate,
+    ProductUpdateRequest,
 )
 from app.schemas.responses import PaginatedResponse, SuccessResponse
 from app.services.product_service import product_service
@@ -16,14 +20,21 @@ from app.services.product_service import product_service
 router = APIRouter(tags=["Products"])
 
 
-@router.post("", response_model=SuccessResponse[ProductBase])
-async def create_product(payload: ProductCreate, session: DatabaseDep):
-    product = await product_service.create_product(session=session, payload=payload)
+@router.post("", response_model=SuccessResponse[ProductDetailRead])
+async def create_product(
+    session: DatabaseDep,
+    payload: Annotated[ProductCreateRequest, Body(media_type="application/json")],
+    files: list[UploadFile] | None = File(None),
+):
+    result = await product_service.create_product_complete(
+        session=session,
+        payload=payload,
+        files=files or [],
+    )
+    return SuccessResponse(message="Product created successfully", data=result)
 
-    return SuccessResponse(message="Product created successfully", data=product)
 
-
-@router.get("/", response_model=PaginatedResponse[ProductCardRead])
+@router.get("", response_model=PaginatedResponse[ProductCardRead])
 async def list_products(
     session: DatabaseDep,
     page: int = Query(1, ge=1),
@@ -105,13 +116,27 @@ async def get_product(product_id: int, session: DatabaseDep):
     return SuccessResponse(message="Product retrieved successfully", data=product)
 
 
-@router.put("/{product_id}", response_model=SuccessResponse[ProductBase])
-async def update_product(product_id: int, payload: ProductUpdate, session: DatabaseDep):
-    product = await product_service.update_product(
-        session=session, product_id=product_id, payload=payload
+@router.put(
+    "/{product_id}",
+    response_model=SuccessResponse[ProductDetailRead],
+)
+async def update_product(
+    product_id: int,
+    session: DatabaseDep,
+    payload: Annotated[ProductUpdateRequest, Body(media_type="application/json")],
+    files: list[UploadFile] | None = File(None),
+):
+    result = await product_service.update_product_complete(
+        session=session,
+        product_id=product_id,
+        payload=payload,  # already a validated ProductUpdateRequest
+        files=files or [],
     )
 
-    return SuccessResponse(message="Product updated successfully", data=product)
+    return SuccessResponse(
+        message="Product updated successfully",
+        data=result,
+    )
 
 
 @router.patch("/{product_id}/publish", response_model=SuccessResponse[ProductBase])

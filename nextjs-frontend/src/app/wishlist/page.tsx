@@ -2,18 +2,15 @@
 
 import { RevealBlock } from "@/components/shared/RevealBlock";
 import { cn } from "@/lib/utils";
-import {
-  ArrowRight,
-  Heart,
-  ShoppingBag,
-  Trash2
-} from "lucide-react";
+import { ArrowRight, Heart, ShoppingBag, Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
 
 export default function WishlistPage() {
-  const [activeTab, setActiveTab] = useState<"courses" | "paintings">("courses");
+  const [activeTab, setActiveTab] = useState<"courses" | "paintings">(
+    "courses"
+  );
   const [wishlistItems, setWishlistItems] = useState([
     {
       id: 1,
@@ -83,7 +80,8 @@ export default function WishlistPage() {
                 : "text-text-muted hover:text-text-main"
             )}
           >
-            Academy Courses ({wishlistItems.filter((i) => i.type === "course").length})
+            Academy Courses (
+            {wishlistItems.filter((i) => i.type === "course").length})
             {activeTab === "courses" && (
               <motion.div
                 layoutId="wishTab"
@@ -100,7 +98,8 @@ export default function WishlistPage() {
                 : "text-text-muted hover:text-text-main"
             )}
           >
-            Original Art ({wishlistItems.filter((i) => i.type === "painting").length})
+            Original Art (
+            {wishlistItems.filter((i) => i.type === "painting").length})
             {activeTab === "paintings" && (
               <motion.div
                 layoutId="wishTab"
@@ -111,7 +110,7 @@ export default function WishlistPage() {
         </div>
 
         {wishlistItems.length > 0 ? (
-          <div className="min-h-[400px]">
+          <div className="min-h-100">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
@@ -130,10 +129,10 @@ export default function WishlistPage() {
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
                       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                      className="group bg-white/[0.03] backdrop-blur-xl border border-white/10 overflow-hidden relative shadow-2xl"
+                      className="group bg-white/3 backdrop-blur-xl border border-white/10 overflow-hidden relative shadow-2xl"
                     >
                       {/* Subtle shine */}
-                      <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none" />
+                      <div className="absolute inset-0 bg-linear-to-tr from-white/5 to-transparent pointer-events-none" />
 
                       <div className="aspect-video relative overflow-hidden">
                         <img
@@ -167,7 +166,8 @@ export default function WishlistPage() {
                             href="/cart"
                             className="w-full bg-text-main text-dark py-4 text-2xs uppercase tracking-[0.3em] font-black hover:bg-gold transition-all flex items-center justify-center gap-3"
                           >
-                            MOVE TO COLLECTION <ShoppingBag className="w-4 h-4" />
+                            MOVE TO COLLECTION{" "}
+                            <ShoppingBag className="w-4 h-4" />
                           </Link>
                           <Link
                             href={
@@ -184,7 +184,7 @@ export default function WishlistPage() {
                     </motion.div>
                   ))
                 ) : (
-                  <div className="col-span-full py-32 flex flex-col items-center justify-center border border-white/5 bg-white/[0.01]">
+                  <div className="col-span-full py-32 flex flex-col items-center justify-center border border-white/5 bg-white/1">
                     <p className="text-2xs uppercase tracking-widest text-text-muted">
                       No {activeTab} in your sanctuary.
                     </p>
@@ -195,7 +195,7 @@ export default function WishlistPage() {
           </div>
         ) : (
           <RevealBlock>
-            <div className="py-32 flex flex-col items-center justify-center border border-white/10 border-dashed bg-white/[0.02]">
+            <div className="py-32 flex flex-col items-center justify-center border border-white/10 border-dashed bg-white/2">
               <Heart className="w-16 h-16 text-white/10 mb-8" />
               <h3 className="text-2xl italic uppercase tracking-tighter mb-4 text-text-muted">
                 Your Sanctuary is Empty
@@ -223,7 +223,7 @@ export default function WishlistPage() {
               <Link
                 key={i}
                 href="/courses"
-                className="bg-white/[0.03] backdrop-blur-xl border border-white/10 p-6 flex flex-col gap-4 group cursor-pointer"
+                className="bg-white/3 backdrop-blur-xl border border-white/10 p-6 flex flex-col gap-4 group cursor-pointer"
               >
                 <div className="aspect-square overflow-hidden bg-brand-soft-black border border-white/5">
                   <img
@@ -236,7 +236,7 @@ export default function WishlistPage() {
                   <h4 className="text-sm font-bold uppercase tracking-tight italic mb-1">
                     Masterclass 0{i}
                   </h4>
-                  <p className="text-[8px] text-text-muted uppercase tracking-widest">
+                  <p className="text-2xs text-text-muted uppercase tracking-widest">
                     Advanced Cinematic Theory
                   </p>
                 </div>

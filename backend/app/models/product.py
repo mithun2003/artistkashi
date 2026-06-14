@@ -124,10 +124,15 @@ class Product(Base, TimestampMixin):
     )
 
 
+class ImageSourceType(enum.Enum):
+    UPLOAD = "upload"
+    EXTERNAL_URL = "external_url"
+
+
 class ProductImage(Base, TimestampMixin):
     __tablename__ = "product_images"
 
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     product_id: Mapped[int] = mapped_column(
         ForeignKey("products.id", ondelete="CASCADE")
     )
@@ -135,6 +140,15 @@ class ProductImage(Base, TimestampMixin):
     alt_text: Mapped[str | None] = mapped_column(String(255), nullable=True)
     is_primary: Mapped[bool] = mapped_column(Boolean, default=False)
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    source_type: Mapped[ImageSourceType] = mapped_column(
+        Enum(
+            ImageSourceType,
+            values_callable=lambda obj: [e.value for e in obj],
+            name="image_source_type",
+        ),
+        default=ImageSourceType.EXTERNAL_URL,
+        nullable=False,
+    )
 
     product = relationship("Product", back_populates="images")
 

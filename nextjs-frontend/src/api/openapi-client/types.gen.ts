@@ -99,6 +99,86 @@ export type AddressCreate = {
 };
 
 /**
+ * AddressRead
+ */
+export type AddressRead = {
+    /**
+     * Line1
+     */
+    line1: string;
+    /**
+     * Line2
+     */
+    line2?: string | null;
+    /**
+     * City
+     */
+    city?: string | null;
+    /**
+     * State
+     */
+    state?: string | null;
+    /**
+     * Postal Code
+     */
+    postal_code?: string | null;
+    /**
+     * Country
+     */
+    country?: string | null;
+    /**
+     * Phone
+     */
+    phone?: string | null;
+    /**
+     * Is Default
+     */
+    is_default?: boolean;
+    /**
+     * Id
+     */
+    id: number;
+};
+
+/**
+ * AddressUpdate
+ */
+export type AddressUpdate = {
+    /**
+     * Line1
+     */
+    line1?: string | null;
+    /**
+     * Line2
+     */
+    line2?: string | null;
+    /**
+     * City
+     */
+    city?: string | null;
+    /**
+     * State
+     */
+    state?: string | null;
+    /**
+     * Postal Code
+     */
+    postal_code?: string | null;
+    /**
+     * Country
+     */
+    country?: string | null;
+    /**
+     * Phone
+     */
+    phone?: string | null;
+    /**
+     * Is Default
+     */
+    is_default?: boolean | null;
+};
+
+/**
  * BannerSection
  */
 export type BannerSection = {
@@ -133,61 +213,73 @@ export type BannerSection = {
 };
 
 /**
- * BearerResponse
+ * BasicHealthData
  */
-export type BearerResponse = {
+export type BasicHealthData = {
     /**
-     * Access Token
+     * Status
      */
-    access_token: string;
+    status: string;
     /**
-     * Token Type
+     * Timestamp
      */
-    token_type: string;
+    timestamp: string;
+    /**
+     * Version
+     */
+    version: string;
 };
 
 /**
- * Body_auth-reset:forgot_password
+ * Body_ADMIN-create_product
  */
-export type BodyAuthResetForgotPassword = {
+export type BodyAdminCreateProduct = {
+    payload: ProductCreateRequest;
     /**
-     * Email
+     * Files
      */
-    email: string;
+    files?: Array<Blob | File> | null;
 };
 
 /**
- * Body_auth-reset:reset_password
+ * Body_ADMIN-update_product
  */
-export type BodyAuthResetResetPassword = {
+export type BodyAdminUpdateProduct = {
+    payload: ProductUpdateRequest;
     /**
-     * Token
+     * Files
      */
-    token: string;
+    files?: Array<Blob | File> | null;
+};
+
+/**
+ * Body_auth-login
+ */
+export type BodyAuthLogin = {
+    /**
+     * Grant Type
+     */
+    grant_type?: string | null;
+    /**
+     * Username
+     */
+    username: string;
     /**
      * Password
      */
     password: string;
-};
-
-/**
- * Body_auth-verify:request-token
- */
-export type BodyAuthVerifyRequestToken = {
     /**
-     * Email
+     * Scope
      */
-    email: string;
-};
-
-/**
- * Body_auth-verify:verify
- */
-export type BodyAuthVerifyVerify = {
+    scope?: string;
     /**
-     * Token
+     * Client Id
      */
-    token: string;
+    client_id?: string | null;
+    /**
+     * Client Secret
+     */
+    client_secret?: string | null;
 };
 
 /**
@@ -232,7 +324,7 @@ export type CartItemRead = {
      * User Id
      */
     user_id: string;
-    product?: ProductRead | null;
+    product?: ProductCardRead | null;
     course?: CourseRead | null;
 };
 
@@ -244,6 +336,20 @@ export type CartItemUpdate = {
      * Quantity
      */
     quantity: number;
+};
+
+/**
+ * ChangePasswordRequest
+ */
+export type ChangePasswordRequest = {
+    /**
+     * Current Password
+     */
+    current_password: string;
+    /**
+     * New Password
+     */
+    new_password: string;
 };
 
 /**
@@ -277,13 +383,25 @@ export type CourseRead = {
      */
     title: string;
     /**
+     * Subtitle
+     */
+    subtitle?: string | null;
+    /**
      * Instructor
      */
     instructor: string;
     /**
+     * Level
+     */
+    level?: string | null;
+    /**
      * Duration
      */
     duration?: string | null;
+    /**
+     * Lessons Count
+     */
+    lessons_count?: number;
     /**
      * Image Url
      */
@@ -312,19 +430,35 @@ export type CourseRead = {
      * Students Count
      */
     students_count: number;
+    /**
+     * Featured
+     */
+    featured: boolean;
+    /**
+     * Is Active
+     */
+    is_active: boolean;
 };
 
 /**
- * ErrorModel
+ * DetailedHealthData
  */
-export type ErrorModel = {
+export type DetailedHealthData = {
     /**
-     * Detail
+     * Status
      */
-    detail: string | {
-        [key: string]: string;
-    };
+    status: string;
+    /**
+     * Timestamp
+     */
+    timestamp: string;
+    services: HealthServices;
 };
+
+/**
+ * DimensionUnit
+ */
+export type DimensionUnit = 'cm' | 'inch' | 'mm';
 
 /**
  * FaqItem
@@ -383,6 +517,16 @@ export type FeaturedSection = {
 };
 
 /**
+ * ForgotPasswordRequest
+ */
+export type ForgotPasswordRequest = {
+    /**
+     * Email
+     */
+    email: string;
+};
+
+/**
  * HTTPValidationError
  */
 export type HttpValidationError = {
@@ -390,6 +534,14 @@ export type HttpValidationError = {
      * Detail
      */
     detail?: Array<ValidationError>;
+};
+
+/**
+ * HealthServices
+ */
+export type HealthServices = {
+    database: ServiceHealth;
+    redis: ServiceHealth;
 };
 
 /**
@@ -465,502 +617,1042 @@ export type HomePageConfig = {
 };
 
 /**
- * MetaModel
+ * ImageSourceType
  */
-export type MetaModel = {
+export type ImageSourceType = 'upload' | 'external_url';
+
+/**
+ * LogoutRequest
+ */
+export type LogoutRequest = {
+    /**
+     * Refresh Token
+     */
+    refresh_token: string;
+};
+
+/**
+ * Meta
+ */
+export type Meta = {
     /**
      * Timestamp
      */
     timestamp?: string;
     /**
-     * Error Code
+     * Request Id
      */
-    error_code?: string | null;
+    request_id?: string | null;
 };
 
 /**
- * ProductRead
+ * PaginatedResponse[AddressRead]
  */
-export type ProductRead = {
+export type PaginatedResponseAddressRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<AddressRead>;
+    pagination: Pagination;
+    meta?: Meta;
+};
+
+/**
+ * PaginatedResponse[CourseRead]
+ */
+export type PaginatedResponseCourseRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<CourseRead>;
+    pagination: Pagination;
+    meta?: Meta;
+};
+
+/**
+ * PaginatedResponse[ProductCardRead]
+ */
+export type PaginatedResponseProductCardRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<ProductCardRead>;
+    pagination: Pagination;
+    meta?: Meta;
+};
+
+/**
+ * PaginatedResponse[ProductCategoryRead]
+ */
+export type PaginatedResponseProductCategoryRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<ProductCategoryRead>;
+    pagination: Pagination;
+    meta?: Meta;
+};
+
+/**
+ * PaginatedResponse[ProductMediumRead]
+ */
+export type PaginatedResponseProductMediumRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<ProductMediumRead>;
+    pagination: Pagination;
+    meta?: Meta;
+};
+
+/**
+ * PaginatedResponse[PublicUserRead]
+ */
+export type PaginatedResponsePublicUserRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<PublicUserRead>;
+    pagination: Pagination;
+    meta?: Meta;
+};
+
+/**
+ * PaginatedResponse[ReviewRead]
+ */
+export type PaginatedResponseReviewRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<ReviewRead>;
+    pagination: Pagination;
+    meta?: Meta;
+};
+
+/**
+ * PaginatedResponse[VariantTypeRead]
+ */
+export type PaginatedResponseVariantTypeRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<VariantTypeRead>;
+    pagination: Pagination;
+    meta?: Meta;
+};
+
+/**
+ * Pagination
+ */
+export type Pagination = {
+    /**
+     * Page
+     */
+    page: number;
+    /**
+     * Page Size
+     */
+    page_size: number;
+    /**
+     * Total Items
+     */
+    total_items: number;
+    /**
+     * Total Pages
+     */
+    total_pages: number;
+    /**
+     * Has Next
+     */
+    has_next: boolean;
+    /**
+     * Has Prev
+     */
+    has_prev: boolean;
+};
+
+/**
+ * ProductBase
+ */
+export type ProductBase = {
+    /**
+     * Id
+     */
+    id: number;
     /**
      * Title
      */
     title: string;
     /**
-     * Artist
+     * Slug
      */
-    artist: string;
+    slug: string;
+    /**
+     * Short Description
+     */
+    short_description?: string | null;
+    /**
+     * Is Original Available
+     */
+    is_original_available?: boolean;
+    medium?: ProductMediumRead | null;
+    category?: ProductCategoryRead | null;
+    /**
+     * Is Sold
+     */
+    readonly is_sold: boolean;
+};
+
+/**
+ * ProductCardRead
+ */
+export type ProductCardRead = {
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Slug
+     */
+    slug: string;
+    /**
+     * Short Description
+     */
+    short_description?: string | null;
+    /**
+     * Is Original Available
+     */
+    is_original_available?: boolean;
+    medium?: ProductMediumRead | null;
+    category?: ProductCategoryRead | null;
     /**
      * Price
      */
-    price: number;
+    price?: string;
     /**
-     * Image Url
+     * Primary Image
      */
-    image_url?: string | null;
+    primary_image?: string | null;
     /**
-     * Category
+     * Is Sold
      */
-    category?: string | null;
+    readonly is_sold: boolean;
+};
+
+/**
+ * ProductCategoryCreate
+ */
+export type ProductCategoryCreate = {
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Slug
+     */
+    slug?: string | null;
     /**
      * Description
      */
     description?: string | null;
     /**
-     * Stock Quantity
+     * Is Active
      */
-    stock_quantity?: number;
+    is_active?: boolean;
+};
+
+/**
+ * ProductCategoryRead
+ */
+export type ProductCategoryRead = {
+    /**
+     * Created At
+     */
+    created_at?: string | null;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
     /**
      * Id
      */
     id: number;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Slug
+     */
+    slug: string;
+    /**
+     * Description
+     */
+    description: string | null;
+    /**
+     * Is Active
+     */
+    is_active: boolean;
 };
 
 /**
- * ResponseModel
+ * ProductCategoryUpdate
+ */
+export type ProductCategoryUpdate = {
+    /**
+     * Name
+     */
+    name?: string | null;
+    /**
+     * Slug
+     */
+    slug?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Is Active
+     */
+    is_active?: boolean | null;
+};
+
+/**
+ * ProductCreate
+ */
+export type ProductCreate = {
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Slug
+     */
+    slug?: string | null;
+    /**
+     * Medium Id
+     */
+    medium_id?: number | null;
+    /**
+     * Short Description
+     */
+    short_description?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Style
+     */
+    style?: string | null;
+    /**
+     * Subject
+     */
+    subject?: string | null;
+    /**
+     * Year Created
+     */
+    year_created?: number | null;
+    /**
+     * Is Original Available
+     */
+    is_original_available?: boolean;
+    /**
+     * Is Framed
+     */
+    is_framed?: boolean;
+    /**
+     * Certificate Of Authenticity
+     */
+    certificate_of_authenticity?: boolean;
+    /**
+     * Category Id
+     */
+    category_id?: number | null;
+    /**
+     * Weight Grams
+     */
+    weight_grams?: number | null;
+    /**
+     * Is Featured
+     */
+    is_featured?: boolean;
+    /**
+     * Sort Order
+     */
+    sort_order?: number;
+    status?: ProductStatus;
+    /**
+     * Meta Title
+     */
+    meta_title?: string | null;
+    /**
+     * Meta Description
+     */
+    meta_description?: string | null;
+};
+
+/**
+ * ProductCreateRequest
+ */
+export type ProductCreateRequest = {
+    product: ProductCreate;
+    /**
+     * Variants
+     */
+    variants?: Array<ProductVariantCreate>;
+    /**
+     * External Images
+     */
+    external_images?: Array<ProductImageInput>;
+};
+
+/**
+ * ProductDetailRead
+ */
+export type ProductDetailRead = {
+    /**
+     * Created At
+     */
+    created_at?: string | null;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+    /**
+     * Images
+     */
+    images?: Array<ProductImageRead>;
+    /**
+     * Variants
+     */
+    variants?: Array<ProductVariantRead>;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Slug
+     */
+    slug: string;
+    /**
+     * Short Description
+     */
+    short_description?: string | null;
+    /**
+     * Is Original Available
+     */
+    is_original_available: boolean;
+    medium?: ProductMediumRead | null;
+    category?: ProductCategoryRead | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Style
+     */
+    style?: string | null;
+    /**
+     * Subject
+     */
+    subject?: string | null;
+    /**
+     * Year Created
+     */
+    year_created?: number | null;
+    /**
+     * Is Framed
+     */
+    is_framed: boolean;
+    /**
+     * Certificate Of Authenticity
+     */
+    certificate_of_authenticity: boolean;
+    /**
+     * Weight Grams
+     */
+    weight_grams?: number | null;
+    status: ProductStatus;
+    /**
+     * Is Featured
+     */
+    is_featured: boolean;
+    /**
+     * Sort Order
+     */
+    sort_order: number;
+    /**
+     * Meta Title
+     */
+    meta_title?: string | null;
+    /**
+     * Meta Description
+     */
+    meta_description?: string | null;
+    /**
+     * Price
+     *
+     * Returns the price of the default variant.
+     * Falls back to the cheapest available variant if none is marked default.
+     * Returns None if the product has no variants at all.
+     */
+    readonly price: string | null;
+    /**
+     * Primary Image
+     *
+     * Returns the URL of the image marked is_primary.
+     * Falls back to the first image if none is marked primary.
+     * Returns None if the product has no images.
+     */
+    readonly primary_image: string | null;
+    /**
+     * Is Sold
+     */
+    readonly is_sold: boolean;
+};
+
+/**
+ * ProductImageInput
  *
- * Standard API response used across the app.
- *
- * Fields kept for backwards compatibility:
- * - status: HTTP status code (int)
- * - success: bool (kept to avoid breaking callers that read it)
- * - message, data, meta
+ * Represents one external image URL submitted in the product form.
+ * Uploaded files are handled separately as multipart file fields
+ * and never go through this schema.
  */
-export type ResponseModel = {
+export type ProductImageInput = {
     /**
-     * Status
+     * Image Url
      */
-    status?: number;
+    image_url?: string | null;
     /**
-     * Success
+     * Alt Text
      */
-    success?: boolean;
+    alt_text?: string | null;
     /**
-     * Message
+     * Is Primary
      */
-    message: string;
+    is_primary?: boolean;
     /**
-     * Data
+     * Sort Order
      */
-    data?: unknown | null;
-    meta?: MetaModel;
+    sort_order?: number;
 };
 
 /**
- * ResponseModel[AddressRead]
+ * ProductImageRead
  */
-export type ResponseModelAddressRead = {
+export type ProductImageRead = {
     /**
-     * Status
+     * Created At
      */
-    status?: number;
+    created_at?: string | null;
     /**
-     * Success
+     * Updated At
      */
-    success?: boolean;
+    updated_at?: string | null;
     /**
-     * Message
+     * Id
      */
-    message: string;
-    data?: AppSchemasAddressAddressRead | null;
-    meta?: MetaModel;
+    id: number;
+    /**
+     * Product Id
+     */
+    product_id: number;
+    /**
+     * Image Url
+     */
+    image_url: string;
+    /**
+     * Alt Text
+     */
+    alt_text: string | null;
+    /**
+     * Is Primary
+     */
+    is_primary: boolean;
+    /**
+     * Sort Order
+     */
+    sort_order: number;
+    source_type: ImageSourceType;
 };
 
 /**
- * ResponseModel[Any]
+ * ProductMediumCreate
  */
-export type ResponseModelAny = {
+export type ProductMediumCreate = {
     /**
-     * Status
+     * Name
      */
-    status?: number;
+    name: string;
     /**
-     * Success
+     * Slug
      */
-    success?: boolean;
+    slug?: string | null;
     /**
-     * Message
+     * Is Active
      */
-    message: string;
-    /**
-     * Data
-     */
-    data?: unknown;
-    meta?: MetaModel;
+    is_active?: boolean;
 };
 
 /**
- * ResponseModel[CartItemRead]
+ * ProductMediumRead
  */
-export type ResponseModelCartItemRead = {
+export type ProductMediumRead = {
     /**
-     * Status
+     * Created At
      */
-    status?: number;
+    created_at?: string | null;
     /**
-     * Success
+     * Updated At
      */
-    success?: boolean;
+    updated_at?: string | null;
     /**
-     * Message
+     * Id
      */
-    message: string;
-    data?: CartItemRead | null;
-    meta?: MetaModel;
+    id: number;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Slug
+     */
+    slug: string;
+    /**
+     * Is Active
+     */
+    is_active: boolean;
 };
 
 /**
- * ResponseModel[CourseRead]
+ * ProductMediumUpdate
  */
-export type ResponseModelCourseRead = {
+export type ProductMediumUpdate = {
     /**
-     * Status
+     * Name
      */
-    status?: number;
+    name?: string | null;
     /**
-     * Success
+     * Slug
      */
-    success?: boolean;
+    slug?: string | null;
     /**
-     * Message
+     * Is Active
      */
-    message: string;
-    data?: CourseRead | null;
-    meta?: MetaModel;
+    is_active?: boolean | null;
 };
 
 /**
- * ResponseModel[HomePageConfig]
+ * ProductStatus
  */
-export type ResponseModelHomePageConfig = {
+export type ProductStatus = 'draft' | 'published' | 'sold_out' | 'archived';
+
+/**
+ * ProductUpdate
+ */
+export type ProductUpdate = {
     /**
-     * Status
+     * Title
      */
-    status?: number;
+    title?: string | null;
     /**
-     * Success
+     * Slug
      */
-    success?: boolean;
+    slug?: string | null;
     /**
-     * Message
+     * Medium Id
      */
-    message: string;
-    data?: HomePageConfig | null;
-    meta?: MetaModel;
+    medium_id?: number | null;
+    /**
+     * Short Description
+     */
+    short_description?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Style
+     */
+    style?: string | null;
+    /**
+     * Subject
+     */
+    subject?: string | null;
+    /**
+     * Year Created
+     */
+    year_created?: number | null;
+    /**
+     * Is Original Available
+     */
+    is_original_available?: boolean | null;
+    /**
+     * Is Framed
+     */
+    is_framed?: boolean | null;
+    /**
+     * Certificate Of Authenticity
+     */
+    certificate_of_authenticity?: boolean | null;
+    /**
+     * Category Id
+     */
+    category_id?: number | null;
+    /**
+     * Weight Grams
+     */
+    weight_grams?: number | null;
+    /**
+     * Is Featured
+     */
+    is_featured?: boolean | null;
+    /**
+     * Sort Order
+     */
+    sort_order?: number | null;
+    status?: ProductStatus | null;
+    /**
+     * Meta Title
+     */
+    meta_title?: string | null;
+    /**
+     * Meta Description
+     */
+    meta_description?: string | null;
 };
 
 /**
- * ResponseModel[ProductRead]
+ * ProductUpdateRequest
  */
-export type ResponseModelProductRead = {
+export type ProductUpdateRequest = {
+    product: ProductUpdate;
     /**
-     * Status
+     * Variants
      */
-    status?: number;
+    variants?: Array<ProductVariantUpdate>;
     /**
-     * Success
+     * External Images
      */
-    success?: boolean;
+    external_images?: Array<ProductImageInput>;
     /**
-     * Message
+     * Deleted Variant Ids
      */
-    message: string;
-    data?: ProductRead | null;
-    meta?: MetaModel;
+    deleted_variant_ids?: Array<number>;
+    /**
+     * Deleted Image Ids
+     */
+    deleted_image_ids?: Array<number>;
 };
 
 /**
- * ResponseModel[ReviewRead]
+ * ProductVariantCreate
  */
-export type ResponseModelReviewRead = {
+export type ProductVariantCreate = {
     /**
-     * Status
+     * Variant Type Id
      */
-    status?: number;
+    variant_type_id: number;
     /**
-     * Success
+     * Width
      */
-    success?: boolean;
+    width?: number | string | null;
     /**
-     * Message
+     * Height
      */
-    message: string;
-    data?: ReviewRead | null;
-    meta?: MetaModel;
+    height?: number | string | null;
+    dimension_unit?: DimensionUnit | null;
+    /**
+     * Sku
+     */
+    sku?: string | null;
+    /**
+     * Price
+     */
+    price: number | string;
+    /**
+     * Stock Quantity
+     */
+    stock_quantity?: number;
+    /**
+     * Is Default
+     */
+    is_default?: boolean;
+    /**
+     * Is Available
+     */
+    is_available?: boolean;
 };
 
 /**
- * ResponseModel[UserRead]
+ * ProductVariantRead
  */
-export type ResponseModelUserRead = {
+export type ProductVariantRead = {
     /**
-     * Status
+     * Created At
      */
-    status?: number;
+    created_at?: string | null;
     /**
-     * Success
+     * Updated At
      */
-    success?: boolean;
+    updated_at?: string | null;
     /**
-     * Message
+     * Id
      */
-    message: string;
-    data?: UserRead | null;
-    meta?: MetaModel;
+    id: number;
+    /**
+     * Product Id
+     */
+    product_id: number;
+    /**
+     * Variant Type Id
+     */
+    variant_type_id: number | null;
+    /**
+     * Variant Type Name
+     */
+    variant_type_name?: string | null;
+    /**
+     * Width
+     */
+    width: string | null;
+    /**
+     * Height
+     */
+    height: string | null;
+    dimension_unit: DimensionUnit;
+    /**
+     * Sku
+     */
+    sku: string | null;
+    /**
+     * Price
+     */
+    price: string;
+    /**
+     * Stock Quantity
+     */
+    stock_quantity: number;
+    /**
+     * Is Default
+     */
+    is_default: boolean;
+    /**
+     * Is Available
+     */
+    is_available: boolean;
+    /**
+     * Dimensions
+     */
+    readonly dimensions: string | null;
 };
 
 /**
- * ResponseModel[WishlistRead]
+ * ProductVariantUpdate
  */
-export type ResponseModelWishlistRead = {
+export type ProductVariantUpdate = {
     /**
-     * Status
+     * Id
      */
-    status?: number;
+    id?: number | null;
     /**
-     * Success
+     * Variant Type Id
      */
-    success?: boolean;
+    variant_type_id?: number | null;
     /**
-     * Message
+     * Width
      */
-    message: string;
-    data?: WishlistRead | null;
-    meta?: MetaModel;
+    width?: number | string | null;
+    /**
+     * Height
+     */
+    height?: number | string | null;
+    dimension_unit?: DimensionUnit | null;
+    /**
+     * Sku
+     */
+    sku?: string | null;
+    /**
+     * Price
+     */
+    price?: number | string | null;
+    /**
+     * Stock Quantity
+     */
+    stock_quantity?: number | null;
+    /**
+     * Is Default
+     */
+    is_default?: boolean | null;
+    /**
+     * Is Available
+     */
+    is_available?: boolean | null;
 };
 
 /**
- * ResponseModel[dict]
+ * PublicUserRead
  */
-export type ResponseModelDict = {
+export type PublicUserRead = {
     /**
-     * Status
+     * Created At
      */
-    status?: number;
+    created_at?: string | null;
     /**
-     * Success
+     * Updated At
      */
-    success?: boolean;
+    updated_at?: string | null;
     /**
-     * Message
+     * Id
      */
-    message: string;
+    id?: string;
     /**
-     * Data
+     * Full Name
      */
-    data?: {
-        [key: string]: unknown;
-    } | null;
-    meta?: MetaModel;
+    full_name?: string | null;
+    /**
+     * Profile Picture
+     */
+    profile_picture?: string | null;
 };
 
 /**
- * ResponseModel[list[AddressRead]]
+ * RefreshTokenRequest
  */
-export type ResponseModelListAddressRead = {
+export type RefreshTokenRequest = {
     /**
-     * Status
+     * Refresh Token
      */
-    status?: number;
-    /**
-     * Success
-     */
-    success?: boolean;
-    /**
-     * Message
-     */
-    message: string;
-    /**
-     * Data
-     */
-    data?: Array<AppSchemasAddressAddressRead> | null;
-    meta?: MetaModel;
+    refresh_token: string;
 };
 
 /**
- * ResponseModel[list[CartItemRead]]
+ * RequestVerificationRequest
  */
-export type ResponseModelListCartItemRead = {
+export type RequestVerificationRequest = {
     /**
-     * Status
+     * Email
      */
-    status?: number;
-    /**
-     * Success
-     */
-    success?: boolean;
-    /**
-     * Message
-     */
-    message: string;
-    /**
-     * Data
-     */
-    data?: Array<CartItemRead> | null;
-    meta?: MetaModel;
+    email: string;
 };
 
 /**
- * ResponseModel[list[CourseRead]]
+ * ResetPasswordRequest
  */
-export type ResponseModelListCourseRead = {
+export type ResetPasswordRequest = {
     /**
-     * Status
+     * Token
      */
-    status?: number;
+    token: string;
     /**
-     * Success
+     * Password
      */
-    success?: boolean;
-    /**
-     * Message
-     */
-    message: string;
-    /**
-     * Data
-     */
-    data?: Array<CourseRead> | null;
-    meta?: MetaModel;
-};
-
-/**
- * ResponseModel[list[ProductRead]]
- */
-export type ResponseModelListProductRead = {
-    /**
-     * Status
-     */
-    status?: number;
-    /**
-     * Success
-     */
-    success?: boolean;
-    /**
-     * Message
-     */
-    message: string;
-    /**
-     * Data
-     */
-    data?: Array<ProductRead> | null;
-    meta?: MetaModel;
-};
-
-/**
- * ResponseModel[list[ReviewReadPublic]]
- */
-export type ResponseModelListReviewReadPublic = {
-    /**
-     * Status
-     */
-    status?: number;
-    /**
-     * Success
-     */
-    success?: boolean;
-    /**
-     * Message
-     */
-    message: string;
-    /**
-     * Data
-     */
-    data?: Array<ReviewReadPublic> | null;
-    meta?: MetaModel;
-};
-
-/**
- * ResponseModel[list[ReviewRead]]
- */
-export type ResponseModelListReviewRead = {
-    /**
-     * Status
-     */
-    status?: number;
-    /**
-     * Success
-     */
-    success?: boolean;
-    /**
-     * Message
-     */
-    message: string;
-    /**
-     * Data
-     */
-    data?: Array<ReviewRead> | null;
-    meta?: MetaModel;
-};
-
-/**
- * ResponseModel[list[UserRead]]
- */
-export type ResponseModelListUserRead = {
-    /**
-     * Status
-     */
-    status?: number;
-    /**
-     * Success
-     */
-    success?: boolean;
-    /**
-     * Message
-     */
-    message: string;
-    /**
-     * Data
-     */
-    data?: Array<UserRead> | null;
-    meta?: MetaModel;
-};
-
-/**
- * ResponseModel[list[WishlistRead]]
- */
-export type ResponseModelListWishlistRead = {
-    /**
-     * Status
-     */
-    status?: number;
-    /**
-     * Success
-     */
-    success?: boolean;
-    /**
-     * Message
-     */
-    message: string;
-    /**
-     * Data
-     */
-    data?: Array<WishlistRead> | null;
-    meta?: MetaModel;
-};
-
-/**
- * ResponseModel[list[dict]]
- */
-export type ResponseModelListDict = {
-    /**
-     * Status
-     */
-    status?: number;
-    /**
-     * Success
-     */
-    success?: boolean;
-    /**
-     * Message
-     */
-    message: string;
-    /**
-     * Data
-     */
-    data?: Array<{
-        [key: string]: unknown;
-    }> | null;
-    meta?: MetaModel;
+    password: string;
 };
 
 /**
@@ -986,6 +1678,14 @@ export type ReviewCreate = {
  * ReviewRead
  */
 export type ReviewRead = {
+    /**
+     * Created At
+     */
+    created_at?: string | null;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
     type: ReviewType;
     /**
      * Entity Id
@@ -1008,14 +1708,6 @@ export type ReviewRead = {
      */
     user_id: string;
     status: ReviewStatus;
-    /**
-     * Created At
-     */
-    created_at: string;
-    /**
-     * Updated At
-     */
-    updated_at: string;
 };
 
 /**
@@ -1051,12 +1743,12 @@ export type ReviewReadPublic = {
 /**
  * ReviewStatus
  */
-export type ReviewStatus = 'pending' | 'approved' | 'blocked';
+export type ReviewStatus = 'active' | 'blocked';
 
 /**
  * ReviewType
  */
-export type ReviewType = 'site' | 'product' | 'painting';
+export type ReviewType = 'course' | 'product';
 
 /**
  * ReviewUpdate
@@ -1071,6 +1763,698 @@ export type ReviewUpdate = {
      * Text
      */
     text?: string | null;
+};
+
+/**
+ * Role
+ */
+export type Role = 'user' | 'admin';
+
+/**
+ * ServiceHealth
+ */
+export type ServiceHealth = {
+    /**
+     * Status
+     */
+    status: string;
+    /**
+     * Timestamp
+     */
+    timestamp: string;
+    /**
+     * Error
+     */
+    error?: string | null;
+};
+
+/**
+ * SuccessResponse[AddressRead]
+ */
+export type SuccessResponseAddressRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: AddressRead | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[BasicHealthData]
+ */
+export type SuccessResponseBasicHealthData = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: BasicHealthData | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[CartItemRead]
+ */
+export type SuccessResponseCartItemRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: CartItemRead | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[CourseRead]
+ */
+export type SuccessResponseCourseRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: CourseRead | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[DetailedHealthData]
+ */
+export type SuccessResponseDetailedHealthData = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: DetailedHealthData | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[HomePageConfig]
+ */
+export type SuccessResponseHomePageConfig = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: HomePageConfig | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[NoneType]
+ */
+export type SuccessResponseNoneType = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[ProductBase]
+ */
+export type SuccessResponseProductBase = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: ProductBase | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[ProductCategoryRead]
+ */
+export type SuccessResponseProductCategoryRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: ProductCategoryRead | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[ProductDetailRead]
+ */
+export type SuccessResponseProductDetailRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: ProductDetailRead | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[ProductImageRead]
+ */
+export type SuccessResponseProductImageRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: ProductImageRead | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[ProductMediumRead]
+ */
+export type SuccessResponseProductMediumRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: ProductMediumRead | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[ProductVariantRead]
+ */
+export type SuccessResponseProductVariantRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: ProductVariantRead | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[ReviewRead]
+ */
+export type SuccessResponseReviewRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: ReviewRead | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[TokenResponse]
+ */
+export type SuccessResponseTokenResponse = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: TokenResponse | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[UserProfileRead]
+ */
+export type SuccessResponseUserProfileRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: UserProfileRead | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[UserRead]
+ */
+export type SuccessResponseUserRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: UserRead | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[VariantTypeRead]
+ */
+export type SuccessResponseVariantTypeRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: VariantTypeRead | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[WishlistRead]
+ */
+export type SuccessResponseWishlistRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: WishlistRead | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[dict]
+ */
+export type SuccessResponseDict = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: {
+        [key: string]: unknown;
+    } | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[dict[str, int]]
+ */
+export type SuccessResponseDictStrInt = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: {
+        [key: string]: number;
+    } | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[dict[str, str]]
+ */
+export type SuccessResponseDictStrStr = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: {
+        [key: string]: string;
+    } | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[list[AddressRead]]
+ */
+export type SuccessResponseListAddressRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<AddressRead> | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[list[CartItemRead]]
+ */
+export type SuccessResponseListCartItemRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<CartItemRead> | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[list[ProductImageRead]]
+ */
+export type SuccessResponseListProductImageRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<ProductImageRead> | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[list[ProductVariantRead]]
+ */
+export type SuccessResponseListProductVariantRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<ProductVariantRead> | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[list[ReviewReadPublic]]
+ */
+export type SuccessResponseListReviewReadPublic = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<ReviewReadPublic> | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[list[ReviewRead]]
+ */
+export type SuccessResponseListReviewRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<ReviewRead> | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[list[WishlistRead]]
+ */
+export type SuccessResponseListWishlistRead = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<WishlistRead> | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[list[dict]]
+ */
+export type SuccessResponseListDict = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<{
+        [key: string]: unknown;
+    }> | null;
+    meta?: Meta;
+};
+
+/**
+ * SuccessResponse[list[dict[str, str]]]
+ */
+export type SuccessResponseListDictStrStr = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<{
+        [key: string]: string;
+    }> | null;
+    meta?: Meta;
 };
 
 /**
@@ -1100,6 +2484,24 @@ export type TestimonialItem = {
 };
 
 /**
+ * TokenResponse
+ */
+export type TokenResponse = {
+    /**
+     * Access Token
+     */
+    access_token: string;
+    /**
+     * Refresh Token
+     */
+    refresh_token: string;
+    /**
+     * Token Type
+     */
+    token_type?: string;
+};
+
+/**
  * UserCreate
  */
 export type UserCreate = {
@@ -1112,29 +2514,64 @@ export type UserCreate = {
      */
     password: string;
     /**
-     * Is Active
+     * Full Name
      */
-    is_active?: boolean | null;
+    full_name: string;
     /**
-     * Is Superuser
+     * Phone
      */
-    is_superuser?: boolean | null;
+    phone?: string | null;
+};
+
+/**
+ * UserProfileRead
+ */
+export type UserProfileRead = {
     /**
-     * Is Verified
+     * Created At
      */
-    is_verified?: boolean | null;
+    created_at?: string | null;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+    /**
+     * Id
+     */
+    id?: string;
     /**
      * Full Name
      */
-    full_name?: string | null;
+    full_name: string;
+    /**
+     * Email
+     */
+    email: string;
     /**
      * Phone
      */
     phone?: string | null;
     /**
-     * Role
+     * Profile Picture
      */
-    role?: string | null;
+    profile_picture?: string | null;
+    /**
+     * Is Active
+     */
+    is_active: boolean;
+    /**
+     * Is Verified
+     */
+    is_verified: boolean;
+    /**
+     * Is Superuser
+     */
+    is_superuser: boolean;
+    role: Role;
+    /**
+     * Addresses
+     */
+    addresses?: Array<AddressRead>;
 };
 
 /**
@@ -1142,79 +2579,46 @@ export type UserCreate = {
  */
 export type UserRead = {
     /**
+     * Created At
+     */
+    created_at?: string | null;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+    /**
      * Id
      */
-    id: string;
+    id?: string;
+    /**
+     * Full Name
+     */
+    full_name: string;
     /**
      * Email
      */
     email: string;
     /**
-     * Is Active
-     */
-    is_active?: boolean;
-    /**
-     * Is Superuser
-     */
-    is_superuser?: boolean;
-    /**
-     * Is Verified
-     */
-    is_verified?: boolean;
-    /**
-     * Full Name
-     */
-    full_name?: string | null;
-    /**
      * Phone
      */
     phone?: string | null;
     /**
-     * Role
+     * Profile Picture
      */
-    role?: string | null;
-    /**
-     * Addresses
-     */
-    addresses?: Array<AppSchemasUserAddressRead> | null;
-};
-
-/**
- * UserUpdate
- */
-export type UserUpdate = {
-    /**
-     * Password
-     */
-    password?: string | null;
-    /**
-     * Email
-     */
-    email?: string | null;
+    profile_picture?: string | null;
     /**
      * Is Active
      */
-    is_active?: boolean | null;
-    /**
-     * Is Superuser
-     */
-    is_superuser?: boolean | null;
+    is_active: boolean;
     /**
      * Is Verified
      */
-    is_verified?: boolean | null;
+    is_verified: boolean;
     /**
-     * Full Name
+     * Is Superuser
      */
-    full_name?: string | null;
-    /**
-     * Phone
-     */
-    phone?: string | null;
-    /**
-     * Role
-     */
-    role?: string | null;
+    is_superuser: boolean;
+    role: Role;
 };
 
 /**
@@ -1243,6 +2647,90 @@ export type ValidationError = {
     ctx?: {
         [key: string]: unknown;
     };
+};
+
+/**
+ * VariantTypeCreate
+ */
+export type VariantTypeCreate = {
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Slug
+     */
+    slug?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+};
+
+/**
+ * VariantTypeRead
+ */
+export type VariantTypeRead = {
+    /**
+     * Created At
+     */
+    created_at?: string | null;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Slug
+     */
+    slug: string;
+    /**
+     * Description
+     */
+    description: string | null;
+    /**
+     * Is Active
+     */
+    is_active: boolean;
+};
+
+/**
+ * VariantTypeUpdate
+ */
+export type VariantTypeUpdate = {
+    /**
+     * Name
+     */
+    name?: string | null;
+    /**
+     * Slug
+     */
+    slug?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Is Active
+     */
+    is_active?: boolean | null;
+};
+
+/**
+ * VerifyEmailRequest
+ */
+export type VerifyEmailRequest = {
+    /**
+     * Token
+     */
+    token: string;
 };
 
 /**
@@ -1301,570 +2789,477 @@ export type WishlistRead = {
      * User Id
      */
     user_id: string;
-    product?: ProductRead | null;
+    product?: ProductCardRead | null;
+    course?: CourseRead | null;
+};
+
+export type ErrorResponse = {
+    success: boolean;
+    status: number;
+    message: string;
+    error_code: string;
+    errors?: {
+        [key: string]: unknown;
+    } | Array<unknown> | null;
+    meta?: Meta;
+};
+
+/**
+ * CartItemRead
+ */
+export type CartItemReadWritable = {
+    /**
+     * Product Id
+     */
+    product_id?: number | null;
+    /**
+     * Course Id
+     */
+    course_id?: number | null;
+    /**
+     * Quantity
+     */
+    quantity?: number;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * User Id
+     */
+    user_id: string;
+    product?: ProductCardReadWritable | null;
     course?: CourseRead | null;
 };
 
 /**
- * AddressRead
+ * PaginatedResponse[ProductCardRead]
  */
-export type AppSchemasAddressAddressRead = {
+export type PaginatedResponseProductCardReadWritable = {
     /**
-     * Line1
+     * Success
      */
-    line1: string;
+    success?: boolean;
     /**
-     * Line2
+     * Status
      */
-    line2?: string | null;
+    status?: number;
     /**
-     * City
+     * Message
      */
-    city?: string | null;
-    /**
-     * State
-     */
-    state?: string | null;
-    /**
-     * Postal Code
-     */
-    postal_code?: string | null;
-    /**
-     * Country
-     */
-    country?: string | null;
-    /**
-     * Phone
-     */
-    phone?: string | null;
-    /**
-     * Is Default
-     */
-    is_default?: boolean;
-    /**
-     * Id
-     */
-    id: number;
-};
-
-/**
- * AddressRead
- */
-export type AppSchemasUserAddressRead = {
-    /**
-     * Id
-     */
-    id: number;
-    /**
-     * Line1
-     */
-    line1: string;
-    /**
-     * Line2
-     */
-    line2?: string | null;
-    /**
-     * City
-     */
-    city?: string | null;
-    /**
-     * State
-     */
-    state?: string | null;
-    /**
-     * Postal Code
-     */
-    postal_code?: string | null;
-    /**
-     * Country
-     */
-    country?: string | null;
-    /**
-     * Phone
-     */
-    phone?: string | null;
-    /**
-     * Is Default
-     */
-    is_default?: boolean;
-};
-
-/**
- * Body_auth-auth:jwt.login
- */
-export type Login = {
-    /**
-     * Grant Type
-     */
-    grant_type?: string | null;
-    /**
-     * Username
-     */
-    username: string;
-    /**
-     * Password
-     */
-    password: string;
-    /**
-     * Scope
-     */
-    scope?: string;
-    /**
-     * Client Id
-     */
-    client_id?: string | null;
-    /**
-     * Client Secret
-     */
-    client_secret?: string | null;
-};
-
-/**
- * ApiMeta
- */
-export type ApiMeta = {
-    timestamp: string;
-    error_code?: string;
-};
-
-/**
- * ApiResponse
- */
-export type ApiResponse = {
-    status: number;
     message: string;
-    data?: unknown;
-    meta: ApiMeta;
+    /**
+     * Data
+     */
+    data?: Array<ProductCardReadWritable>;
+    pagination: Pagination;
+    meta?: Meta;
 };
 
-export type AuthJwtLoginData = {
-    body: Login;
-    path?: never;
-    query?: never;
-    url: '/api/auth/jwt/login';
+/**
+ * ProductBase
+ */
+export type ProductBaseWritable = {
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Slug
+     */
+    slug: string;
+    /**
+     * Short Description
+     */
+    short_description?: string | null;
+    /**
+     * Is Original Available
+     */
+    is_original_available?: boolean;
+    medium?: ProductMediumRead | null;
+    category?: ProductCategoryRead | null;
 };
 
-export type AuthJwtLoginErrors = {
+/**
+ * ProductCardRead
+ */
+export type ProductCardReadWritable = {
     /**
-     * Bad Request
+     * Id
      */
-    400: ApiResponse & {
-        data?: ErrorModel;
-    };
+    id: number;
     /**
-     * Validation Error
+     * Title
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    title: string;
+    /**
+     * Slug
+     */
+    slug: string;
+    /**
+     * Short Description
+     */
+    short_description?: string | null;
+    /**
+     * Is Original Available
+     */
+    is_original_available?: boolean;
+    medium?: ProductMediumRead | null;
+    category?: ProductCategoryRead | null;
+    /**
+     * Price
+     */
+    price?: string;
+    /**
+     * Primary Image
+     */
+    primary_image?: string | null;
 };
 
-export type AuthJwtLoginError = AuthJwtLoginErrors[keyof AuthJwtLoginErrors];
-
-export type AuthJwtLoginResponses = {
+/**
+ * ProductDetailRead
+ */
+export type ProductDetailReadWritable = {
     /**
-     * Successful Response
+     * Created At
      */
-    200: ApiResponse & {
-        data?: BearerResponse;
-    };
+    created_at?: string | null;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+    /**
+     * Images
+     */
+    images?: Array<ProductImageRead>;
+    /**
+     * Variants
+     */
+    variants?: Array<ProductVariantReadWritable>;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Slug
+     */
+    slug: string;
+    /**
+     * Short Description
+     */
+    short_description?: string | null;
+    /**
+     * Is Original Available
+     */
+    is_original_available: boolean;
+    medium?: ProductMediumRead | null;
+    category?: ProductCategoryRead | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    /**
+     * Style
+     */
+    style?: string | null;
+    /**
+     * Subject
+     */
+    subject?: string | null;
+    /**
+     * Year Created
+     */
+    year_created?: number | null;
+    /**
+     * Is Framed
+     */
+    is_framed: boolean;
+    /**
+     * Certificate Of Authenticity
+     */
+    certificate_of_authenticity: boolean;
+    /**
+     * Weight Grams
+     */
+    weight_grams?: number | null;
+    status: ProductStatus;
+    /**
+     * Is Featured
+     */
+    is_featured: boolean;
+    /**
+     * Sort Order
+     */
+    sort_order: number;
+    /**
+     * Meta Title
+     */
+    meta_title?: string | null;
+    /**
+     * Meta Description
+     */
+    meta_description?: string | null;
 };
 
-export type AuthJwtLoginResponse = AuthJwtLoginResponses[keyof AuthJwtLoginResponses];
-
-export type AuthJwtLogoutData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/auth/jwt/logout';
+/**
+ * ProductVariantRead
+ */
+export type ProductVariantReadWritable = {
+    /**
+     * Created At
+     */
+    created_at?: string | null;
+    /**
+     * Updated At
+     */
+    updated_at?: string | null;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Product Id
+     */
+    product_id: number;
+    /**
+     * Variant Type Id
+     */
+    variant_type_id: number | null;
+    /**
+     * Variant Type Name
+     */
+    variant_type_name?: string | null;
+    /**
+     * Width
+     */
+    width: string | null;
+    /**
+     * Height
+     */
+    height: string | null;
+    dimension_unit: DimensionUnit;
+    /**
+     * Sku
+     */
+    sku: string | null;
+    /**
+     * Price
+     */
+    price: string;
+    /**
+     * Stock Quantity
+     */
+    stock_quantity: number;
+    /**
+     * Is Default
+     */
+    is_default: boolean;
+    /**
+     * Is Available
+     */
+    is_available: boolean;
 };
 
-export type AuthJwtLogoutErrors = {
+/**
+ * SuccessResponse[CartItemRead]
+ */
+export type SuccessResponseCartItemReadWritable = {
     /**
-     * Missing token or inactive user.
+     * Success
      */
-    401: unknown;
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: CartItemReadWritable | null;
+    meta?: Meta;
 };
 
-export type AuthJwtLogoutResponses = {
+/**
+ * SuccessResponse[ProductBase]
+ */
+export type SuccessResponseProductBaseWritable = {
     /**
-     * Successful Response
+     * Success
      */
-    200: ApiResponse & {
-        data?: unknown;
-    };
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: ProductBaseWritable | null;
+    meta?: Meta;
 };
 
-export type AuthJwtLogoutResponse = AuthJwtLogoutResponses[keyof AuthJwtLogoutResponses];
-
-export type RegisterRegisterData = {
-    body: UserCreate;
-    path?: never;
-    query?: never;
-    url: '/api/auth/register';
+/**
+ * SuccessResponse[ProductDetailRead]
+ */
+export type SuccessResponseProductDetailReadWritable = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: ProductDetailReadWritable | null;
+    meta?: Meta;
 };
 
-export type RegisterRegisterErrors = {
+/**
+ * SuccessResponse[ProductVariantRead]
+ */
+export type SuccessResponseProductVariantReadWritable = {
     /**
-     * Bad Request
+     * Success
      */
-    400: ApiResponse & {
-        data?: ErrorModel;
-    };
+    success?: boolean;
     /**
-     * Validation Error
+     * Status
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: ProductVariantReadWritable | null;
+    meta?: Meta;
 };
 
-export type RegisterRegisterError = RegisterRegisterErrors[keyof RegisterRegisterErrors];
-
-export type RegisterRegisterResponses = {
+/**
+ * SuccessResponse[WishlistRead]
+ */
+export type SuccessResponseWishlistReadWritable = {
     /**
-     * Successful Response
+     * Success
      */
-    201: ApiResponse & {
-        data?: UserRead;
-    };
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    data?: WishlistReadWritable | null;
+    meta?: Meta;
 };
 
-export type RegisterRegisterResponse = RegisterRegisterResponses[keyof RegisterRegisterResponses];
-
-export type ResetForgotPasswordData = {
-    body: BodyAuthResetForgotPassword;
-    path?: never;
-    query?: never;
-    url: '/api/auth/forgot-password';
+/**
+ * SuccessResponse[list[CartItemRead]]
+ */
+export type SuccessResponseListCartItemReadWritable = {
+    /**
+     * Success
+     */
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<CartItemReadWritable> | null;
+    meta?: Meta;
 };
 
-export type ResetForgotPasswordErrors = {
+/**
+ * SuccessResponse[list[ProductVariantRead]]
+ */
+export type SuccessResponseListProductVariantReadWritable = {
     /**
-     * Validation Error
+     * Success
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<ProductVariantReadWritable> | null;
+    meta?: Meta;
 };
 
-export type ResetForgotPasswordError = ResetForgotPasswordErrors[keyof ResetForgotPasswordErrors];
-
-export type ResetForgotPasswordResponses = {
+/**
+ * SuccessResponse[list[WishlistRead]]
+ */
+export type SuccessResponseListWishlistReadWritable = {
     /**
-     * Successful Response
+     * Success
      */
-    202: ApiResponse & {
-        data?: unknown;
-    };
+    success?: boolean;
+    /**
+     * Status
+     */
+    status?: number;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Data
+     */
+    data?: Array<WishlistReadWritable> | null;
+    meta?: Meta;
 };
 
-export type ResetForgotPasswordResponse = ResetForgotPasswordResponses[keyof ResetForgotPasswordResponses];
-
-export type ResetResetPasswordData = {
-    body: BodyAuthResetResetPassword;
-    path?: never;
-    query?: never;
-    url: '/api/auth/reset-password';
+/**
+ * WishlistRead
+ */
+export type WishlistReadWritable = {
+    /**
+     * Product Id
+     */
+    product_id?: number | null;
+    /**
+     * Course Id
+     */
+    course_id?: number | null;
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * User Id
+     */
+    user_id: string;
+    product?: ProductCardReadWritable | null;
+    course?: CourseRead | null;
 };
-
-export type ResetResetPasswordErrors = {
-    /**
-     * Bad Request
-     */
-    400: ApiResponse & {
-        data?: ErrorModel;
-    };
-    /**
-     * Validation Error
-     */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
-};
-
-export type ResetResetPasswordError = ResetResetPasswordErrors[keyof ResetResetPasswordErrors];
-
-export type ResetResetPasswordResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: unknown;
-    };
-};
-
-export type ResetResetPasswordResponse = ResetResetPasswordResponses[keyof ResetResetPasswordResponses];
-
-export type VerifyRequestTokenData = {
-    body: BodyAuthVerifyRequestToken;
-    path?: never;
-    query?: never;
-    url: '/api/auth/request-verify-token';
-};
-
-export type VerifyRequestTokenErrors = {
-    /**
-     * Validation Error
-     */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
-};
-
-export type VerifyRequestTokenError = VerifyRequestTokenErrors[keyof VerifyRequestTokenErrors];
-
-export type VerifyRequestTokenResponses = {
-    /**
-     * Successful Response
-     */
-    202: ApiResponse & {
-        data?: unknown;
-    };
-};
-
-export type VerifyRequestTokenResponse = VerifyRequestTokenResponses[keyof VerifyRequestTokenResponses];
-
-export type VerifyVerifyData = {
-    body: BodyAuthVerifyVerify;
-    path?: never;
-    query?: never;
-    url: '/api/auth/verify';
-};
-
-export type VerifyVerifyErrors = {
-    /**
-     * Bad Request
-     */
-    400: ApiResponse & {
-        data?: ErrorModel;
-    };
-    /**
-     * Validation Error
-     */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
-};
-
-export type VerifyVerifyError = VerifyVerifyErrors[keyof VerifyVerifyErrors];
-
-export type VerifyVerifyResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: UserRead;
-    };
-};
-
-export type VerifyVerifyResponse = VerifyVerifyResponses[keyof VerifyVerifyResponses];
-
-export type UsersCurrentUserData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/users/me';
-};
-
-export type UsersCurrentUserErrors = {
-    /**
-     * Missing token or inactive user.
-     */
-    401: unknown;
-};
-
-export type UsersCurrentUserResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: UserRead;
-    };
-};
-
-export type UsersCurrentUserResponse = UsersCurrentUserResponses[keyof UsersCurrentUserResponses];
-
-export type UsersPatchCurrentUserData = {
-    body: UserUpdate;
-    path?: never;
-    query?: never;
-    url: '/api/users/me';
-};
-
-export type UsersPatchCurrentUserErrors = {
-    /**
-     * Bad Request
-     */
-    400: ApiResponse & {
-        data?: ErrorModel;
-    };
-    /**
-     * Missing token or inactive user.
-     */
-    401: unknown;
-    /**
-     * Validation Error
-     */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
-};
-
-export type UsersPatchCurrentUserError = UsersPatchCurrentUserErrors[keyof UsersPatchCurrentUserErrors];
-
-export type UsersPatchCurrentUserResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: UserRead;
-    };
-};
-
-export type UsersPatchCurrentUserResponse = UsersPatchCurrentUserResponses[keyof UsersPatchCurrentUserResponses];
-
-export type UsersDeleteUserData = {
-    body?: never;
-    path: {
-        /**
-         * Id
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/api/users/{id}';
-};
-
-export type UsersDeleteUserErrors = {
-    /**
-     * Missing token or inactive user.
-     */
-    401: unknown;
-    /**
-     * Not a superuser.
-     */
-    403: unknown;
-    /**
-     * The user does not exist.
-     */
-    404: unknown;
-    /**
-     * Validation Error
-     */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
-};
-
-export type UsersDeleteUserError = UsersDeleteUserErrors[keyof UsersDeleteUserErrors];
-
-export type UsersDeleteUserResponses = {
-    /**
-     * Successful Response
-     */
-    204: void;
-};
-
-export type UsersDeleteUserResponse = UsersDeleteUserResponses[keyof UsersDeleteUserResponses];
-
-export type UsersUserData = {
-    body?: never;
-    path: {
-        /**
-         * Id
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/api/users/{id}';
-};
-
-export type UsersUserErrors = {
-    /**
-     * Missing token or inactive user.
-     */
-    401: unknown;
-    /**
-     * Not a superuser.
-     */
-    403: unknown;
-    /**
-     * The user does not exist.
-     */
-    404: unknown;
-    /**
-     * Validation Error
-     */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
-};
-
-export type UsersUserError = UsersUserErrors[keyof UsersUserErrors];
-
-export type UsersUserResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: UserRead;
-    };
-};
-
-export type UsersUserResponse = UsersUserResponses[keyof UsersUserResponses];
-
-export type UsersPatchUserData = {
-    body: UserUpdate;
-    path: {
-        /**
-         * Id
-         */
-        id: string;
-    };
-    query?: never;
-    url: '/api/users/{id}';
-};
-
-export type UsersPatchUserErrors = {
-    /**
-     * Bad Request
-     */
-    400: ApiResponse & {
-        data?: ErrorModel;
-    };
-    /**
-     * Missing token or inactive user.
-     */
-    401: unknown;
-    /**
-     * Not a superuser.
-     */
-    403: unknown;
-    /**
-     * The user does not exist.
-     */
-    404: unknown;
-    /**
-     * Validation Error
-     */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
-};
-
-export type UsersPatchUserError = UsersPatchUserErrors[keyof UsersPatchUserErrors];
-
-export type UsersPatchUserResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: UserRead;
-    };
-};
-
-export type UsersPatchUserResponse = UsersPatchUserResponses[keyof UsersPatchUserResponses];
 
 export type HealthCheckData = {
     body?: never;
@@ -1873,13 +3268,20 @@ export type HealthCheckData = {
     url: '/api/health';
 };
 
+export type HealthCheckErrors = {
+    /**
+     * Error 422
+     */
+    422: ErrorResponse;
+};
+
+export type HealthCheckError = HealthCheckErrors[keyof HealthCheckErrors];
+
 export type HealthCheckResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelAny;
-    };
+    200: SuccessResponseBasicHealthData;
 };
 
 export type HealthCheckResponse = HealthCheckResponses[keyof HealthCheckResponses];
@@ -1891,16 +3293,1538 @@ export type HealthCheckDetailedData = {
     url: '/api/health/detailed';
 };
 
+export type HealthCheckDetailedErrors = {
+    /**
+     * Error 422
+     */
+    422: ErrorResponse;
+};
+
+export type HealthCheckDetailedError = HealthCheckDetailedErrors[keyof HealthCheckDetailedErrors];
+
 export type HealthCheckDetailedResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelAny;
-    };
+    200: SuccessResponseDetailedHealthData;
 };
 
 export type HealthCheckDetailedResponse = HealthCheckDetailedResponses[keyof HealthCheckDetailedResponses];
+
+export type AdminStatsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/stats';
+};
+
+export type AdminStatsErrors = {
+    /**
+     * Error 422
+     */
+    422: ErrorResponse;
+};
+
+export type AdminStatsError = AdminStatsErrors[keyof AdminStatsErrors];
+
+export type AdminStatsResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseDictStrInt;
+};
+
+export type AdminStatsResponse = AdminStatsResponses[keyof AdminStatsResponses];
+
+export type GetHomePageSettingsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/config/home';
+};
+
+export type GetHomePageSettingsErrors = {
+    /**
+     * Error 422
+     */
+    422: ErrorResponse;
+};
+
+export type GetHomePageSettingsError = GetHomePageSettingsErrors[keyof GetHomePageSettingsErrors];
+
+export type GetHomePageSettingsResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseHomePageConfig;
+};
+
+export type GetHomePageSettingsResponse = GetHomePageSettingsResponses[keyof GetHomePageSettingsResponses];
+
+export type UpdateHomePageSettingsData = {
+    body: HomePageConfig;
+    path?: never;
+    query?: never;
+    url: '/api/admin/config/home';
+};
+
+export type UpdateHomePageSettingsErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type UpdateHomePageSettingsError = UpdateHomePageSettingsErrors[keyof UpdateHomePageSettingsErrors];
+
+export type UpdateHomePageSettingsResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseHomePageConfig;
+};
+
+export type UpdateHomePageSettingsResponse = UpdateHomePageSettingsResponses[keyof UpdateHomePageSettingsResponses];
+
+export type ListUsersData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/users';
+};
+
+export type ListUsersErrors = {
+    /**
+     * Error 422
+     */
+    422: ErrorResponse;
+};
+
+export type ListUsersError = ListUsersErrors[keyof ListUsersErrors];
+
+export type ListUsersResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseListDict;
+};
+
+export type ListUsersResponse = ListUsersResponses[keyof ListUsersResponses];
+
+export type GetUserData = {
+    body?: never;
+    path: {
+        /**
+         * User Id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/admin/users/{user_id}';
+};
+
+export type GetUserErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type GetUserError = GetUserErrors[keyof GetUserErrors];
+
+export type GetUserResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseDict;
+};
+
+export type GetUserResponse = GetUserResponses[keyof GetUserResponses];
+
+export type ListCategoriesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page
+         */
+        page?: number;
+        /**
+         * Page Size
+         */
+        page_size?: number;
+    };
+    url: '/api/admin/product-categories';
+};
+
+export type ListCategoriesErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type ListCategoriesError = ListCategoriesErrors[keyof ListCategoriesErrors];
+
+export type ListCategoriesResponses = {
+    /**
+     * Successful Response
+     */
+    200: PaginatedResponseProductCategoryRead;
+};
+
+export type ListCategoriesResponse = ListCategoriesResponses[keyof ListCategoriesResponses];
+
+export type CreateCategoryData = {
+    body: ProductCategoryCreate;
+    path?: never;
+    query?: never;
+    url: '/api/admin/product-categories';
+};
+
+export type CreateCategoryErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type CreateCategoryError = CreateCategoryErrors[keyof CreateCategoryErrors];
+
+export type CreateCategoryResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseProductCategoryRead;
+};
+
+export type CreateCategoryResponse = CreateCategoryResponses[keyof CreateCategoryResponses];
+
+export type DeleteCategoryData = {
+    body?: never;
+    path: {
+        /**
+         * Category Id
+         */
+        category_id: number;
+    };
+    query?: never;
+    url: '/api/admin/product-categories/{category_id}';
+};
+
+export type DeleteCategoryErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type DeleteCategoryError = DeleteCategoryErrors[keyof DeleteCategoryErrors];
+
+export type DeleteCategoryResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseNoneType;
+};
+
+export type DeleteCategoryResponse = DeleteCategoryResponses[keyof DeleteCategoryResponses];
+
+export type GetCategoryData = {
+    body?: never;
+    path: {
+        /**
+         * Category Id
+         */
+        category_id: number;
+    };
+    query?: never;
+    url: '/api/admin/product-categories/{category_id}';
+};
+
+export type GetCategoryErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type GetCategoryError = GetCategoryErrors[keyof GetCategoryErrors];
+
+export type GetCategoryResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseProductCategoryRead;
+};
+
+export type GetCategoryResponse = GetCategoryResponses[keyof GetCategoryResponses];
+
+export type UpdateCategoryData = {
+    body: ProductCategoryUpdate;
+    path: {
+        /**
+         * Category Id
+         */
+        category_id: number;
+    };
+    query?: never;
+    url: '/api/admin/product-categories/{category_id}';
+};
+
+export type UpdateCategoryErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type UpdateCategoryError = UpdateCategoryErrors[keyof UpdateCategoryErrors];
+
+export type UpdateCategoryResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseProductCategoryRead;
+};
+
+export type UpdateCategoryResponse = UpdateCategoryResponses[keyof UpdateCategoryResponses];
+
+export type ListMediumsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page
+         */
+        page?: number;
+        /**
+         * Page Size
+         */
+        page_size?: number;
+    };
+    url: '/api/admin/product-mediums';
+};
+
+export type ListMediumsErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type ListMediumsError = ListMediumsErrors[keyof ListMediumsErrors];
+
+export type ListMediumsResponses = {
+    /**
+     * Successful Response
+     */
+    200: PaginatedResponseProductMediumRead;
+};
+
+export type ListMediumsResponse = ListMediumsResponses[keyof ListMediumsResponses];
+
+export type CreateMediumData = {
+    body: ProductMediumCreate;
+    path?: never;
+    query?: never;
+    url: '/api/admin/product-mediums';
+};
+
+export type CreateMediumErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type CreateMediumError = CreateMediumErrors[keyof CreateMediumErrors];
+
+export type CreateMediumResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseProductMediumRead;
+};
+
+export type CreateMediumResponse = CreateMediumResponses[keyof CreateMediumResponses];
+
+export type DeleteMediumData = {
+    body?: never;
+    path: {
+        /**
+         * Medium Id
+         */
+        medium_id: number;
+    };
+    query?: never;
+    url: '/api/admin/product-mediums/{medium_id}';
+};
+
+export type DeleteMediumErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type DeleteMediumError = DeleteMediumErrors[keyof DeleteMediumErrors];
+
+export type DeleteMediumResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseNoneType;
+};
+
+export type DeleteMediumResponse = DeleteMediumResponses[keyof DeleteMediumResponses];
+
+export type GetMediumData = {
+    body?: never;
+    path: {
+        /**
+         * Medium Id
+         */
+        medium_id: number;
+    };
+    query?: never;
+    url: '/api/admin/product-mediums/{medium_id}';
+};
+
+export type GetMediumErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type GetMediumError = GetMediumErrors[keyof GetMediumErrors];
+
+export type GetMediumResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseProductMediumRead;
+};
+
+export type GetMediumResponse = GetMediumResponses[keyof GetMediumResponses];
+
+export type UpdateMediumData = {
+    body: ProductMediumUpdate;
+    path: {
+        /**
+         * Medium Id
+         */
+        medium_id: number;
+    };
+    query?: never;
+    url: '/api/admin/product-mediums/{medium_id}';
+};
+
+export type UpdateMediumErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type UpdateMediumError = UpdateMediumErrors[keyof UpdateMediumErrors];
+
+export type UpdateMediumResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseProductMediumRead;
+};
+
+export type UpdateMediumResponse = UpdateMediumResponses[keyof UpdateMediumResponses];
+
+export type ListVariantTypesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page
+         */
+        page?: number;
+        /**
+         * Page Size
+         */
+        page_size?: number;
+    };
+    url: '/api/admin/variant-types';
+};
+
+export type ListVariantTypesErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type ListVariantTypesError = ListVariantTypesErrors[keyof ListVariantTypesErrors];
+
+export type ListVariantTypesResponses = {
+    /**
+     * Successful Response
+     */
+    200: PaginatedResponseVariantTypeRead;
+};
+
+export type ListVariantTypesResponse = ListVariantTypesResponses[keyof ListVariantTypesResponses];
+
+export type CreateVariantTypeData = {
+    body: VariantTypeCreate;
+    path?: never;
+    query?: never;
+    url: '/api/admin/variant-types';
+};
+
+export type CreateVariantTypeErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type CreateVariantTypeError = CreateVariantTypeErrors[keyof CreateVariantTypeErrors];
+
+export type CreateVariantTypeResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseVariantTypeRead;
+};
+
+export type CreateVariantTypeResponse = CreateVariantTypeResponses[keyof CreateVariantTypeResponses];
+
+export type DeleteVariantTypeData = {
+    body?: never;
+    path: {
+        /**
+         * Variant Type Id
+         */
+        variant_type_id: number;
+    };
+    query?: never;
+    url: '/api/admin/variant-types/{variant_type_id}';
+};
+
+export type DeleteVariantTypeErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type DeleteVariantTypeError = DeleteVariantTypeErrors[keyof DeleteVariantTypeErrors];
+
+export type DeleteVariantTypeResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseNoneType;
+};
+
+export type DeleteVariantTypeResponse = DeleteVariantTypeResponses[keyof DeleteVariantTypeResponses];
+
+export type GetVariantTypeData = {
+    body?: never;
+    path: {
+        /**
+         * Variant Type Id
+         */
+        variant_type_id: number;
+    };
+    query?: never;
+    url: '/api/admin/variant-types/{variant_type_id}';
+};
+
+export type GetVariantTypeErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type GetVariantTypeError = GetVariantTypeErrors[keyof GetVariantTypeErrors];
+
+export type GetVariantTypeResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseVariantTypeRead;
+};
+
+export type GetVariantTypeResponse = GetVariantTypeResponses[keyof GetVariantTypeResponses];
+
+export type UpdateVariantTypeData = {
+    body: VariantTypeUpdate;
+    path: {
+        /**
+         * Variant Type Id
+         */
+        variant_type_id: number;
+    };
+    query?: never;
+    url: '/api/admin/variant-types/{variant_type_id}';
+};
+
+export type UpdateVariantTypeErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type UpdateVariantTypeError = UpdateVariantTypeErrors[keyof UpdateVariantTypeErrors];
+
+export type UpdateVariantTypeResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseVariantTypeRead;
+};
+
+export type UpdateVariantTypeResponse = UpdateVariantTypeResponses[keyof UpdateVariantTypeResponses];
+
+export type ListProductsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page
+         */
+        page?: number;
+        /**
+         * Page Size
+         */
+        page_size?: number;
+        /**
+         * Search
+         */
+        search?: string | null;
+        /**
+         * Category Id
+         */
+        category_id?: number | null;
+        /**
+         * Is Featured
+         */
+        is_featured?: boolean | null;
+    };
+    url: '/api/admin/products';
+};
+
+export type ListProductsErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type ListProductsError = ListProductsErrors[keyof ListProductsErrors];
+
+export type ListProductsResponses = {
+    /**
+     * Successful Response
+     */
+    200: PaginatedResponseProductCardRead;
+};
+
+export type ListProductsResponse = ListProductsResponses[keyof ListProductsResponses];
+
+export type CreateProductData = {
+    body: BodyAdminCreateProduct;
+    path?: never;
+    query?: never;
+    url: '/api/admin/products';
+};
+
+export type CreateProductErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type CreateProductError = CreateProductErrors[keyof CreateProductErrors];
+
+export type CreateProductResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseProductDetailRead;
+};
+
+export type CreateProductResponse = CreateProductResponses[keyof CreateProductResponses];
+
+export type FeaturedProductsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page
+         */
+        page?: number;
+        /**
+         * Page Size
+         */
+        page_size?: number;
+        /**
+         * Search
+         */
+        search?: string | null;
+    };
+    url: '/api/admin/products/featured';
+};
+
+export type FeaturedProductsErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type FeaturedProductsError = FeaturedProductsErrors[keyof FeaturedProductsErrors];
+
+export type FeaturedProductsResponses = {
+    /**
+     * Successful Response
+     */
+    200: PaginatedResponseProductCardRead;
+};
+
+export type FeaturedProductsResponse = FeaturedProductsResponses[keyof FeaturedProductsResponses];
+
+export type SearchProductsData = {
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Q
+         */
+        q: string;
+        /**
+         * Page
+         */
+        page?: number;
+        /**
+         * Page Size
+         */
+        page_size?: number;
+    };
+    url: '/api/admin/products/search';
+};
+
+export type SearchProductsErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type SearchProductsError = SearchProductsErrors[keyof SearchProductsErrors];
+
+export type SearchProductsResponses = {
+    /**
+     * Successful Response
+     */
+    200: PaginatedResponseProductCardRead;
+};
+
+export type SearchProductsResponse = SearchProductsResponses[keyof SearchProductsResponses];
+
+export type GetProductBySlugData = {
+    body?: never;
+    path: {
+        /**
+         * Slug
+         */
+        slug: string;
+    };
+    query?: never;
+    url: '/api/admin/products/slug/{slug}';
+};
+
+export type GetProductBySlugErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type GetProductBySlugError = GetProductBySlugErrors[keyof GetProductBySlugErrors];
+
+export type GetProductBySlugResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseProductDetailRead;
+};
+
+export type GetProductBySlugResponse = GetProductBySlugResponses[keyof GetProductBySlugResponses];
+
+export type DeleteProductData = {
+    body?: never;
+    path: {
+        /**
+         * Product Id
+         */
+        product_id: number;
+    };
+    query?: never;
+    url: '/api/admin/products/{product_id}';
+};
+
+export type DeleteProductErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type DeleteProductError = DeleteProductErrors[keyof DeleteProductErrors];
+
+export type DeleteProductResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseNoneType;
+};
+
+export type DeleteProductResponse = DeleteProductResponses[keyof DeleteProductResponses];
+
+export type GetProductData = {
+    body?: never;
+    path: {
+        /**
+         * Product Id
+         */
+        product_id: number;
+    };
+    query?: never;
+    url: '/api/admin/products/{product_id}';
+};
+
+export type GetProductErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type GetProductError = GetProductErrors[keyof GetProductErrors];
+
+export type GetProductResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseProductDetailRead;
+};
+
+export type GetProductResponse = GetProductResponses[keyof GetProductResponses];
+
+export type UpdateProductData = {
+    body: BodyAdminUpdateProduct;
+    path: {
+        /**
+         * Product Id
+         */
+        product_id: number;
+    };
+    query?: never;
+    url: '/api/admin/products/{product_id}';
+};
+
+export type UpdateProductErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type UpdateProductError = UpdateProductErrors[keyof UpdateProductErrors];
+
+export type UpdateProductResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseProductDetailRead;
+};
+
+export type UpdateProductResponse = UpdateProductResponses[keyof UpdateProductResponses];
+
+export type PublishProductData = {
+    body?: never;
+    path: {
+        /**
+         * Product Id
+         */
+        product_id: number;
+    };
+    query?: never;
+    url: '/api/admin/products/{product_id}/publish';
+};
+
+export type PublishProductErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type PublishProductError = PublishProductErrors[keyof PublishProductErrors];
+
+export type PublishProductResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseProductBase;
+};
+
+export type PublishProductResponse = PublishProductResponses[keyof PublishProductResponses];
+
+export type ArchiveProductData = {
+    body?: never;
+    path: {
+        /**
+         * Product Id
+         */
+        product_id: number;
+    };
+    query?: never;
+    url: '/api/admin/products/{product_id}/archive';
+};
+
+export type ArchiveProductErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type ArchiveProductError = ArchiveProductErrors[keyof ArchiveProductErrors];
+
+export type ArchiveProductResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseProductBase;
+};
+
+export type ArchiveProductResponse = ArchiveProductResponses[keyof ArchiveProductResponses];
+
+export type GetVariantData = {
+    body?: never;
+    path: {
+        /**
+         * Variant Id
+         */
+        variant_id: number;
+    };
+    query?: never;
+    url: '/api/admin/variants/{variant_id}';
+};
+
+export type GetVariantErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type GetVariantError = GetVariantErrors[keyof GetVariantErrors];
+
+export type GetVariantResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseProductVariantRead;
+};
+
+export type GetVariantResponse = GetVariantResponses[keyof GetVariantResponses];
+
+export type ListVariantsData = {
+    body?: never;
+    path: {
+        /**
+         * Product Id
+         */
+        product_id: number;
+    };
+    query?: never;
+    url: '/api/admin/variants/product/{product_id}';
+};
+
+export type ListVariantsErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type ListVariantsError = ListVariantsErrors[keyof ListVariantsErrors];
+
+export type ListVariantsResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseListProductVariantRead;
+};
+
+export type ListVariantsResponse = ListVariantsResponses[keyof ListVariantsResponses];
+
+export type GetProductImagesData = {
+    body?: never;
+    path: {
+        /**
+         * Product Id
+         */
+        product_id: number;
+    };
+    query?: never;
+    url: '/api/admin/images/product/{product_id}';
+};
+
+export type GetProductImagesErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type GetProductImagesError = GetProductImagesErrors[keyof GetProductImagesErrors];
+
+export type GetProductImagesResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseListProductImageRead;
+};
+
+export type GetProductImagesResponse = GetProductImagesResponses[keyof GetProductImagesResponses];
+
+export type GetImageData = {
+    body?: never;
+    path: {
+        /**
+         * Image Id
+         */
+        image_id: number;
+    };
+    query?: never;
+    url: '/api/admin/images/{image_id}';
+};
+
+export type GetImageErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type GetImageError = GetImageErrors[keyof GetImageErrors];
+
+export type GetImageResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseProductImageRead;
+};
+
+export type GetImageResponse = GetImageResponses[keyof GetImageResponses];
+
+export type ListCoursesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/courses';
+};
+
+export type ListCoursesErrors = {
+    /**
+     * Error 422
+     */
+    422: ErrorResponse;
+};
+
+export type ListCoursesError = ListCoursesErrors[keyof ListCoursesErrors];
+
+export type ListCoursesResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseListDictStrStr;
+};
+
+export type ListCoursesResponse = ListCoursesResponses[keyof ListCoursesResponses];
+
+export type GetCourseData = {
+    body?: never;
+    path: {
+        /**
+         * Course Id
+         */
+        course_id: string;
+    };
+    query?: never;
+    url: '/api/admin/courses/{course_id}';
+};
+
+export type GetCourseErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type GetCourseError = GetCourseErrors[keyof GetCourseErrors];
+
+export type GetCourseResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseDictStrStr;
+};
+
+export type GetCourseResponse = GetCourseResponses[keyof GetCourseResponses];
+
+export type OverviewData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/dashboard/overview';
+};
+
+export type OverviewErrors = {
+    /**
+     * Error 422
+     */
+    422: ErrorResponse;
+};
+
+export type OverviewError = OverviewErrors[keyof OverviewErrors];
+
+export type OverviewResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseDictStrInt;
+};
+
+export type OverviewResponse = OverviewResponses[keyof OverviewResponses];
+
+export type ListAllReviewsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Review Type
+         */
+        review_type?: ReviewType | null;
+        /**
+         * Entity Id
+         */
+        entity_id?: number | null;
+        /**
+         * Status
+         */
+        status?: ReviewStatus | null;
+        /**
+         * Page
+         */
+        page?: number;
+        /**
+         * Page Size
+         */
+        page_size?: number;
+    };
+    url: '/api/admin/reviews';
+};
+
+export type ListAllReviewsErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type ListAllReviewsError = ListAllReviewsErrors[keyof ListAllReviewsErrors];
+
+export type ListAllReviewsResponses = {
+    /**
+     * Successful Response
+     */
+    200: PaginatedResponseReviewRead;
+};
+
+export type ListAllReviewsResponse = ListAllReviewsResponses[keyof ListAllReviewsResponses];
+
+export type DeleteReviewData = {
+    body?: never;
+    path: {
+        /**
+         * Review Id
+         */
+        review_id: string;
+    };
+    query?: never;
+    url: '/api/admin/reviews/{review_id}';
+};
+
+export type DeleteReviewErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type DeleteReviewError = DeleteReviewErrors[keyof DeleteReviewErrors];
+
+export type DeleteReviewResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseDict;
+};
+
+export type DeleteReviewResponse = DeleteReviewResponses[keyof DeleteReviewResponses];
+
+export type GetReviewDetailData = {
+    body?: never;
+    path: {
+        /**
+         * Review Id
+         */
+        review_id: string;
+    };
+    query?: never;
+    url: '/api/admin/reviews/{review_id}';
+};
+
+export type GetReviewDetailErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type GetReviewDetailError = GetReviewDetailErrors[keyof GetReviewDetailErrors];
+
+export type GetReviewDetailResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseReviewRead;
+};
+
+export type GetReviewDetailResponse = GetReviewDetailResponses[keyof GetReviewDetailResponses];
+
+export type UpdateReviewData = {
+    body: ReviewUpdate;
+    path: {
+        /**
+         * Review Id
+         */
+        review_id: string;
+    };
+    query?: never;
+    url: '/api/admin/reviews/{review_id}';
+};
+
+export type UpdateReviewErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type UpdateReviewError = UpdateReviewErrors[keyof UpdateReviewErrors];
+
+export type UpdateReviewResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseReviewRead;
+};
+
+export type UpdateReviewResponse = UpdateReviewResponses[keyof UpdateReviewResponses];
+
+export type RegisterData = {
+    body: UserCreate;
+    path?: never;
+    query?: never;
+    url: '/api/auth/register';
+};
+
+export type RegisterErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type RegisterError = RegisterErrors[keyof RegisterErrors];
+
+export type RegisterResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseNoneType;
+};
+
+export type RegisterResponse = RegisterResponses[keyof RegisterResponses];
+
+export type LoginData = {
+    body: BodyAuthLogin;
+    path?: never;
+    query?: never;
+    url: '/api/auth/login';
+};
+
+export type LoginErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type LoginError = LoginErrors[keyof LoginErrors];
+
+export type LoginResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseTokenResponse;
+};
+
+export type LoginResponse = LoginResponses[keyof LoginResponses];
+
+export type RefreshTokenData = {
+    body: RefreshTokenRequest;
+    path?: never;
+    query?: never;
+    url: '/api/auth/refresh';
+};
+
+export type RefreshTokenErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type RefreshTokenError = RefreshTokenErrors[keyof RefreshTokenErrors];
+
+export type RefreshTokenResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseTokenResponse;
+};
+
+export type RefreshTokenResponse = RefreshTokenResponses[keyof RefreshTokenResponses];
+
+export type MeData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/auth/me';
+};
+
+export type MeErrors = {
+    /**
+     * Error 422
+     */
+    422: ErrorResponse;
+};
+
+export type MeError = MeErrors[keyof MeErrors];
+
+export type MeResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseUserRead;
+};
+
+export type MeResponse = MeResponses[keyof MeResponses];
+
+export type ForgotPasswordData = {
+    body: ForgotPasswordRequest;
+    path?: never;
+    query?: never;
+    url: '/api/auth/forgot-password';
+};
+
+export type ForgotPasswordErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type ForgotPasswordError = ForgotPasswordErrors[keyof ForgotPasswordErrors];
+
+export type ForgotPasswordResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseNoneType;
+};
+
+export type ForgotPasswordResponse = ForgotPasswordResponses[keyof ForgotPasswordResponses];
+
+export type ResetPasswordData = {
+    body: ResetPasswordRequest;
+    path?: never;
+    query?: never;
+    url: '/api/auth/reset-password';
+};
+
+export type ResetPasswordErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type ResetPasswordError = ResetPasswordErrors[keyof ResetPasswordErrors];
+
+export type ResetPasswordResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseNoneType;
+};
+
+export type ResetPasswordResponse = ResetPasswordResponses[keyof ResetPasswordResponses];
+
+export type ChangePasswordData = {
+    body: ChangePasswordRequest;
+    path?: never;
+    query?: never;
+    url: '/api/auth/change-password';
+};
+
+export type ChangePasswordErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type ChangePasswordError = ChangePasswordErrors[keyof ChangePasswordErrors];
+
+export type ChangePasswordResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseNoneType;
+};
+
+export type ChangePasswordResponse = ChangePasswordResponses[keyof ChangePasswordResponses];
+
+export type RequestVerificationData = {
+    body: RequestVerificationRequest;
+    path?: never;
+    query?: never;
+    url: '/api/auth/request-verification';
+};
+
+export type RequestVerificationErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type RequestVerificationError = RequestVerificationErrors[keyof RequestVerificationErrors];
+
+export type RequestVerificationResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseNoneType;
+};
+
+export type RequestVerificationResponse = RequestVerificationResponses[keyof RequestVerificationResponses];
+
+export type VerifyEmailData = {
+    body: VerifyEmailRequest;
+    path?: never;
+    query?: never;
+    url: '/api/auth/verify';
+};
+
+export type VerifyEmailErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type VerifyEmailError = VerifyEmailErrors[keyof VerifyEmailErrors];
+
+export type VerifyEmailResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseNoneType;
+};
+
+export type VerifyEmailResponse = VerifyEmailResponses[keyof VerifyEmailResponses];
+
+export type LogoutData = {
+    body: LogoutRequest;
+    path?: never;
+    query?: never;
+    url: '/api/auth/logout';
+};
+
+export type LogoutErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type LogoutError = LogoutErrors[keyof LogoutErrors];
+
+export type LogoutResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseNoneType;
+};
+
+export type LogoutResponse = LogoutResponses[keyof LogoutResponses];
+
+export type LogoutAllData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/auth/logout-all';
+};
+
+export type LogoutAllErrors = {
+    /**
+     * Error 422
+     */
+    422: ErrorResponse;
+};
+
+export type LogoutAllError = LogoutAllErrors[keyof LogoutAllErrors];
+
+export type LogoutAllResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseNoneType;
+};
+
+export type LogoutAllResponse = LogoutAllResponses[keyof LogoutAllResponses];
 
 export type ReadOwnProfileData = {
     body?: never;
@@ -1909,16 +4833,48 @@ export type ReadOwnProfileData = {
     url: '/api/profiles/me';
 };
 
+export type ReadOwnProfileErrors = {
+    /**
+     * Error 422
+     */
+    422: ErrorResponse;
+};
+
+export type ReadOwnProfileError = ReadOwnProfileErrors[keyof ReadOwnProfileErrors];
+
 export type ReadOwnProfileResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelUserRead;
-    };
+    200: SuccessResponseUserProfileRead;
 };
 
 export type ReadOwnProfileResponse = ReadOwnProfileResponses[keyof ReadOwnProfileResponses];
+
+export type ReadMyAddressesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/profiles/me/addresses';
+};
+
+export type ReadMyAddressesErrors = {
+    /**
+     * Error 422
+     */
+    422: ErrorResponse;
+};
+
+export type ReadMyAddressesError = ReadMyAddressesErrors[keyof ReadMyAddressesErrors];
+
+export type ReadMyAddressesResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseListAddressRead;
+};
+
+export type ReadMyAddressesResponse = ReadMyAddressesResponses[keyof ReadMyAddressesResponses];
 
 export type ListProfilesData = {
     body?: never;
@@ -1928,6 +4884,14 @@ export type ListProfilesData = {
          * Q
          */
         q?: string | null;
+        /**
+         * Page
+         */
+        page?: number;
+        /**
+         * Page Size
+         */
+        page_size?: number;
     };
     url: '/api/profiles';
 };
@@ -1936,9 +4900,7 @@ export type ListProfilesErrors = {
     /**
      * Validation Error
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    422: ErrorResponse;
 };
 
 export type ListProfilesError = ListProfilesErrors[keyof ListProfilesErrors];
@@ -1947,9 +4909,7 @@ export type ListProfilesResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelListUserRead;
-    };
+    200: PaginatedResponsePublicUserRead;
 };
 
 export type ListProfilesResponse = ListProfilesResponses[keyof ListProfilesResponses];
@@ -1957,17 +4917,33 @@ export type ListProfilesResponse = ListProfilesResponses[keyof ListProfilesRespo
 export type ListAddressesData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * Page
+         */
+        page?: number;
+        /**
+         * Page Size
+         */
+        page_size?: number;
+    };
     url: '/api/addresses';
 };
+
+export type ListAddressesErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type ListAddressesError = ListAddressesErrors[keyof ListAddressesErrors];
 
 export type ListAddressesResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelListAddressRead;
-    };
+    200: PaginatedResponseAddressRead;
 };
 
 export type ListAddressesResponse = ListAddressesResponses[keyof ListAddressesResponses];
@@ -1983,9 +4959,7 @@ export type CreateAddressErrors = {
     /**
      * Validation Error
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    422: ErrorResponse;
 };
 
 export type CreateAddressError = CreateAddressErrors[keyof CreateAddressErrors];
@@ -1994,9 +4968,7 @@ export type CreateAddressResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelAddressRead;
-    };
+    200: SuccessResponseAddressRead;
 };
 
 export type CreateAddressResponse = CreateAddressResponses[keyof CreateAddressResponses];
@@ -2017,9 +4989,7 @@ export type DeleteAddressErrors = {
     /**
      * Validation Error
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    422: ErrorResponse;
 };
 
 export type DeleteAddressError = DeleteAddressErrors[keyof DeleteAddressErrors];
@@ -2028,12 +4998,40 @@ export type DeleteAddressResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelDict;
-    };
+    200: SuccessResponseDict;
 };
 
 export type DeleteAddressResponse = DeleteAddressResponses[keyof DeleteAddressResponses];
+
+export type UpdateAddressData = {
+    body: AddressUpdate;
+    path: {
+        /**
+         * Address Id
+         */
+        address_id: number;
+    };
+    query?: never;
+    url: '/api/addresses/{address_id}';
+};
+
+export type UpdateAddressErrors = {
+    /**
+     * Validation Error
+     */
+    422: ErrorResponse;
+};
+
+export type UpdateAddressError = UpdateAddressErrors[keyof UpdateAddressErrors];
+
+export type UpdateAddressResponses = {
+    /**
+     * Successful Response
+     */
+    200: SuccessResponseAddressRead;
+};
+
+export type UpdateAddressResponse = UpdateAddressResponses[keyof UpdateAddressResponses];
 
 export type ListReviewsData = {
     body?: never;
@@ -2063,9 +5061,7 @@ export type ListReviewsErrors = {
     /**
      * Validation Error
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    422: ErrorResponse;
 };
 
 export type ListReviewsError = ListReviewsErrors[keyof ListReviewsErrors];
@@ -2074,9 +5070,7 @@ export type ListReviewsResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelListReviewReadPublic;
-    };
+    200: SuccessResponseListReviewReadPublic;
 };
 
 export type ListReviewsResponse = ListReviewsResponses[keyof ListReviewsResponses];
@@ -2092,9 +5086,7 @@ export type CreateReviewErrors = {
     /**
      * Validation Error
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    422: ErrorResponse;
 };
 
 export type CreateReviewError = CreateReviewErrors[keyof CreateReviewErrors];
@@ -2103,9 +5095,7 @@ export type CreateReviewResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelReviewRead;
-    };
+    200: SuccessResponseReviewRead;
 };
 
 export type CreateReviewResponse = CreateReviewResponses[keyof CreateReviewResponses];
@@ -2117,447 +5107,59 @@ export type GetMyReviewsData = {
     url: '/api/reviews/user/my-reviews';
 };
 
+export type GetMyReviewsErrors = {
+    /**
+     * Error 422
+     */
+    422: ErrorResponse;
+};
+
+export type GetMyReviewsError = GetMyReviewsErrors[keyof GetMyReviewsErrors];
+
 export type GetMyReviewsResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelListReviewRead;
-    };
+    200: SuccessResponseListReviewRead;
 };
 
 export type GetMyReviewsResponse = GetMyReviewsResponses[keyof GetMyReviewsResponses];
 
-export type AdminStatsData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/admin/stats';
-};
-
-export type AdminStatsResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: unknown;
-    };
-};
-
-export type AdminStatsResponse = AdminStatsResponses[keyof AdminStatsResponses];
-
-export type ListUsersData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/admin/users/';
-};
-
-export type ListUsersResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: ResponseModelListDict;
-    };
-};
-
-export type ListUsersResponse = ListUsersResponses[keyof ListUsersResponses];
-
-export type GetUserData = {
-    body?: never;
-    path: {
-        /**
-         * User Id
-         */
-        user_id: string;
-    };
-    query?: never;
-    url: '/api/admin/users/{user_id}';
-};
-
-export type GetUserErrors = {
-    /**
-     * Validation Error
-     */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
-};
-
-export type GetUserError = GetUserErrors[keyof GetUserErrors];
-
-export type GetUserResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: ResponseModelDict;
-    };
-};
-
-export type GetUserResponse = GetUserResponses[keyof GetUserResponses];
-
-export type ListCoursesData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/admin/courses/';
-};
-
-export type ListCoursesResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: unknown;
-    };
-};
-
-export type ListCoursesResponse = ListCoursesResponses[keyof ListCoursesResponses];
-
-export type GetCourseData = {
-    body?: never;
-    path: {
-        /**
-         * Course Id
-         */
-        course_id: string;
-    };
-    query?: never;
-    url: '/api/admin/courses/{course_id}';
-};
-
-export type GetCourseErrors = {
-    /**
-     * Validation Error
-     */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
-};
-
-export type GetCourseError = GetCourseErrors[keyof GetCourseErrors];
-
-export type GetCourseResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: unknown;
-    };
-};
-
-export type GetCourseResponse = GetCourseResponses[keyof GetCourseResponses];
-
-export type ListProductsData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/admin/products/';
-};
-
-export type ListProductsResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: unknown;
-    };
-};
-
-export type ListProductsResponse = ListProductsResponses[keyof ListProductsResponses];
-
-export type GetProductData = {
-    body?: never;
-    path: {
-        /**
-         * Product Id
-         */
-        product_id: string;
-    };
-    query?: never;
-    url: '/api/admin/products/{product_id}';
-};
-
-export type GetProductErrors = {
-    /**
-     * Validation Error
-     */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
-};
-
-export type GetProductError = GetProductErrors[keyof GetProductErrors];
-
-export type GetProductResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: unknown;
-    };
-};
-
-export type GetProductResponse = GetProductResponses[keyof GetProductResponses];
-
-export type OverviewData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/admin/dashboard/overview';
-};
-
-export type OverviewResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: unknown;
-    };
-};
-
-export type OverviewResponse = OverviewResponses[keyof OverviewResponses];
-
-export type GetHomePageSettingsData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/admin/config/home';
-};
-
-export type GetHomePageSettingsResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: ResponseModelHomePageConfig;
-    };
-};
-
-export type GetHomePageSettingsResponse = GetHomePageSettingsResponses[keyof GetHomePageSettingsResponses];
-
-export type UpdateHomePageSettingsData = {
-    body: HomePageConfig;
-    path?: never;
-    query?: never;
-    url: '/api/admin/config/home';
-};
-
-export type UpdateHomePageSettingsErrors = {
-    /**
-     * Validation Error
-     */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
-};
-
-export type UpdateHomePageSettingsError = UpdateHomePageSettingsErrors[keyof UpdateHomePageSettingsErrors];
-
-export type UpdateHomePageSettingsResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: ResponseModelHomePageConfig;
-    };
-};
-
-export type UpdateHomePageSettingsResponse = UpdateHomePageSettingsResponses[keyof UpdateHomePageSettingsResponses];
-
-export type ListAllReviewsData = {
+export type CoursesListCoursesData = {
     body?: never;
     path?: never;
     query?: {
         /**
-         * Review Type
+         * Page
          */
-        review_type?: ReviewType | null;
+        page?: number;
         /**
-         * Entity Id
+         * Page Size
          */
-        entity_id?: number | null;
-        /**
-         * Status
-         */
-        status?: ReviewStatus | null;
-        /**
-         * Skip
-         */
-        skip?: number;
-        /**
-         * Limit
-         */
-        limit?: number;
-    };
-    url: '/api/admin/reviews';
-};
-
-export type ListAllReviewsErrors = {
-    /**
-     * Validation Error
-     */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
-};
-
-export type ListAllReviewsError = ListAllReviewsErrors[keyof ListAllReviewsErrors];
-
-export type ListAllReviewsResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: ResponseModelListReviewRead;
-    };
-};
-
-export type ListAllReviewsResponse = ListAllReviewsResponses[keyof ListAllReviewsResponses];
-
-export type DeleteReviewData = {
-    body?: never;
-    path: {
-        /**
-         * Review Id
-         */
-        review_id: string;
-    };
-    query?: never;
-    url: '/api/admin/reviews/{review_id}';
-};
-
-export type DeleteReviewErrors = {
-    /**
-     * Validation Error
-     */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
-};
-
-export type DeleteReviewError = DeleteReviewErrors[keyof DeleteReviewErrors];
-
-export type DeleteReviewResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: ResponseModelDict;
-    };
-};
-
-export type DeleteReviewResponse = DeleteReviewResponses[keyof DeleteReviewResponses];
-
-export type GetReviewDetailData = {
-    body?: never;
-    path: {
-        /**
-         * Review Id
-         */
-        review_id: string;
-    };
-    query?: never;
-    url: '/api/admin/reviews/{review_id}';
-};
-
-export type GetReviewDetailErrors = {
-    /**
-     * Validation Error
-     */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
-};
-
-export type GetReviewDetailError = GetReviewDetailErrors[keyof GetReviewDetailErrors];
-
-export type GetReviewDetailResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: ResponseModelReviewRead;
-    };
-};
-
-export type GetReviewDetailResponse = GetReviewDetailResponses[keyof GetReviewDetailResponses];
-
-export type UpdateReviewData = {
-    body: ReviewUpdate;
-    path: {
-        /**
-         * Review Id
-         */
-        review_id: string;
-    };
-    query?: never;
-    url: '/api/admin/reviews/{review_id}';
-};
-
-export type UpdateReviewErrors = {
-    /**
-     * Validation Error
-     */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
-};
-
-export type UpdateReviewError = UpdateReviewErrors[keyof UpdateReviewErrors];
-
-export type UpdateReviewResponses = {
-    /**
-     * Successful Response
-     */
-    200: ApiResponse & {
-        data?: ResponseModelReviewRead;
-    };
-};
-
-export type UpdateReviewResponse = UpdateReviewResponses[keyof UpdateReviewResponses];
-
-export type ListCourses2Data = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * Skip
-         */
-        skip?: number;
-        /**
-         * Limit
-         */
-        limit?: number;
+        page_size?: number;
     };
     url: '/api/courses';
 };
 
-export type ListCourses2Errors = {
+export type CoursesListCoursesErrors = {
     /**
      * Validation Error
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    422: ErrorResponse;
 };
 
-export type ListCourses2Error = ListCourses2Errors[keyof ListCourses2Errors];
+export type CoursesListCoursesError = CoursesListCoursesErrors[keyof CoursesListCoursesErrors];
 
-export type ListCourses2Responses = {
+export type CoursesListCoursesResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelListCourseRead;
-    };
+    200: PaginatedResponseCourseRead;
 };
 
-export type ListCourses2Response = ListCourses2Responses[keyof ListCourses2Responses];
+export type CoursesListCoursesResponse = CoursesListCoursesResponses[keyof CoursesListCoursesResponses];
 
-export type GetCourse2Data = {
+export type CoursesGetCourseData = {
     body?: never;
     path: {
         /**
@@ -2569,99 +5171,87 @@ export type GetCourse2Data = {
     url: '/api/courses/{course_id}';
 };
 
-export type GetCourse2Errors = {
+export type CoursesGetCourseErrors = {
     /**
      * Validation Error
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    422: ErrorResponse;
 };
 
-export type GetCourse2Error = GetCourse2Errors[keyof GetCourse2Errors];
+export type CoursesGetCourseError = CoursesGetCourseErrors[keyof CoursesGetCourseErrors];
 
-export type GetCourse2Responses = {
+export type CoursesGetCourseResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelCourseRead;
-    };
+    200: SuccessResponseCourseRead;
 };
 
-export type GetCourse2Response = GetCourse2Responses[keyof GetCourse2Responses];
+export type CoursesGetCourseResponse = CoursesGetCourseResponses[keyof CoursesGetCourseResponses];
 
-export type ListProducts2Data = {
+export type ProductsListProductsData = {
     body?: never;
     path?: never;
     query?: {
         /**
-         * Skip
+         * Page
          */
-        skip?: number;
+        page?: number;
         /**
-         * Limit
+         * Page Size
          */
-        limit?: number;
+        page_size?: number;
     };
     url: '/api/products';
 };
 
-export type ListProducts2Errors = {
+export type ProductsListProductsErrors = {
     /**
      * Validation Error
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    422: ErrorResponse;
 };
 
-export type ListProducts2Error = ListProducts2Errors[keyof ListProducts2Errors];
+export type ProductsListProductsError = ProductsListProductsErrors[keyof ProductsListProductsErrors];
 
-export type ListProducts2Responses = {
+export type ProductsListProductsResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelListProductRead;
-    };
+    200: PaginatedResponseProductCardRead;
 };
 
-export type ListProducts2Response = ListProducts2Responses[keyof ListProducts2Responses];
+export type ProductsListProductsResponse = ProductsListProductsResponses[keyof ProductsListProductsResponses];
 
-export type GetProduct2Data = {
+export type ProductsGetProductData = {
     body?: never;
     path: {
         /**
-         * Product Id
+         * Slug
          */
-        product_id: number;
+        slug: string;
     };
     query?: never;
-    url: '/api/products/{product_id}';
+    url: '/api/products/{slug}';
 };
 
-export type GetProduct2Errors = {
+export type ProductsGetProductErrors = {
     /**
      * Validation Error
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    422: ErrorResponse;
 };
 
-export type GetProduct2Error = GetProduct2Errors[keyof GetProduct2Errors];
+export type ProductsGetProductError = ProductsGetProductErrors[keyof ProductsGetProductErrors];
 
-export type GetProduct2Responses = {
+export type ProductsGetProductResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelProductRead;
-    };
+    200: SuccessResponseProductDetailRead;
 };
 
-export type GetProduct2Response = GetProduct2Responses[keyof GetProduct2Responses];
+export type ProductsGetProductResponse = ProductsGetProductResponses[keyof ProductsGetProductResponses];
 
 export type GetMyCartData = {
     body?: never;
@@ -2670,13 +5260,20 @@ export type GetMyCartData = {
     url: '/api/cart';
 };
 
+export type GetMyCartErrors = {
+    /**
+     * Error 422
+     */
+    422: ErrorResponse;
+};
+
+export type GetMyCartError = GetMyCartErrors[keyof GetMyCartErrors];
+
 export type GetMyCartResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelListCartItemRead;
-    };
+    200: SuccessResponseListCartItemRead;
 };
 
 export type GetMyCartResponse = GetMyCartResponses[keyof GetMyCartResponses];
@@ -2692,9 +5289,7 @@ export type AddToCartErrors = {
     /**
      * Validation Error
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    422: ErrorResponse;
 };
 
 export type AddToCartError = AddToCartErrors[keyof AddToCartErrors];
@@ -2703,9 +5298,7 @@ export type AddToCartResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelCartItemRead;
-    };
+    200: SuccessResponseCartItemRead;
 };
 
 export type AddToCartResponse = AddToCartResponses[keyof AddToCartResponses];
@@ -2726,9 +5319,7 @@ export type RemoveFromCartErrors = {
     /**
      * Validation Error
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    422: ErrorResponse;
 };
 
 export type RemoveFromCartError = RemoveFromCartErrors[keyof RemoveFromCartErrors];
@@ -2737,9 +5328,7 @@ export type RemoveFromCartResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModel;
-    };
+    200: SuccessResponseNoneType;
 };
 
 export type RemoveFromCartResponse = RemoveFromCartResponses[keyof RemoveFromCartResponses];
@@ -2760,9 +5349,7 @@ export type UpdateCartItemErrors = {
     /**
      * Validation Error
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    422: ErrorResponse;
 };
 
 export type UpdateCartItemError = UpdateCartItemErrors[keyof UpdateCartItemErrors];
@@ -2771,9 +5358,7 @@ export type UpdateCartItemResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelCartItemRead;
-    };
+    200: SuccessResponseCartItemRead;
 };
 
 export type UpdateCartItemResponse = UpdateCartItemResponses[keyof UpdateCartItemResponses];
@@ -2785,13 +5370,20 @@ export type GetMyWishlistData = {
     url: '/api/wishlist';
 };
 
+export type GetMyWishlistErrors = {
+    /**
+     * Error 422
+     */
+    422: ErrorResponse;
+};
+
+export type GetMyWishlistError = GetMyWishlistErrors[keyof GetMyWishlistErrors];
+
 export type GetMyWishlistResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelListWishlistRead;
-    };
+    200: SuccessResponseListWishlistRead;
 };
 
 export type GetMyWishlistResponse = GetMyWishlistResponses[keyof GetMyWishlistResponses];
@@ -2807,9 +5399,7 @@ export type AddToWishlistErrors = {
     /**
      * Validation Error
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    422: ErrorResponse;
 };
 
 export type AddToWishlistError = AddToWishlistErrors[keyof AddToWishlistErrors];
@@ -2818,9 +5408,7 @@ export type AddToWishlistResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModelWishlistRead;
-    };
+    200: SuccessResponseWishlistRead;
 };
 
 export type AddToWishlistResponse = AddToWishlistResponses[keyof AddToWishlistResponses];
@@ -2841,9 +5429,7 @@ export type RemoveFromWishlistErrors = {
     /**
      * Validation Error
      */
-    422: ApiResponse & {
-        data?: HttpValidationError;
-    };
+    422: ErrorResponse;
 };
 
 export type RemoveFromWishlistError = RemoveFromWishlistErrors[keyof RemoveFromWishlistErrors];
@@ -2852,9 +5438,7 @@ export type RemoveFromWishlistResponses = {
     /**
      * Successful Response
      */
-    200: ApiResponse & {
-        data?: ResponseModel;
-    };
+    200: SuccessResponseNoneType;
 };
 
 export type RemoveFromWishlistResponse = RemoveFromWishlistResponses[keyof RemoveFromWishlistResponses];

@@ -14,6 +14,7 @@ from app.schemas.product import (
     ProductImageRead,
     ProductMediumRead,
     ProductVariantRead,
+    VariantTypeRead,
 )
 
 crud_product = BaseCRUD(Product)
@@ -23,11 +24,42 @@ crud_product_variant = BaseCRUD(ProductVariant)
 crud_product_image = BaseCRUD(ProductImage)
 crud_product_category = BaseCRUD(ProductCategory)
 
-PRODUCT_RELATIONS = [
-    "medium",
-    "category",
-    "images",
-    "variants",
+PRODUCT_DETAIL_JOINS = [
+    JoinConfig(
+        model=ProductMedium,
+        join_on=Product.medium_id == ProductMedium.id,
+        join_prefix="medium",
+        schema_to_select=ProductMediumRead,
+        relationship_type="one-to-one",
+    ),
+    JoinConfig(
+        model=ProductCategory,
+        join_on=Product.category_id == ProductCategory.id,
+        join_prefix="category",
+        schema_to_select=ProductCategoryRead,
+        relationship_type="one-to-one",
+    ),
+    JoinConfig(
+        model=ProductVariant,
+        join_on=Product.id == ProductVariant.product_id,
+        join_prefix="variants_",
+        schema_to_select=ProductVariantRead,
+        relationship_type="one-to-many",
+    ),
+    JoinConfig(
+        model=VariantType,
+        join_on=ProductVariant.variant_type_id == VariantType.id,
+        join_prefix="variants_variant_type_",
+        schema_to_select=VariantTypeRead,
+        relationship_type="one-to-one",
+    ),
+    JoinConfig(
+        model=ProductImage,
+        join_on=Product.id == ProductImage.product_id,
+        join_prefix="images",
+        schema_to_select=ProductImageRead,
+        relationship_type="one-to-many",
+    ),
 ]
 
 PRODUCT_LIST_JOINS = [

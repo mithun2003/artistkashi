@@ -2,72 +2,83 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 
+import { unwrap } from "@/api/client-service";
+import { setAuthToken } from "@/api/config";
 import {
-  currentUserRequest,
-  loginRequest,
-  logoutRequest,
-  registerRequest,
-  type AuthUser,
-  type SignupInput,
-} from "@/api/auth-api";
-import { setAuthToken } from "@/api/client-service";
+  login as loginSdk,
+  logout as logoutSdk,
+  me as meSdk,
+  register as registerSdk,
+  UserCreate,
+  UserRead,
+} from "@/api/openapi-client";
 import {
-  STORAGE_KEYS,
   getItem,
   getJSON,
   removeItem,
   setItem,
-  setJSON
+  setJSON,
+  STORAGE_KEYS,
 } from "@/lib/storage";
 
 interface AuthContextType {
-  user: AuthUser | null;
-  login: (email: string, password: string) => Promise<AuthUser>;
-  signup: (input: SignupInput) => Promise<AuthUser>;
+  user: UserRead | null;
+  login: (email: string, password: string) => Promise<UserRead>;
+  signup: (input: UserCreate) => Promise<UserRead>;
   logout: () => Promise<void>;
   isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const readStoredUser = (): AuthUser | null => {
+const readStoredUser = (): UserRead | null => {
   if (typeof window === "undefined") return null;
-  return getJSON<AuthUser>(STORAGE_KEYS.AUTH_USER);
+  return getJSON<UserRead>(STORAGE_KEYS.AUTH_USER);
 };
 
-const persistSession = (user: AuthUser, token: string) => {
+const persistSession = (
+  user: UserRead,
+  token: string,
+  refresh_token: string
+) => {
   try {
     setJSON(STORAGE_KEYS.AUTH_USER, user);
     setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+    setItem(STORAGE_KEYS.AUTH_REFRESH_TOKEN, refresh_token);
   } catch {
     //ignore
-
   }
 };
 
 const clearSession = () => {
   removeItem(STORAGE_KEYS.AUTH_USER);
   removeItem(STORAGE_KEYS.AUTH_TOKEN);
+  removeItem(STORAGE_KEYS.AUTH_REFRESH_TOKEN);
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
+  const [user, setUser] = useState<UserRead | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [token, setToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
 
     const bootstrap = async () => {
       const storedToken = getItem(STORAGE_KEYS.AUTH_TOKEN);
+      const storedRefreshToken = getItem(STORAGE_KEYS.AUTH_REFRESH_TOKEN);
 
-      if (!storedToken) {
+      if (!storedToken || !storedRefreshToken) {
         clearSession();
+
         if (active) {
           setUser(null);
           setToken(null);
+          setRefreshToken(null);
           setIsLoading(false);
         }
+
         return;
       }
 
@@ -75,23 +86,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (storedUser) setUser(storedUser);
 
       try {
-        try {
-          setAuthToken(storedToken);
-        } catch {
-          setAuthToken();
-        }
+        setAuthToken(storedToken);
 
-        const current = await currentUserRequest(storedToken as string);
+        const current = await unwrap(meSdk());
         if (!active) return;
 
         setUser(current);
         setToken(storedToken);
-        persistSession(current, storedToken);
+        setRefreshToken(storedRefreshToken);
+        persistSession(current, storedToken, storedRefreshToken);
       } catch {
         clearSession();
         if (active) {
           setUser(null);
           setToken(null);
+          setRefreshToken(null);
         }
       } finally {
         if (active) setIsLoading(false);
@@ -106,41 +115,54 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const session = await loginRequest({ email, password });
+    const tokenData = await unwrap(
+      loginSdk({ body: { username: email, password } })
+    );
 
-    try {
-      setAuthToken(session.access_token);
-    } catch {
-      setAuthToken()
-    }
+    if (!tokenData.access_token || !tokenData.refresh_token)
+      throw new Error("Login failed");
 
-    const current = await currentUserRequest(session.access_token);
+    setAuthToken(tokenData.access_token);
+    setRefreshToken(tokenData.refresh_token);
+
+    const current = await unwrap(meSdk());
+    if (!current) throw new Error("Failed to retrieve user profile");
 
     setUser(current);
-    setToken(session.access_token);
-    persistSession(current, session.access_token);
+    setToken(tokenData.access_token);
+    persistSession(current, tokenData.access_token, tokenData.refresh_token);
 
     return current;
   };
 
-  const signup = async (input: SignupInput) => {
-    await registerRequest(input);
+  const signup = async (input: UserCreate) => {
+    await unwrap(
+      registerSdk({
+        body: input,
+      })
+    );
     return login(input.email, input.password);
   };
 
   const logout = async () => {
-    if (!token) {
+    if (!token || !refreshToken) {
       clearSession();
       setUser(null);
       return;
     }
 
     try {
-      await logoutRequest(token);
+      await logoutSdk({
+        body: {
+          refresh_token: refreshToken,
+        },
+      });
     } finally {
       clearSession();
       setUser(null);
       setToken(null);
+      setRefreshToken(null);
+      setAuthToken(null);
     }
   };
 

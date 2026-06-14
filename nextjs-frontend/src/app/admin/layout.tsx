@@ -1,27 +1,28 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { getErrorMessage } from "@/lib/error-handler";
+import { AuthGuard } from "@/components/shared/AuthGuard";
+import { useAuth } from "@/lib/auth-store";
+import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard,
+  Bell,
   BookOpen,
-  ShoppingBag,
-  Users,
-  Settings,
+  ChevronRight,
+  LayoutDashboard,
   LogOut,
   Menu,
-  Bell,
-  Search,
-  ChevronRight,
+  Package,
   PanelLeftClose,
   PanelLeftOpen,
+  Search,
+  Settings,
+  ShoppingBag,
+  Users,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useAuth } from "@/lib/auth-store";
-import { AuthGuard } from "@/components/shared/AuthGuard";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { getAuthErrorMessage, type AuthErrorInput } from "@/api/auth-api";
 
 export default function AdminLayout({
   children,
@@ -54,6 +55,7 @@ export default function AdminLayout({
       icon: Settings,
     },
     { label: "Courses", href: "/admin/courses", icon: BookOpen },
+    { label: "Products", href: "/admin/products", icon: Package },
     { label: "Orders", href: "/admin/orders", icon: ShoppingBag },
     { label: "Users", href: "/admin/users", icon: Users },
     { label: "Settings", href: "/admin/settings", icon: Settings },
@@ -65,7 +67,7 @@ export default function AdminLayout({
       router.push("/");
       toast.success("Logged out successfully");
     } catch (error) {
-      toast.error(getAuthErrorMessage(error as AuthErrorInput));
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -176,7 +178,13 @@ export default function AdminLayout({
               )}
             >
               <div className="w-10 h-10 bg-muted border border-border flex items-center justify-center text-gold font-bold text-sm shrink-0">
-                {user?.name.substring(0, 2).toUpperCase()}
+                {(user?.full_name ?? "Admin")
+                  .split(" ")
+                  .filter(Boolean)
+                  .map((word) => word[0])
+                  .slice(0, 2)
+                  .join("")
+                  .toUpperCase()}
               </div>
               <div
                 className={cn(
@@ -187,7 +195,7 @@ export default function AdminLayout({
                 )}
               >
                 <div className="text-text-main text-sm font-bold truncate">
-                  {user?.name}
+                  {user?.full_name ?? "Admin"}
                 </div>
                 <div className="text-text-muted text-2xs font-mono uppercase tracking-widest">
                   Admin

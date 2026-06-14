@@ -5,7 +5,7 @@ from app.schemas.responses import SuccessResponse
 router = APIRouter(prefix="/users", tags=["ADMIN-USERS"])
 
 
-@router.get("/", response_model=SuccessResponse[list[dict]])
+@router.get("", response_model=SuccessResponse[list[dict]])
 async def list_users():
     users = [{"id": "1", "email": "user@example.com"}]
     return SuccessResponse(message="Users retrieved successfully", data=users)

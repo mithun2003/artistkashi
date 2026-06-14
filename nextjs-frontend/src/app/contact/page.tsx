@@ -27,14 +27,15 @@ export default function ContactPage() {
                 </h3>
                 <div className="space-y-4">
                   <p className="flex items-center gap-4 text-xs uppercase tracking-widest text-text-muted">
-                    <MapPin className="w-5 h-5 text-gold" /> Banaras Art District,
-                    India
+                    <MapPin className="w-5 h-5 text-gold" /> Banaras Art
+                    District, India
                   </p>
                   <p className="flex items-center gap-4 text-xs uppercase tracking-widest text-text-muted">
                     <Phone className="w-5 h-5 text-gold" /> +91 99999 88888
                   </p>
                   <p className="flex items-center gap-4 text-xs uppercase tracking-widest text-text-muted">
-                    <Mail className="w-5 h-5 text-gold" /> studio@artistkashi.com
+                    <Mail className="w-5 h-5 text-gold" />{" "}
+                    studio@artistkashi.com
                   </p>
                 </div>
               </div>
@@ -68,7 +69,7 @@ export default function ContactPage() {
               <form className="space-y-12" onSubmit={(e) => e.preventDefault()}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                   <div className="relative group/field">
-                    <label className="text-[8px] uppercase tracking-widest font-black text-text-muted group-focus-within/field:text-gold transition-colors">
+                    <label className="text-2xs uppercase tracking-widest font-black text-text-muted group-focus-within/field:text-gold transition-colors">
                       IDENTIFIER
                     </label>
                     <input
@@ -79,7 +80,7 @@ export default function ContactPage() {
                     />
                   </div>
                   <div className="relative group/field">
-                    <label className="text-[8px] uppercase tracking-widest font-black text-text-muted group-focus-within/field:text-gold transition-colors">
+                    <label className="text-2xs uppercase tracking-widest font-black text-text-muted group-focus-within/field:text-gold transition-colors">
                       COMMUNICATION
                     </label>
                     <input
@@ -92,7 +93,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className="relative group/field">
-                  <label className="text-[8px] uppercase tracking-widest font-black text-text-muted group-focus-within/field:text-gold transition-colors">
+                  <label className="text-2xs uppercase tracking-widest font-black text-text-muted group-focus-within/field:text-gold transition-colors">
                     INQUIRY TYPE
                   </label>
                   <select className="w-full bg-transparent border-b border-white/10 py-4 text-xs tracking-widest uppercase focus:border-gold outline-none transition-colors appearance-none cursor-pointer">
@@ -104,7 +105,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className="relative group/field">
-                  <label className="text-[8px] uppercase tracking-widest font-black text-text-muted group-focus-within/field:text-gold transition-colors">
+                  <label className="text-2xs uppercase tracking-widest font-black text-text-muted group-focus-within/field:text-gold transition-colors">
                     MESSAGE
                   </label>
                   <textarea

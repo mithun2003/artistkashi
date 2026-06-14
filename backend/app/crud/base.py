@@ -85,6 +85,8 @@ def _build_conditions(model, filters: dict[str, Any]) -> list:
         column = getattr(model, field)
 
         match operator:
+            case "ilike":
+                conditions.append(column.ilike(f"%{value}%"))
             case "icontains":
                 conditions.append(column.ilike(f"%{value}%"))
 

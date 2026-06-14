@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
-import { ArrowUpRight, Heart, ShoppingBag } from "lucide-react";
-import { Painting } from "@/types";
+import { ProductCardRead } from "@/api/openapi-client";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { RevealBlock } from "@/components/ui/misc";
 import { cn } from "@/lib/utils";
-import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
+import { ArrowUpRight, Heart, ShoppingBag } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 
 interface ProductCardProps {
-  product: Painting;
+  product: ProductCardRead;
   delay?: number;
   view?: "grid" | "list";
 }
@@ -20,6 +20,10 @@ export function ProductCard({
   view = "grid",
 }: ProductCardProps) {
   const [wishlisted, setWishlisted] = useState(false);
+  const price =
+    typeof product.price === "string"
+      ? parseFloat(product.price)
+      : (product.price ?? 0);
 
   return (
     <RevealBlock delay={delay}>
@@ -28,11 +32,11 @@ export function ProductCard({
           <div
             className={cn(
               "relative overflow-hidden bg-muted-light",
-              view === "grid" ? "aspect-[3/4]" : "aspect-[16/9]"
+              view === "grid" ? "aspect-3/4" : "aspect-video"
             )}
           >
             <ImageWithFallback
-              src={product.image}
+              src={product.primary_image || ""}
               alt={product.title}
               className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
             />
@@ -41,11 +45,6 @@ export function ProductCard({
                 View Artwork <ArrowUpRight size={12} />
               </span>
             </div>
-            {product.sold && (
-              <div className="absolute top-4 left-4 bg-dark/80 text-text-muted text-tiny font-mono tracking-widest uppercase px-2.5 py-1">
-                SOLD
-              </div>
-            )}
           </div>
         </Link>
         <button
@@ -61,7 +60,7 @@ export function ProductCard({
         <div className="p-5 border-t border-border flex-1 flex flex-col justify-between">
           <div>
             <div className="text-tiny font-mono text-text-muted tracking-widest uppercase mb-1">
-              {product.medium}
+              {product.medium?.name || "Original Work"}
             </div>
             <div className="text-text-main font-semibold mb-2">
               {product.title}
@@ -69,13 +68,11 @@ export function ProductCard({
           </div>
           <div className="flex items-center justify-between mt-4">
             <span className="text-gold font-bold text-lg">
-              €{product.price.toLocaleString()}
+              €{price.toLocaleString()}
             </span>
-            {!product.sold && (
-              <button className="text-tiny font-mono text-text-muted tracking-widest uppercase hover:text-text-main transition-colors flex items-center gap-1">
-                <ShoppingBag size={11} /> Inquire
-              </button>
-            )}
+            <button className="text-tiny font-mono text-text-muted tracking-widest uppercase hover:text-text-main transition-colors flex items-center gap-1">
+              <ShoppingBag size={11} /> Inquire
+            </button>
           </div>
         </div>
       </div>
@@ -87,9 +84,14 @@ export function BestSellerCard({
   product,
   delay = 0,
 }: {
-  product: Painting;
+  product: ProductCardRead;
   delay?: number;
 }) {
+  const price =
+    typeof product.price === "string"
+      ? parseFloat(product.price)
+      : (product.price ?? 0);
+
   return (
     <RevealBlock delay={delay}>
       <Link
@@ -98,7 +100,7 @@ export function BestSellerCard({
       >
         <div className="w-24 h-32 shrink-0 overflow-hidden bg-muted">
           <ImageWithFallback
-            src={product.image}
+            src={product.primary_image || ""}
             alt={product.title}
             className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
           />
@@ -106,7 +108,7 @@ export function BestSellerCard({
         <div className="flex flex-col justify-between py-1">
           <div>
             <div className="text-tiny font-mono text-text-muted tracking-[0.15em] uppercase mb-2">
-              {product.medium}
+              {product.medium?.name || "Original Work"}
             </div>
             <div className="text-text-main font-bold text-xl leading-tight">
               {product.title}
@@ -114,7 +116,7 @@ export function BestSellerCard({
           </div>
           <div className="flex items-center justify-between">
             <span className="text-gold font-bold text-xl">
-              €{product.price.toLocaleString()}
+              €{price.toLocaleString()}
             </span>
             <span className="text-text-muted text-xs font-mono flex items-center gap-1 group-hover:text-text-main transition-colors">
               View <ArrowUpRight size={12} />

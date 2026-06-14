@@ -76,10 +76,10 @@ export function Footer() {
 
       <div className="border-t border-border">
         <div className="max-w-360 mx-auto px-8 lg:px-16 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-text-muted text-[12px] font-mono">
+          <p className="text-text-muted text-xs font-mono">
             © 2026 Artist Kashi. All rights reserved.
           </p>
-          <p className="text-text-muted text-[12px] font-mono">
+          <p className="text-text-muted text-xs font-mono">
             Crafted with intention.
           </p>
         </div>

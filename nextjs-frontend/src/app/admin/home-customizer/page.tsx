@@ -25,9 +25,10 @@ import {
   defaultHomeSettings,
   type HomePageSettings,
 } from "@/lib/home-customization";
-import { fetchHomeSettings } from "@/api/home";
+import { getHomePageSettings } from "@/api/openapi-client";
 import { saveHomeSettingsAction } from "@/app/admin/home-customizer/actions";
 import { toast } from "sonner";
+import { unwrap } from "@/api/client-service";
 
 export default function HomeCustomizerPage() {
   const [activeSection, setActiveSection] = useState<string | null>("hero");
@@ -49,10 +50,10 @@ export default function HomeCustomizerPage() {
   useEffect(() => {
     let active = true;
 
-    fetchHomeSettings()
+    unwrap(getHomePageSettings())
       .then((data) => {
         if (active) {
-          reset(data);
+          reset(data as HomePageSettings);
         }
       })
       .catch(() => {
@@ -107,7 +108,9 @@ export default function HomeCustomizerPage() {
     setIsLoading(true);
     try {
       const saved = await saveHomeSettingsAction(data);
-      reset(saved);
+      if (saved) {
+        reset(saved as HomePageSettings);
+      }
       toast.success("Home page settings saved to database!");
     } catch {
       toast.error("Failed to save settings");
@@ -461,7 +464,7 @@ export default function HomeCustomizerPage() {
                         <input
                           {...register(`about.stats.${index}.label` as const)}
                           placeholder="Experience"
-                          className="w-full bg-transparent border-b border-border focus:border-gold outline-none py-1 text-[9px] font-mono uppercase text-text-muted"
+                          className="w-full bg-transparent border-b border-border focus:border-gold outline-none py-1 text-2xs font-mono uppercase text-text-muted"
                         />
                       </div>
                       <button

@@ -2,13 +2,13 @@
 
 import React from "react";
 import Link from "next/link";
-import { Play, BookOpen, Clock, Star } from "lucide-react";
-import { Course } from "@/types";
+import { Play, Clock, Star } from "lucide-react";
+import { CourseRead } from "@/api/openapi-client";
 import { RevealBlock } from "@/components/ui/misc";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 
 interface CourseCardProps {
-  course: Course;
+  course: CourseRead;
   delay?: number;
 }
 
@@ -21,14 +21,14 @@ export function CourseCard({ course, delay = 0 }: CourseCardProps) {
       >
         <div className="relative overflow-hidden aspect-video">
           <ImageWithFallback
-            src={course.image}
+            src={course.image_url || ""}
             alt={course.title}
             className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-linear-to-t from-dark via-transparent to-transparent" />
           <div className="absolute top-4 left-4">
             <span className="bg-dark/80 backdrop-blur-sm text-gold text-tiny font-mono tracking-widest uppercase px-2.5 py-1 border border-gold/30">
-              {course.level}
+              {course.category || "Masterclass"}
             </span>
           </div>
           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -49,17 +49,13 @@ export function CourseCard({ course, delay = 0 }: CourseCardProps) {
             {course.title}
           </h3>
           <p className="text-text-muted text-sm mb-5 line-clamp-2">
-            {course.subtitle}
+            {course.description}
           </p>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4 text-[12px] font-mono text-text-muted">
-              <span className="flex items-center gap-1.5">
-                <BookOpen size={12} />
-                {course.lessons} lessons
-              </span>
+            <div className="flex items-center gap-4 text-xs font-mono text-text-muted">
               <span className="flex items-center gap-1.5">
                 <Clock size={12} />
-                {course.hours}
+                {course.duration || "Self-paced"}
               </span>
             </div>
             <span className="text-text-main font-bold text-lg">
@@ -81,13 +77,13 @@ export function CourseCardGrid({ course, delay = 0 }: CourseCardProps) {
       >
         <div className="relative overflow-hidden aspect-video">
           <ImageWithFallback
-            src={course.image}
+            src={course.image_url || ""}
             alt={course.title}
             className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
           />
           <div className="absolute inset-0 bg-linear-to-t from-dark to-transparent" />
           <div className="absolute top-4 right-4 bg-dark/70 backdrop-blur text-text-main text-tiny font-mono tracking-widest px-2.5 py-1 border border-border">
-            {course.level}
+            {course.category || "Masterclass"}
           </div>
           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
             <div className="w-12 h-12 bg-text-main/10 border border-white/20 flex items-center justify-center">
@@ -112,23 +108,19 @@ export function CourseCardGrid({ course, delay = 0 }: CourseCardProps) {
               ))}
             </div>
             <span className="text-text-muted text-label font-mono">
-              {course.rating} ({course.students.toLocaleString()})
+              {course.rating} ({course.students_count.toLocaleString()})
             </span>
           </div>
           <h3 className="text-text-main font-bold text-lg mb-1">
             {course.title}
           </h3>
           <p className="text-text-muted text-sm mb-5 line-clamp-2">
-            {course.subtitle}
+            {course.description}
           </p>
           <div className="flex items-center gap-3 text-label font-mono text-text-muted mb-5">
             <span className="flex items-center gap-1">
-              <BookOpen size={11} />
-              {course.lessons}
-            </span>
-            <span className="flex items-center gap-1">
               <Clock size={11} />
-              {course.hours}
+              {course.duration || "Self-paced"}
             </span>
           </div>
           <div className="flex items-center justify-between border-t border-border pt-4">

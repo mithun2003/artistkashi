@@ -171,3 +171,13 @@ scripts
 
 # OpenAPI generated files (optional)
 shared-data/
+
+#Project Files
+THEME_REFACTOR_REPORT.md
+TODO.md
+track.md
+design.md
+
+
+tsconfig.tsbuildinfo
+*.tsbuildinfo

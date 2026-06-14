@@ -1,9 +1,11 @@
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Query
-from fastcrud import compute_offset, paginated_response
+from fastapi import APIRouter, Query
+from fastcrud import compute_offset
 
 from app.api.dependencies import DatabaseDep
+from app.core.exceptions import ErrorCode, NotFoundException
+from app.core.pagination import build_paginated_response
 from app.crud.course import crud_course
 from app.schemas.course import CourseRead
 from app.schemas.responses import PaginatedResponse, SuccessResponse
@@ -23,11 +25,12 @@ async def list_courses(
         limit=page_size,
         return_total_count=True,
     )
-    
-    return paginated_response(
-        crud_data=courses_data,
+
+    return build_paginated_response(
+        result=courses_data,
         page=page,
-        items_per_page=page_size,
+        page_size=page_size,
+        message="Courses retrieved successfully",
     )
 
 
@@ -35,5 +38,9 @@ async def list_courses(
 async def get_course(course_id: int, db: DatabaseDep) -> SuccessResponse:
     course = await crud_course.get(db=db, id=course_id)
     if not course:
-        raise HTTPException(status_code=404, detail="Course not found")
+        raise NotFoundException(
+            resource="Course",
+            identifier=course_id,
+            error_code=ErrorCode.COURSE_NOT_FOUND,
+        )
     return SuccessResponse(message="Course retrieved successfully", data=course)

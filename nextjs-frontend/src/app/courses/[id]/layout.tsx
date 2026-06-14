@@ -28,13 +28,13 @@ export async function generateMetadata({
 
   return buildMetadata({
     title: `${course.title} - Masterclass`,
-    description: `${course.subtitle} Learn with ${course.instructor}. ${course.lessons} lessons over ${course.hours}.`,
+    description: `${course.subtitle ?? ""} Learn with ${course.instructor}. ${course.lessons_count} lessons over ${course.duration}.`,
     path: `/courses/${course.id}`,
     type: "article",
-    image: course.image,
+    image: course.image_url ?? undefined,
     keywords: [
       course.title,
-      course.level,
+      course.level ?? "Intermediate",
       "painting course",
       "art masterclass",
     ],
@@ -53,13 +53,13 @@ export default async function CourseDetailLayout({
         "@context": "https://schema.org",
         "@type": "Course",
         name: course.title,
-        description: course.subtitle,
+        description: course.subtitle ?? "",
         provider: {
           "@type": "Organization",
           name: "Artist Kashi",
           url: siteUrl,
         },
-        image: [course.image],
+        image: course.image_url ? [course.image_url] : [],
         offers: {
           "@type": "Offer",
           priceCurrency: "EUR",

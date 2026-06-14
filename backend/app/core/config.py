@@ -112,6 +112,11 @@ class Settings(BaseSettings):
 
         raise ValueError("Invalid CORS_ORIGINS value")
 
+    # ==================== EXTERNAL ====================
+
+    CLOUDFLARE_ACCOUNT_ID: str = "localhost"
+    CLOUDFLARE_API_TOKEN: str = "localhost"
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

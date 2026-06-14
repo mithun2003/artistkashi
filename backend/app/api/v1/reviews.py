@@ -21,7 +21,7 @@ async def list_reviews(
 ) -> SuccessResponse:
     """Get approved reviews (public endpoint)."""
     # Using get_multi directly with filters to reduce boilerplate
-    filters = {"status": ReviewStatus.approved}
+    filters = {"status": ReviewStatus.ACTIVE}
     if review_type:
         filters["type"] = review_type
     if entity_id is not None:
@@ -47,7 +47,7 @@ async def create_review(
         object={
             **review_in.model_dump(),
             "user_id": user.id,
-            "status": ReviewStatus.pending,
+            "status": ReviewStatus.ACTIVE,
         },
     )
     return SuccessResponse(

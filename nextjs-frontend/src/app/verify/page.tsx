@@ -17,7 +17,14 @@ import { useState } from "react";
 export default function VerificationPage() {
   const [certId, setCertId] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
-  const [result, setResult] = useState<{ id: string; title: string; artist: string; date: string; medium: string; status: string } | null>(null);
+  const [result, setResult] = useState<{
+    id: string;
+    title: string;
+    artist: string;
+    date: string;
+    medium: string;
+    status: string;
+  } | null>(null);
 
   const handleVerify = (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,7 +112,8 @@ export default function VerificationPage() {
             >
               <div className="bg-gold text-dark p-4 text-center">
                 <span className="text-2xs font-black uppercase tracking-[0.6em] flex items-center justify-center gap-3">
-                  <ShieldCheck className="w-4 h-4" /> OFFICIAL PROVENANCE VERIFIED
+                  <ShieldCheck className="w-4 h-4" /> OFFICIAL PROVENANCE
+                  VERIFIED
                 </span>
               </div>
               <div className="p-12 grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -118,8 +126,16 @@ export default function VerificationPage() {
                 </div>
                 <div className="space-y-8">
                   {[
-                    { icon: Award, label: "Artwork Title", value: result.title },
-                    { icon: User, label: "Primary Artist", value: result.artist },
+                    {
+                      icon: Award,
+                      label: "Artwork Title",
+                      value: result.title,
+                    },
+                    {
+                      icon: User,
+                      label: "Primary Artist",
+                      value: result.artist,
+                    },
                     {
                       icon: Calendar,
                       label: "Creation Date",
@@ -127,8 +143,11 @@ export default function VerificationPage() {
                     },
                     { icon: FileText, label: "Medium", value: result.medium },
                   ].map((info) => (
-                    <div key={info.label} className="border-b border-white/5 pb-4">
-                      <span className="text-[8px] text-text-muted uppercase tracking-widest font-black flex items-center gap-2 mb-1">
+                    <div
+                      key={info.label}
+                      className="border-b border-white/5 pb-4"
+                    >
+                      <span className="text-2xs text-text-muted uppercase tracking-widest font-black flex items-center gap-2 mb-1">
                         <info.icon className="w-3 h-3 text-gold" /> {info.label}
                       </span>
                       <p className="text-xl font-bold uppercase tracking-tight italic">
@@ -137,7 +156,7 @@ export default function VerificationPage() {
                     </div>
                   ))}
                   <div className="pt-4">
-                    <button className="text-[8px] uppercase tracking-widest font-black text-gold border border-gold/30 px-6 py-2 hover:bg-gold hover:text-dark transition-all">
+                    <button className="text-2xs uppercase tracking-widest font-black text-gold border border-gold/30 px-6 py-2 hover:bg-gold hover:text-dark transition-all">
                       DOWNLOAD DIGITAL CERTIFICATE (PDF)
                     </button>
                   </div>

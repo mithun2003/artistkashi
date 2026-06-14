@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Search, Menu, X, User, Heart, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-store";
-import { getSafeReturnTo } from "@/api/auth-api";
+import { getSafeReturnTo } from "@/lib/auth-utils";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -57,7 +57,7 @@ export function Navbar() {
                 key={l.href}
                 href={l.href}
                 className={cn(
-                  "text-[13px] tracking-widest uppercase font-medium transition-colors duration-200",
+                  "text-xs tracking-widest uppercase font-medium transition-colors duration-200",
                   pathname === l.href
                     ? "text-gold"
                     : "text-text-muted hover:text-text-main"
@@ -107,7 +107,7 @@ export function Navbar() {
               <>
                 <Link
                   href={loginHref}
-                  className="text-text-muted hover:text-text-main transition-colors text-[13px] tracking-widest uppercase font-medium"
+                  className="text-text-muted hover:text-text-main transition-colors text-xs tracking-widest uppercase font-medium"
                 >
                   Login
                 </Link>

@@ -41,7 +41,7 @@ export default function CoursesPage() {
               key={l}
               onClick={() => setActiveLevel(l)}
               className={cn(
-                "px-6 py-3 text-[12px] font-mono tracking-widest uppercase transition-colors",
+                "px-6 py-3 text-xs font-mono tracking-widest uppercase transition-colors",
                 activeLevel === l
                   ? "bg-text-main text-dark"
                   : "bg-dark text-text-muted hover:text-text-main"

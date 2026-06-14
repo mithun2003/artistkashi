@@ -196,27 +196,31 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
               >
                 <div className="relative overflow-hidden aspect-3/4">
                   <Image
-                    src={p.image}
+                    src={p.primary_image || ""}
                     alt={p.title}
                     fill
                     sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
                     className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-dark via-transparent to-transparent opacity-80" />
-                  {p.sold && (
+                  {p.is_sold && (
                     <div className="absolute top-4 left-4 bg-text-muted/20 backdrop-blur-sm text-text-muted text-tiny font-mono tracking-[0.2em] uppercase px-3 py-1.5 border border-text-muted/30">
                       Sold
                     </div>
                   )}
                   <div className="absolute bottom-0 left-0 right-0 p-5 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
                     <div className="text-tiny font-mono text-gold tracking-[0.15em] uppercase mb-1">
-                      {p.medium}
+                      {p.medium?.name || "Original Work"}
                     </div>
                     <div className="text-text-main font-bold text-base leading-tight">
                       {p.title}
                     </div>
                     <div className="text-text-muted text-sm mt-1">
-                      €{p.price.toLocaleString()}
+                      €
+                      {(typeof p.price === "string"
+                        ? parseFloat(p.price)
+                        : (p.price ?? 0)
+                      ).toLocaleString()}
                     </div>
                   </div>
                 </div>
@@ -255,7 +259,7 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
               >
                 <div className="relative overflow-hidden aspect-video">
                   <Image
-                    src={c.image}
+                    src={c.image_url || ""}
                     alt={c.title}
                     fill
                     sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
@@ -264,7 +268,7 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
                   <div className="absolute inset-0 bg-linear-to-t from-dark via-transparent to-transparent" />
                   <div className="absolute top-4 left-4">
                     <span className="bg-dark/80 backdrop-blur-sm text-gold text-tiny font-mono tracking-widest uppercase px-2.5 py-1 border border-gold/30">
-                      {c.level}
+                      {c.level || "Masterclass"}
                     </span>
                   </div>
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -286,14 +290,14 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
                   </h3>
                   <p className="text-text-muted text-sm mb-5">{c.subtitle}</p>
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4 text-[12px] font-mono text-text-muted">
+                    <div className="flex items-center gap-4 text-xs font-mono text-text-muted">
                       <span className="flex items-center gap-1.5">
                         <BookOpen size={12} />
-                        {c.lessons} lessons
+                        {c.lessons_count} lessons
                       </span>
                       <span className="flex items-center gap-1.5">
                         <Clock size={12} />
-                        {c.hours}
+                        {c.duration}
                       </span>
                     </div>
                     <span className="text-text-main font-bold text-lg">
@@ -402,7 +406,7 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
                 )}
               >
                 <Image
-                  src={painting.image}
+                  src={painting.primary_image || ""}
                   alt={painting.title}
                   fill
                   sizes="(min-width: 768px) 33vw, 50vw"
@@ -482,7 +486,7 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
               >
                 <div className="relative w-24 h-32 shrink-0 overflow-hidden bg-muted">
                   <Image
-                    src={course.image}
+                    src={course.image_url || ""}
                     alt={course.title}
                     fill
                     sizes="96px"
@@ -492,7 +496,7 @@ export function HomePageClient({ initialSettings }: HomePageClientProps) {
                 <div className="flex flex-col justify-between py-1">
                   <div>
                     <div className="text-tiny font-mono text-text-muted tracking-[0.15em] uppercase mb-2">
-                      {course.level}
+                      {course.level || "Masterclass"}
                     </div>
                     <div className="text-text-main font-bold text-xl leading-tight">
                       {course.title}

@@ -15,29 +15,49 @@ logger = logging.getLogger(__name__)
 
 
 HTTP_ERROR_MESSAGES = {
+    ErrorCode.INTERNAL_ERROR.value: "An unexpected error occurred",
+    ErrorCode.VALIDATION_ERROR.value: "Validation failed",
+    ErrorCode.RESOURCE_NOT_FOUND.value: "Resource not found",
+    ErrorCode.CONFLICT.value: "Request conflicts with the current state",
+    ErrorCode.HTTP_ERROR.value: "Request failed",
     ErrorCode.INVALID_CREDENTIALS.value: "Invalid email or password",
     ErrorCode.EMAIL_NOT_VERIFIED.value: "Please verify your email address",
     ErrorCode.EMAIL_ALREADY_VERIFIED.value: "Email already verified",
     ErrorCode.FORBIDDEN_ACCESS.value: "Access denied",
-    # ErrorCode.USER_NOT_FOUND.value: "User not found",
-    # ErrorCode.USER_ALREADY_EXISTS.value: "User already exists",
-    # ErrorCode.ADDRESS_NOT_FOUND.value: "Address not found",
-    # ErrorCode.ADDRESS_ALREADY_EXISTS.value: "Address already exists",
-    # ErrorCode.COURSE_NOT_FOUND.value: "Course not found",
-    # ErrorCode.REVIEW_NOT_FOUND.value: "Review not found",
-    # ErrorCode.REVIEW_ALREADY_EXISTS.value: "Review already exists",
-    # ErrorCode.PRODUCT_NOT_FOUND.value: "Product not found",
-    # ErrorCode.PRODUCT_ALREADY_EXISTS.value: "Product already exists",
-    # ErrorCode.PRODUCT_MEDIUM_NOT_FOUND.value: "Product medium not found",
-    # ErrorCode.PRODUCT_MEDIUM_ALREADY_EXISTS.value: "Product medium already exists",
-    # ErrorCode.VARIANT_TYPE_NOT_FOUND.value: "Variant type not found",
-    # ErrorCode.VARIANT_TYPE_ALREADY_EXISTS.value: "Variant type already exists",
-    # ErrorCode.PRODUCT_VARIANT_NOT_FOUND.value: "Product variant not found",
-    # ErrorCode.PRODUCT_VARIANT_ALREADY_EXISTS.value: "Product variant already exists",
-    # ErrorCode.PRODUCT_IMAGE_NOT_FOUND.value: "Product image not found",
-    # ErrorCode.PRODUCT_CATEGORY_NOT_FOUND.value: "Product category not found",
-    # ErrorCode.PRODUCT_CATEGORY_ALREADY_EXISTS.value: "Product category already exists"
+    ErrorCode.DATABASE_ERROR.value: "Database operation failed",
+    ErrorCode.SERVICE_ERROR.value: "External service failed",
+    ErrorCode.RATE_LIMIT_EXCEEDED.value: "Rate limit exceeded",
+    ErrorCode.REGISTER_INVALID_PASSWORD.value: "Password validation failed",
+    ErrorCode.USER_NOT_FOUND.value: "User not found",
+    ErrorCode.USER_ALREADY_EXISTS.value: "User already exists",
+    ErrorCode.ADDRESS_NOT_FOUND.value: "Address not found",
+    ErrorCode.ADDRESS_ALREADY_EXISTS.value: "Address already exists",
+    ErrorCode.COURSE_NOT_FOUND.value: "Course not found",
+    ErrorCode.REVIEW_NOT_FOUND.value: "Review not found",
+    ErrorCode.REVIEW_ALREADY_EXISTS.value: "Review already exists",
+    ErrorCode.PRODUCT_NOT_FOUND.value: "Product not found",
+    ErrorCode.PRODUCT_ALREADY_EXISTS.value: "Product already exists",
+    ErrorCode.PRODUCT_MEDIUM_NOT_FOUND.value: "Product medium not found",
+    ErrorCode.PRODUCT_MEDIUM_ALREADY_EXISTS.value: "Product medium already exists",
+    ErrorCode.PRODUCT_MEDIUM_IN_USE.value: "Product medium is used by products",
+    ErrorCode.VARIANT_TYPE_NOT_FOUND.value: "Variant type not found",
+    ErrorCode.VARIANT_TYPE_ALREADY_EXISTS.value: "Variant type already exists",
+    ErrorCode.VARIANT_TYPE_IN_USE.value: "Variant type is used by products",
+    ErrorCode.PRODUCT_VARIANT_NOT_FOUND.value: "Product variant not found",
+    ErrorCode.PRODUCT_VARIANT_ALREADY_EXISTS.value: "Product variant already exists",
+    ErrorCode.PRODUCT_VARIANT_SKU_ALREADY_EXISTS.value: "Product variant SKU already exists",
+    ErrorCode.PRODUCT_IMAGE_NOT_FOUND.value: "Product image not found",
+    ErrorCode.PRODUCT_CATEGORY_NOT_FOUND.value: "Product category not found",
+    ErrorCode.PRODUCT_CATEGORY_ALREADY_EXISTS.value: "Product category already exists",
 }
+
+missing_error_messages = set(ErrorCode) - {
+    ErrorCode(code) for code in HTTP_ERROR_MESSAGES
+}
+
+if missing_error_messages:
+    missing = ", ".join(sorted(code.value for code in missing_error_messages))
+    raise RuntimeError(f"Missing HTTP error messages for: {missing}")
 
 
 def _format_validation_message(error: dict) -> str:
@@ -88,15 +108,10 @@ def _format_http_error(
             error_code = ErrorCode(detail)
 
             message = HTTP_ERROR_MESSAGES.get(
-                error_code.value,
-                error_code.value.replace("_", " ").title(),
+                error_code.value, error_code.value.replace("_", " ").title()
             )
 
-            return (
-                message,
-                error_code,
-                None,
-            )
+            return (message, error_code, None)
         except ValueError:
             return (detail, ErrorCode.HTTP_ERROR, None)
 
@@ -141,9 +156,15 @@ def setup_exception_handlers(app: FastAPI) -> None:
             },
         )
 
+        response = build_error_response(
+            status_code=exc.status_code,
+            message=exc.message,
+            error_code=exc.error_code,
+            errors=exc.details if isinstance(exc.details, dict) else None,
+        )
         return JSONResponse(
             status_code=exc.status_code,
-            content=exc.to_dict(),
+            content=response.model_dump(mode="json"),
         )
 
     @app.exception_handler(RequestValidationError)
@@ -219,23 +240,3 @@ def setup_exception_handlers(app: FastAPI) -> None:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content=response.model_dump(mode="json"),
         )
-
-
-async def log_request_middleware(
-    request: Request,
-    call_next: Callable[[Request], Awaitable[Response]],
-) -> Response:
-    """Log incoming requests."""
-
-    logger.info(
-        "%s %s",
-        request.method,
-        request.url.path,
-        extra={
-            "method": request.method,
-            "path": request.url.path,
-            "query": str(request.url.query),
-        },
-    )
-
-    return await call_next(request)

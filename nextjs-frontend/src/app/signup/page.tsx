@@ -2,27 +2,25 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowRight, Eye, EyeOff } from "lucide-react";
-import { RevealBlock } from "@/components/ui/misc";
+import { getSafeReturnTo } from "@/lib/auth-utils";
+import { getErrorMessage } from "@/lib/error-handler";
+import { AuthGuard } from "@/components/shared/AuthGuard";
 import { PrimaryBtn } from "@/components/ui/buttons";
-import { cn } from "@/lib/utils";
+import { RevealBlock } from "@/components/ui/misc";
 import { useAuth } from "@/lib/auth-store";
 import { signupSchema, type SignupFormValues } from "@/lib/auth-validation";
-import {
-  getAuthErrorMessage,
-  getSafeReturnTo,
-  type AuthErrorInput,
-} from "@/api/auth-api";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowRight, Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { AuthGuard } from "@/components/shared/AuthGuard";
 
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const returnTo = getSafeReturnTo(searchParams.get("returnTo"));
@@ -37,8 +35,13 @@ export default function SignupPage() {
   });
 
   const onSubmit = async (data: SignupFormValues) => {
+    setIsSubmitting(true);
     try {
-      const user = await signup(data);
+      const user = await signup({
+        full_name: data.fullName,
+        email: data.email,
+        password: data.password,
+      });
       toast.success("Welcome to Artist Kashi!", {
         description: "Your membership has been activated.",
       });
@@ -49,7 +52,9 @@ export default function SignupPage() {
         router.push(returnTo ?? "/dashboard");
       }
     } catch (error) {
-      toast.error(getAuthErrorMessage(error as AuthErrorInput));
+      toast.error(getErrorMessage(error));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -149,8 +154,18 @@ export default function SignupPage() {
                   </p>
                 )}
               </div>
-              <PrimaryBtn type="submit" className="w-full justify-center">
-                Sign Up <ArrowRight size={16} />
+              <PrimaryBtn
+                type="submit"
+                className="w-full justify-center"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <div className="luxury-loader scale-75" />
+                ) : (
+                  <>
+                    Sign Up <ArrowRight size={16} />
+                  </>
+                )}
               </PrimaryBtn>
             </form>
             <div className="mt-6 text-center text-sm text-text-muted sm:mt-8">

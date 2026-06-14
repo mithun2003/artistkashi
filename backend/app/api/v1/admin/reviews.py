@@ -1,10 +1,12 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, HTTPException, Query, status
-from fastcrud import compute_offset, paginated_response
+from fastapi import APIRouter, Query
+from fastcrud import compute_offset
 
-from app.api.dependencies import CurrentUserDep, DatabaseDep
+from app.api.dependencies import DatabaseDep
+from app.core.exceptions import ErrorCode, NotFoundException
+from app.core.pagination import build_paginated_response
 from app.crud.review import crud_review
 from app.models.review import ReviewStatus, ReviewType
 from app.schemas.responses import PaginatedResponse, SuccessResponse
@@ -13,17 +15,8 @@ from app.schemas.review import ReviewRead, ReviewUpdate
 router = APIRouter(tags=["admin-reviews"])
 
 
-def _check_admin(user: CurrentUserDep) -> None:
-    """Check if user is admin/superuser."""
-    if not getattr(user, "is_superuser", False):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Admin privileges required"
-        )
-
-
 @router.get("/reviews", response_model=PaginatedResponse[ReviewRead])
 async def list_all_reviews(
-    user: CurrentUserDep,
     db: DatabaseDep,
     review_type: Annotated[ReviewType | None, Query()] = None,
     entity_id: Annotated[int | None, Query()] = None,
@@ -32,8 +25,6 @@ async def list_all_reviews(
     page_size: Annotated[int, Query(ge=1, le=100)] = 50,
 ):
     """List all reviews (admin only)."""
-    _check_admin(user)
-
     filters = {}
     if review_type:
         filters["type"] = review_type
@@ -50,25 +41,26 @@ async def list_all_reviews(
         **filters,
     )
 
-    return paginated_response(
-        crud_data=reviews_data,
+    return build_paginated_response(
+        result=reviews_data,
         page=page,
-        items_per_page=page_size,
+        page_size=page_size,
+        message="Reviews retrieved successfully",
     )
 
 
 @router.get("/reviews/{review_id}", response_model=SuccessResponse[ReviewRead])
 async def get_review_detail(
     review_id: UUID,
-    user: CurrentUserDep,
     db: DatabaseDep,
 ):
     """Get a single review (admin only)."""
-    _check_admin(user)
     review = await crud_review.get(db=db, id=review_id)
     if not review:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Review not found"
+        raise NotFoundException(
+            resource="Review",
+            identifier=review_id,
+            error_code=ErrorCode.REVIEW_NOT_FOUND,
         )
     return SuccessResponse(message="Review retrieved successfully", data=review)
 
@@ -77,17 +69,16 @@ async def get_review_detail(
 async def update_review(
     review_id: UUID,
     review_in: ReviewUpdate,
-    user: CurrentUserDep,
     db: DatabaseDep,
 ):
     """Update review status or content (admin only)."""
-    _check_admin(user)
-
     update_data = review_in.model_dump(exclude_unset=True)
     review = await crud_review.update(db=db, id=review_id, object=update_data)
     if not review:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Review not found"
+        raise NotFoundException(
+            resource="Review",
+            identifier=review_id,
+            error_code=ErrorCode.REVIEW_NOT_FOUND,
         )
     return SuccessResponse(message="Review updated successfully", data=review)
 
@@ -95,15 +86,15 @@ async def update_review(
 @router.delete("/reviews/{review_id}", response_model=SuccessResponse[dict])
 async def delete_review(
     review_id: UUID,
-    user: CurrentUserDep,
     db: DatabaseDep,
 ):
     """Delete a review (admin only)."""
-    _check_admin(user)
     review = await crud_review.get(db=db, id=review_id)
     if not review:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Review not found"
+        raise NotFoundException(
+            resource="Review",
+            identifier=review_id,
+            error_code=ErrorCode.REVIEW_NOT_FOUND,
         )
 
     await crud_review.delete(db=db, id=review_id)

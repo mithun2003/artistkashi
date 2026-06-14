@@ -1,13 +1,20 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ArrowRight, CheckCircle2, CreditCard, ShieldCheck } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  CreditCard,
+  ShieldCheck,
+} from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
 
 export default function CheckoutPage() {
-  const [step, setStep] = useState<"billing" | "payment" | "success">("billing");
+  const [step, setStep] = useState<"billing" | "payment" | "success">(
+    "billing"
+  );
   const [method, setMethod] = useState("razorpay");
 
   const handleBillingSubmit = (e: React.FormEvent) => {
@@ -56,7 +63,9 @@ export default function CheckoutPage() {
             <span
               className={cn(
                 "text-2xs font-bold uppercase tracking-widest pb-2 border-b-2 transition-all",
-                step === "billing" ? "border-gold text-gold" : "border-transparent text-text-muted"
+                step === "billing"
+                  ? "border-gold text-gold"
+                  : "border-transparent text-text-muted"
               )}
             >
               01 Identity
@@ -65,7 +74,9 @@ export default function CheckoutPage() {
             <span
               className={cn(
                 "text-2xs font-bold uppercase tracking-widest pb-2 border-b-2 transition-all",
-                step === "payment" ? "border-gold text-gold" : "border-transparent text-text-muted"
+                step === "payment"
+                  ? "border-gold text-gold"
+                  : "border-transparent text-text-muted"
               )}
             >
               02 Payment
@@ -189,7 +200,7 @@ export default function CheckoutPage() {
                       <h3 className="text-sm font-bold uppercase tracking-widest">
                         Razorpay Gateway
                       </h3>
-                      <p className="text-[8px] text-text-muted uppercase tracking-widest">
+                      <p className="text-2xs text-text-muted uppercase tracking-widest">
                         UPI, Cards, Netbanking
                       </p>
                     </div>
@@ -219,7 +230,7 @@ export default function CheckoutPage() {
                       <h3 className="text-sm font-bold uppercase tracking-widest">
                         Stripe Global
                       </h3>
-                      <p className="text-[8px] text-text-muted uppercase tracking-widest italic">
+                      <p className="text-2xs text-text-muted uppercase tracking-widest italic">
                         Coming Soon
                       </p>
                     </div>
@@ -243,7 +254,7 @@ export default function CheckoutPage() {
                 </button>
               </div>
 
-              <div className="mt-8 flex items-center justify-center gap-3 text-[8px] text-text-muted uppercase tracking-widest">
+              <div className="mt-8 flex items-center justify-center gap-3 text-2xs text-text-muted uppercase tracking-widest">
                 <ShieldCheck className="w-4 h-4 text-gold" /> SSL Encrypted
                 Transaction
               </div>

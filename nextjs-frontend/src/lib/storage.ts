@@ -3,6 +3,7 @@ import CryptoJS from "crypto-js";
 // Centralized localStorage keys
 export const STORAGE_KEYS = {
   AUTH_TOKEN: "artistkashi_auth_token",
+  AUTH_REFRESH_TOKEN: "artistkashi_auth_refresh_token",
   AUTH_USER: "artistkashi_auth_user",
 } as const;
 

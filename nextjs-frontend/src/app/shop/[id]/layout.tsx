@@ -26,12 +26,18 @@ export async function generateMetadata({
     });
   }
 
+  const price =
+    typeof painting.price === "string"
+      ? parseFloat(painting.price)
+      : (painting.price ?? 0);
+  const mediumName = painting.medium?.name || "Original Work";
+
   return buildMetadata({
     title: `${painting.title} - Original Painting`,
-    description: `${painting.title} by Artist Kashi. ${painting.medium}. Price: €${painting.price.toLocaleString()}.`,
+    description: `${painting.title} by Artist Kashi. ${mediumName}. Price: €${price.toLocaleString()}.`,
     path: `/shop/${painting.id}`,
     type: "article",
-    image: painting.image,
+    image: painting.primary_image ?? undefined,
     keywords: [painting.title, "original painting", "fine art", "artist kashi"],
   });
 }
@@ -48,13 +54,13 @@ export default async function ShopProductLayout({
         "@context": "https://schema.org",
         "@type": "Product",
         name: painting.title,
-        description: painting.medium,
-        image: [painting.image],
+        description: painting.medium?.name || "Original Work",
+        image: painting.primary_image ? [painting.primary_image] : [],
         offers: {
           "@type": "Offer",
           priceCurrency: "EUR",
-          price: painting.price.toString(),
-          availability: painting.sold
+          price: painting.price?.toString() || "0",
+          availability: painting.is_sold
             ? "https://schema.org/SoldOut"
             : "https://schema.org/InStock",
           url: `${siteUrl}/shop/${painting.id}`,

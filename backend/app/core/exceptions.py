@@ -29,6 +29,7 @@ class ErrorCode(StrEnum):
     DATABASE_ERROR = "DATABASE_ERROR"
     SERVICE_ERROR = "SERVICE_ERROR"
     RATE_LIMIT_EXCEEDED = "RATE_LIMIT_EXCEEDED"
+    REGISTER_INVALID_PASSWORD = "REGISTER_INVALID_PASSWORD"
 
     # User
     USER_NOT_FOUND = "USER_NOT_FOUND"
@@ -52,10 +53,12 @@ class ErrorCode(StrEnum):
     # Medium
     PRODUCT_MEDIUM_NOT_FOUND = "PRODUCT_MEDIUM_NOT_FOUND"
     PRODUCT_MEDIUM_ALREADY_EXISTS = "PRODUCT_MEDIUM_ALREADY_EXISTS"
+    PRODUCT_MEDIUM_IN_USE = "PRODUCT_MEDIUM_IN_USE"
 
     # Variant Type
     VARIANT_TYPE_NOT_FOUND = "VARIANT_TYPE_NOT_FOUND"
     VARIANT_TYPE_ALREADY_EXISTS = "VARIANT_TYPE_ALREADY_EXISTS"
+    VARIANT_TYPE_IN_USE = "VARIANT_TYPE_IN_USE"
 
     # Product Variant
     PRODUCT_VARIANT_NOT_FOUND = "PRODUCT_VARIANT_NOT_FOUND"
@@ -86,18 +89,6 @@ class AppException(Exception):
         self.details = details or HTTPStatus(status_code).description
 
         super().__init__(message)
-
-    def to_dict(self) -> dict[str, object]:
-        """Convert exception to API response payload."""
-
-        return {
-            "success": False,
-            "status": self.status_code,
-            "message": self.message,
-            "error_code": self.error_code.value,
-            "errors": (self.details if isinstance(self.details, dict) else None),
-            "meta": {"timestamp": datetime.now(UTC).isoformat()},
-        }
 
 
 class ValidationException(AppException):

@@ -6,6 +6,7 @@ import { RevealBlock } from "@/components/ui/misc";
 import { PAINTINGS, COURSES } from "@/data/constants";
 import Link from "next/link";
 import Image from "next/image";
+import { CourseRead } from "@/api/openapi-client";
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
@@ -36,35 +37,45 @@ export default function SearchPage() {
           {query && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border">
               {results.length > 0 ? (
-                results.map((item, i) => (
-                  <Link
-                    key={i}
-                    href={
-                      "price" in item && item.price > 1000
-                        ? `/shop/${item.id}`
-                        : `/courses/${item.id}`
-                    }
-                    className="group bg-dark p-6 hover:bg-muted-light transition-colors cursor-pointer"
-                  >
-                    <div className="relative aspect-[4/3] mb-4 overflow-hidden bg-muted">
-                      <Image
-                        src={item.image}
-                        alt={item.title}
-                        fill
-                        sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
-                        className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-                      />
-                    </div>
-                    <div className="text-tiny font-mono text-gold uppercase tracking-widest mb-1">
-                      {"price" in item && item.price > 1000
-                        ? "Original Work"
-                        : "Course"}
-                    </div>
-                    <div className="text-text-main font-semibold">
-                      {item.title}
-                    </div>
-                  </Link>
-                ))
+                results.map((item, i) => {
+                  const isPainting = "primary_image" in item;
+                  const itemImage = isPainting
+                    ? item.primary_image
+                    : (item as CourseRead).image_url;
+                  const price =
+                    typeof item.price === "string"
+                      ? parseFloat(item.price)
+                      : item.price;
+                  const isOriginalWork = isPainting && price && price > 1000;
+
+                  return (
+                    <Link
+                      key={i}
+                      href={
+                        isOriginalWork
+                          ? `/shop/${item.id}`
+                          : `/courses/${item.id}`
+                      }
+                      className="group bg-dark p-6 hover:bg-muted-light transition-colors cursor-pointer"
+                    >
+                      <div className="relative aspect-[4/3] mb-4 overflow-hidden bg-muted">
+                        <Image
+                          src={itemImage || ""}
+                          alt={item.title}
+                          fill
+                          sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                          className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                        />
+                      </div>
+                      <div className="text-tiny font-mono text-gold uppercase tracking-widest mb-1">
+                        {isOriginalWork ? "Original Work" : "Course"}
+                      </div>
+                      <div className="text-text-main font-semibold">
+                        {item.title}
+                      </div>
+                    </Link>
+                  );
+                })
               ) : (
                 <div className="col-span-full py-20 text-center text-text-muted">
                   No results found for &quot;{query}&quot;.

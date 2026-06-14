@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 
-from app.api.dependencies import CurrentUserDep
 from app.core.auth.dependencies import get_current_admin
+from app.schemas.responses import SuccessResponse
 
 from . import courses as courses_module
 from . import dashboard as dashboard_module
@@ -15,12 +15,12 @@ router = APIRouter(
 )
 
 
-@router.get("/stats")
-async def admin_stats(user: CurrentUserDep):
-    if not getattr(user, "is_superuser", False):
-        raise HTTPException(status_code=403, detail="Admin privileges required")
-
-    return {"users": 42, "courses": 7, "products": 13}
+@router.get("/stats", response_model=SuccessResponse[dict[str, int]])
+async def admin_stats():
+    return SuccessResponse(
+        message="Admin stats retrieved successfully",
+        data={"users": 42, "courses": 7, "products": 13},
+    )
 
 
 router.include_router(site_config_module.router, prefix="/config")
